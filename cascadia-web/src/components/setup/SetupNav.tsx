@@ -2,7 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { strings } from './strings'
+import { useSetupStrings } from './strings'
 import type { WizardStep } from './strings'
 import { Button } from '@/components/ui'
 
@@ -23,6 +23,7 @@ export function SetupNav({
   canBack,
   canNext,
 }: SetupNavProps) {
+  const strings = useSetupStrings()
   if (current === 'summary') return null
 
   return (

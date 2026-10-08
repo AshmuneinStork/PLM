@@ -2,12 +2,14 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { Moon, Sun } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { ThemeToggleProps } from './types'
 import { useTheme } from '@/theme'
 import { cn } from '@/utils'
 
 export function ThemeToggle({ className }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme()
+  const { t } = useTranslation('common')
 
   return (
     <button
@@ -16,8 +18,10 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         'p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors',
         className,
       )}
-      aria-label="Toggle theme"
-      title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      aria-label={t('theme.toggle')}
+      title={t('theme.switchTo', {
+        mode: t(`theme.${theme === 'light' ? 'dark' : 'light'}`),
+      })}
     >
       {theme === 'light' ? (
         <Moon size={18} className="text-gray-600 dark:text-gray-300" />

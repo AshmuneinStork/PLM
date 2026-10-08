@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useRef } from 'react'
 import { Menu, Pin, PinOff } from 'lucide-react'
 import { SidebarNav } from './SidebarNav'
@@ -24,6 +25,7 @@ export function Sidebar({ currentPath }: SidebarProps) {
     collapsedWidth,
   } = useSidebar()
   const sidebarRef = useRef<HTMLElement>(null)
+  const { t } = useTranslation('layout')
 
   // Icon size: larger when collapsed for better visibility
   const iconSize = isOpen ? 20 : 24
@@ -77,7 +79,7 @@ export function Sidebar({ currentPath }: SidebarProps) {
           isOpen ? 'justify-between px-4' : 'justify-center px-2'
         }`}
       >
-        {isOpen && <h2 className="text-xl font-bold">Navigation</h2>}
+        {isOpen && <h2 className="text-xl font-bold">{t('sidebar.navigation')}</h2>}
         <div className="flex items-center gap-1">
           {isOpen && (
             <button
@@ -87,8 +89,8 @@ export function Sidebar({ currentPath }: SidebarProps) {
                   ? 'bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400'
                   : 'hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
-              aria-label={isPinned ? 'Unpin menu' : 'Pin menu'}
-              title={isPinned ? 'Unpin menu' : 'Pin menu open'}
+              aria-label={isPinned ? t('sidebar.unpinMenu') : t('sidebar.pinMenu')}
+              title={isPinned ? t('sidebar.unpinMenu') : t('sidebar.pinMenuOpen')}
             >
               {isPinned ? <Pin size={20} /> : <PinOff size={20} />}
             </button>
@@ -96,8 +98,8 @@ export function Sidebar({ currentPath }: SidebarProps) {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-            aria-label={isOpen ? 'Collapse menu' : 'Expand menu'}
-            title={isOpen ? 'Collapse menu' : 'Expand menu'}
+            aria-label={isOpen ? t('sidebar.collapseMenu') : t('sidebar.expandMenu')}
+            title={isOpen ? t('sidebar.collapseMenu') : t('sidebar.expandMenu')}
             data-testid="menu-button"
           >
             <Menu size={20} />

@@ -2,7 +2,8 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { CheckCircle2, Circle } from 'lucide-react'
-import { STEP_ORDER, strings } from './strings'
+import { useTranslation } from 'react-i18next'
+import { STEP_ORDER, useSetupStrings } from './strings'
 import type { WizardStep } from './strings'
 import type { SetupProgressState } from './hooks/useSetupStatus'
 import { cn } from '@/utils'
@@ -27,10 +28,12 @@ export function SetupSidebar({
   progress,
   onSelect,
 }: SetupSidebarProps) {
+  const strings = useSetupStrings()
+  const { t } = useTranslation('setup')
   return (
     <nav className="w-full md:w-72 shrink-0 border-r border-slate-200 dark:border-slate-800 p-6 bg-slate-50 dark:bg-slate-900">
       <h2 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">
-        Setup steps
+        {t('sidebarTitle')}
       </h2>
       <ol className="space-y-1">
         {STEP_ORDER.map((step, index) => {

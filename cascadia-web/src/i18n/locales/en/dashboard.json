@@ -1,0 +1,28 @@
+{
+  "title": "Dashboard",
+  "subtitle": "Overview of your engineering data",
+  "cards": {
+    "parts": {
+      "title": "Parts",
+      "description": "Manage your parts library"
+    },
+    "designs": {
+      "title": "Designs",
+      "description": "Engineering designs"
+    },
+    "programs": {
+      "title": "Programs",
+      "description": "Program management"
+    },
+    "changeOrders": {
+      "title": "Change Orders",
+      "description": "Engineering changes"
+    }
+  },
+  "recentParts": {
+    "title": "Recent Parts",
+    "description": "Latest created parts",
+    "empty": "No parts yet",
+    "createFirst": "Create First Part"
+  }
+}

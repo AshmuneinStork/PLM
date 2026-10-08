@@ -17,8 +17,8 @@ import {
   DEFAULT_OLLAMA_BASE_URL,
   PROVIDER_LABELS,
 } from '@cascadia/commons/ai/model-catalog'
+import { useTranslation } from 'react-i18next'
 import { useAiSettings } from '../hooks/useAiSettings'
-import { strings } from '../strings'
 import type { AiSettingsForm } from '../hooks/useAiSettings'
 import type { AiProviderType } from '@cascadia/commons/ai/model-catalog'
 import {
@@ -41,6 +41,7 @@ interface AiKeysStepProps {
 }
 
 export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
+  const { t } = useTranslation('setup')
   const [form, setForm] = useState<AiSettingsForm>({
     enabled: true,
     provider: 'anthropic',
@@ -84,10 +85,10 @@ export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
         <Sparkles className="w-6 h-6 text-slate-700 dark:text-slate-300" />
         <div>
           <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">
-            {strings.steps.ai.title}
+{t('steps.ai.title')}
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            {strings.steps.ai.description}
+{t('steps.ai.description')}
           </p>
         </div>
       </div>
@@ -96,7 +97,7 @@ export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
         <CardContent className="pt-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="ai-provider">Provider</Label>
+<Label htmlFor="ai-provider">{t('forms.ai.providerLabel')}</Label>
               <Select
                 value={form.provider}
                 onValueChange={(v) => handleProviderChange(v as AiProviderType)}
@@ -115,7 +116,7 @@ export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="ai-model">Model</Label>
+<Label htmlFor="ai-model">{t('forms.ai.modelLabel')}</Label>
               <div className="flex items-center gap-2">
                 <Select
                   value={form.model}
@@ -156,9 +157,9 @@ export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
 
           <div className="space-y-2">
             <Label htmlFor="ai-key">
-              API key{' '}
+{t('forms.ai.apiKeyLabel')}{' '}
               {form.provider === 'ollama' && (
-                <span className="text-xs text-slate-500">(not required)</span>
+<span className="text-xs text-slate-500">{t('forms.ai.apiKeyNotRequired')}</span>
               )}
             </Label>
             <Input
@@ -173,12 +174,12 @@ export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
 
           {form.provider === 'ollama' && (
             <div className="space-y-2">
-              <Label htmlFor="ai-baseurl">Ollama base URL</Label>
+<Label htmlFor="ai-baseurl">{t('forms.ai.baseUrlLabel')}</Label>
               <Input
                 id="ai-baseurl"
                 value={form.baseURL ?? ''}
                 onChange={(e) => setForm({ ...form, baseURL: e.target.value })}
-                placeholder="http://localhost:11434"
+                placeholder={t('forms.ai.baseUrlPlaceholder')}
               />
             </div>
           )}
@@ -191,7 +192,7 @@ export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
                 setForm({ ...form, enabled: checked })
               }
             />
-            <Label htmlFor="ai-enabled">Enable AI features</Label>
+<Label htmlFor="ai-enabled">{t('forms.ai.enableLabel')}</Label>
           </div>
 
           <div className="flex items-center gap-3 pt-2 flex-wrap">
@@ -205,7 +206,7 @@ export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
               ) : (
                 <TestTube className="w-4 h-4 mr-2" />
               )}
-              Test connection
+{t('forms.ai.testConnection')}
             </Button>
             <Button
               onClick={handleSaveAndContinue}
@@ -216,13 +217,13 @@ export function AiKeysStep({ onCompleted }: AiKeysStepProps) {
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
-              Save and continue
+{t('forms.ai.saveAndContinue')}
             </Button>
 
             {aiSettings.testStatus === 'success' && (
               <span className="flex items-center gap-1 text-sm text-green-600 dark:text-green-400">
                 <CheckCircle className="w-4 h-4" />
-                {aiSettings.testMessage || 'Connected'}
+{aiSettings.testMessage || t('forms.ai.connected')}
               </span>
             )}
             {aiSettings.testStatus === 'error' && (

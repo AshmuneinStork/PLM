@@ -21,10 +21,11 @@ import {
   useCompleteSetup,
   useSetProgress,
 } from './hooks/useSetupProgress'
-import { strings } from './strings'
+import { useSetupStrings } from './strings'
 import type { SetupProgressState } from './hooks/useSetupStatus'
 import type { WizardStep } from './strings'
 import { Button } from '@/components/ui'
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher'
 
 interface SetupWizardProps {
   step: WizardStep
@@ -32,6 +33,7 @@ interface SetupWizardProps {
 
 export function SetupWizard({ step }: SetupWizardProps) {
   const navigate = useNavigate()
+  const strings = useSetupStrings()
   const statusQuery = useSetupStatus()
   const setProgress = useSetProgress()
   const completeSetup = useCompleteSetup()
@@ -145,6 +147,8 @@ export function SetupWizard({ step }: SetupWizardProps) {
             </p>
           </div>
         </div>
+        <div className="flex items-center gap-1">
+          <LanguageSwitcher />
         <Button
           variant="ghost"
           size="sm"
@@ -154,6 +158,7 @@ export function SetupWizard({ step }: SetupWizardProps) {
           <X className="w-4 h-4 mr-1" />
           {strings.actions.skipWizard}
         </Button>
+        </div>
       </header>
 
       <div className="flex flex-col md:flex-row flex-1">

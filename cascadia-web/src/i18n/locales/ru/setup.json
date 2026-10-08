@@ -1,0 +1,169 @@
+{
+  "pageTitle": "Добро пожаловать в Cascadia",
+  "pageSubtitle": "Несколько быстрых шагов — и ваша команда готова к работе. Мастер можно перезапустить из «Администрирование → Мастер настройки».",
+  "sidebarTitle": "Шаги настройки",
+  "steps": {
+    "org": {
+      "label": "Организация",
+      "title": "Расскажите о вашей компании",
+      "description": "Эти данные отображаются в шапках, экспортируемых отчётах и журналах аудита."
+    },
+    "users": {
+      "label": "Пользователи",
+      "title": "Пригласите команду",
+      "description": "Добавьте людей, которые будут работать в Cascadia, и назначьте им роли. Позже можно добавить ещё из «Администрирование → Пользователи»."
+    },
+    "ai": {
+      "label": "ИИ-провайдеры",
+      "title": "Подключите ИИ-провайдера",
+      "description": "API-ключи нужны для чат-бота, черновиков BOM и конструкторского движка. Ключи хранятся в зашифрованном виде. Можно пропустить и добавить позже."
+    },
+    "programs": {
+      "label": "Программы и данные",
+      "title": "Создайте начальные данные",
+      "description": "Создайте первую программу, конструкцию и деталь — или загрузите пример каталога, чтобы увидеть систему в действии."
+    },
+    "tools": {
+      "label": "Оборудование",
+      "title": "Добавьте оборудование цеха",
+      "description": "Запишите станки, с которыми работаете, — 3D-принтеры, фрезерные станки с ЧПУ, пилы, сварочные аппараты, измерительные приборы. Их возможности ограничивают предложения конструкторского движка. Позже можно добавить ещё через «Оборудование → Создать»."
+    },
+    "summary": {
+      "label": "Итог",
+      "title": "Настройка завершена",
+      "description": "Всё ниже можно изменить на страницах администрирования или перезапустив мастер."
+    }
+  },
+  "actions": {
+    "skipStep": "Пропустить шаг",
+    "skipWizard": "Пропустить мастер",
+    "finish": "Завершить настройку"
+  },
+  "summary": {
+    "done": "Готово",
+    "skipped": "Пропущено"
+  },
+  "forms": {
+    "org": {
+      "nameLabel": "Название организации",
+      "namePlaceholder": "Акме Роботикс",
+      "contactLabel": "Основной контакт (email, необязательно)",
+      "contactPlaceholder": "ops@acme-robotics.com",
+      "colorLabel": "Фирменный цвет (необязательно)",
+      "nameRequired": "Название организации обязательно",
+      "saveFailed": "Не удалось сохранить",
+      "saveAndContinue": "Сохранить и продолжить",
+      "savedAs": "Сохранено как {{name}}"
+    },
+    "users": {
+      "emailLabel": "Email",
+      "emailPlaceholder": "alex@acme-robotics.com",
+      "nameLabel": "Имя",
+      "namePlaceholder": "Алекс Петров",
+      "passwordLabel": "Начальный пароль",
+      "passwordPlaceholder": "Минимум 8 символов",
+      "roleLabel": "Роль",
+      "rolePlaceholder": "Выберите роль",
+      "required": "Email, имя и пароль обязательны",
+      "passwordMin": "Пароль должен быть не короче 8 символов",
+      "pickRole": "Выберите роль",
+      "createFailed": "Не удалось создать пользователя",
+      "roleAssignFailed": "Пользователь {{email}} создан, но роль не назначена: {{detail}}",
+      "addUser": "Добавить пользователя",
+      "continue": "Продолжить",
+      "addedInSession": "Добавлено в этой сессии"
+    },
+    "ai": {
+      "providerLabel": "Провайдер",
+      "modelLabel": "Модель",
+      "modelHelpDefault": "Показаны модели для выбранного ключа провайдера выше, иначе — встроенный список.",
+      "modelFallbackNote": "Резервный список — добавьте ключ выше для живого поиска.",
+      "apiKeyLabel": "API-ключ",
+      "apiKeyNotRequired": "(необязательно)",
+      "baseUrlLabel": "Базовый URL Ollama",
+      "baseUrlPlaceholder": "http://localhost:11434",
+      "enableLabel": "Включить ИИ-функции",
+      "testConnection": "Проверить соединение",
+      "saveAndContinue": "Сохранить и продолжить",
+      "connected": "Подключено"
+    },
+    "programs": {
+      "newProgramTitle": "Новая программа",
+      "newProgramDesc": "Программы группируют конструкции и детали в выпускаемый продукт.",
+      "programNameLabel": "Название",
+      "programNamePlaceholder": "напр. Квадрокоптер",
+      "programCodeLabel": "Код",
+      "programCodePlaceholder": "напр. QC-1",
+      "createProgram": "Создать программу",
+      "newDesignTitle": "Новая конструкция",
+      "newDesignDesc": "Конструкции содержат инженерное определение, которое реализует программа.",
+      "designNameLabel": "Название",
+      "designNamePlaceholder": "напр. Рама",
+      "designCodeLabel": "Код",
+      "designCodePlaceholder": "напр. AF-100",
+      "designProgramLabel": "Программа",
+      "designProgramPlaceholder": "Выберите программу",
+      "designTypeLabel": "Тип",
+      "createDesign": "Создать конструкцию",
+      "newPartTitle": "Новая деталь",
+      "newPartDesc": "Создайте одну покупную или производимую позицию.",
+      "partNameLabel": "Название",
+      "partNamePlaceholder": "напр. Болт М3х12",
+      "partTypeLabel": "Тип детали",
+      "partDesignLabel": "Конструкция (необязательно)",
+      "partDesignPlaceholder": "Выберите конструкцию",
+      "addPart": "Добавить деталь",
+      "partsCreated": "Создано деталей: {{count}}",
+      "sampleTitle": "Пример данных",
+      "sampleDesc": "Загрузите встроенный каталог крепежа и заготовок, чтобы у конструкторского движка была база. Повторный запуск безопасен.",
+      "loadCatalog": "Загрузить стандартный каталог",
+      "catalogDone": "Добавлено записей: {{inserted}}, пропущено: {{skipped}}",
+      "bulkHint": "Большие объёмы можно импортировать из CSV через {{path}} после завершения настройки.",
+      "createFailed": "Не удалось создать",
+      "seedFailed": "Не удалось загрузить каталог",
+      "continue": "Продолжить",
+      "bulkHintBefore": "Большие объёмы можно импортировать из CSV через",
+      "bulkHintAfter": "после завершения настройки."
+    },
+    "tools": {
+      "titleWithCount": "Оборудования на учёте: {{count}}",
+      "noTools": "Пока нет оборудования",
+      "addTool": "Добавить оборудование",
+      "uncategorized": "Без категории",
+      "emptyCta": "Добавьте первый станок — принтер, фрезер, пилу или измерительный прибор",
+      "continue": "Продолжить",
+      "skipHint": "Можно пропустить — оборудование добавится позже.",
+      "createFailed": "Не удалось создать оборудование",
+      "cardDesc": "Достаточно названия, типа и подтипа — возможности можно настроить позже на странице оборудования."
+    },
+    "legacy": {
+      "legacyProgramTitle": "Создайте программу для начала",
+      "legacyProgramExample": "напр. ROBOTARM-V1",
+      "legacyName": "Название",
+      "legacyNamePh": "Манипулятор V1",
+      "legacyCode": "Код",
+      "legacyCodePh": "ROBOTARM-V1",
+      "legacyCreateProgram": "Создать программу",
+      "legacyDesignTitle": "Создайте конструкцию для начала",
+      "legacyDesignDesc": "Контейнер для деталей и документов",
+      "legacyDesignName": "Название конструкции",
+      "legacyDesignNamePh": "Узел предплечья",
+      "legacyDesignCode": "Код конструкции",
+      "legacyDesignCodePh": "FOREARM",
+      "legacyDesignProgram": "Программа (необязательно)",
+      "legacyDesignNone": "Нет",
+      "legacyDesignNoProgram": "Без программы",
+      "legacyDesignType": "Тип конструкции",
+      "legacyCreateDesign": "Создать конструкцию",
+      "legacyPartTitle": "Создайте деталь для начала",
+      "legacyPartDesc": "Быстрая проверка создания детали",
+      "legacyPartName": "Название детали",
+      "legacyPartNamePh": "Кронштейн предплечья",
+      "legacyPartType": "Тип",
+      "legacyPartDesign": "Конструкция (необязательно)",
+      "legacyPartNone": "Нет",
+      "legacyPartNoDesign": "Без конструкции",
+      "legacyCreatePart": "Создать деталь"
+    }
+  }
+}

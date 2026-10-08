@@ -58,3 +58,7 @@ export interface SidebarProps {
 export interface ThemeToggleProps {
   className?: string
 }
+
+export interface LanguageSwitcherProps {
+  className?: string
+}

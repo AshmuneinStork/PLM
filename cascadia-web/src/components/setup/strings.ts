@@ -2,9 +2,14 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 /**
- * All user-facing copy for the first-time setup wizard, kept in one
- * place so a future i18n pass is mechanical.
+ * All user-facing copy for the first-time setup wizard.
+ *
+ * Backed by the `setup` i18n namespace so the wizard follows the active
+ * UI language. The `strings` constant below is the English fallback for
+ * non-component consumers (hooks); prefer `useSetupStrings` in components.
  */
+
+import { useTranslation } from 'react-i18next'
 
 export const strings = {
   pageTitle: 'Welcome to Cascadia',
@@ -72,3 +77,53 @@ export const STEP_ORDER: ReadonlyArray<WizardStep> = [
   'tools',
   'summary',
 ]
+
+export interface SetupStrings {
+  pageTitle: string
+  pageSubtitle: string
+  steps: Record<WizardStep, { label: string; title: string; description: string }>
+  actions: {
+    skipStep: string
+    skipWizard: string
+    back: string
+    next: string
+    finish: string
+    saving: string
+    saved: string
+  }
+}
+
+/**
+ * Translate the wizard copy with the active language.
+ * Returns the same shape as the legacy `strings` constant.
+ */
+export function useSetupStrings(): SetupStrings {
+  const { t } = useTranslation('setup')
+  const { t: tCommon } = useTranslation('common')
+  const step = (key: WizardStep) => ({
+    label: t(`steps.${key}.label`),
+    title: t(`steps.${key}.title`),
+    description: t(`steps.${key}.description`),
+  })
+  return {
+    pageTitle: t('pageTitle'),
+    pageSubtitle: t('pageSubtitle'),
+    steps: {
+      org: step('org'),
+      users: step('users'),
+      ai: step('ai'),
+      programs: step('programs'),
+      tools: step('tools'),
+      summary: step('summary'),
+    },
+    actions: {
+      skipStep: t('actions.skipStep'),
+      skipWizard: t('actions.skipWizard'),
+      back: tCommon('actions.back'),
+      next: tCommon('actions.next'),
+      finish: t('actions.finish'),
+      saving: tCommon('states.saving'),
+      saved: tCommon('states.saved'),
+    },
+  }
+}

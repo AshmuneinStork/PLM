@@ -1,0 +1,169 @@
+{
+  "pageTitle": "Welcome to Cascadia",
+  "pageSubtitle": "A few quick steps will get your team set up. You can revisit this from Admin → Run setup wizard at any time.",
+  "sidebarTitle": "Setup steps",
+  "steps": {
+    "org": {
+      "label": "Organization",
+      "title": "Tell us about your company",
+      "description": "These details show up in headers, exported reports, and audit logs."
+    },
+    "users": {
+      "label": "Users",
+      "title": "Invite your team",
+      "description": "Add the people who will work in Cascadia and assign their roles. You can always add more later from Admin → Users."
+    },
+    "ai": {
+      "label": "AI providers",
+      "title": "Connect an AI provider",
+      "description": "API keys power the chatbot, BOM drafting, and design engine. Keys are stored encrypted at rest. You can skip this and add keys later."
+    },
+    "programs": {
+      "label": "Programs & data",
+      "title": "Bootstrap your data",
+      "description": "Create your first program, design, and part — or load a sample standard catalog so you can see the system in action."
+    },
+    "tools": {
+      "label": "Tools",
+      "title": "Add your shop equipment",
+      "description": "Record the machines you build with — 3D printers, CNC mills, saws, welders, measurement gear. Their capabilities constrain what the design engine proposes. You can always add more later from Tools → Create Tool."
+    },
+    "summary": {
+      "label": "Summary",
+      "title": "You're set up",
+      "description": "Everything below is editable from the admin pages or by re-running this wizard."
+    }
+  },
+  "actions": {
+    "skipStep": "Skip step",
+    "skipWizard": "Skip wizard",
+    "finish": "Finish setup"
+  },
+  "summary": {
+    "done": "Done",
+    "skipped": "Skipped"
+  },
+  "forms": {
+    "org": {
+      "nameLabel": "Organization name",
+      "namePlaceholder": "Acme Robotics",
+      "contactLabel": "Primary contact (email, optional)",
+      "contactPlaceholder": "ops@acme-robotics.com",
+      "colorLabel": "Brand color (optional)",
+      "nameRequired": "Organization name is required",
+      "saveFailed": "Failed to save",
+      "saveAndContinue": "Save and continue",
+      "savedAs": "Saved as {{name}}"
+    },
+    "users": {
+      "emailLabel": "Email",
+      "emailPlaceholder": "alex@acme-robotics.com",
+      "nameLabel": "Name",
+      "namePlaceholder": "Alex Patel",
+      "passwordLabel": "Initial password",
+      "passwordPlaceholder": "At least 8 characters",
+      "roleLabel": "Role",
+      "rolePlaceholder": "Pick a role",
+      "required": "Email, name, and password are required",
+      "passwordMin": "Password must be at least 8 characters",
+      "pickRole": "Pick a role",
+      "createFailed": "Failed to create user",
+      "roleAssignFailed": "Created {{email}} but role assignment failed: {{detail}}",
+      "addUser": "Add user",
+      "continue": "Continue",
+      "addedInSession": "Added in this session"
+    },
+    "ai": {
+      "providerLabel": "Provider",
+      "modelLabel": "Model",
+      "modelHelpDefault": "Shows models for the selected provider key above, or the built-in list if none is set.",
+      "modelFallbackNote": "Fallback list — add a key above for live discovery.",
+      "apiKeyLabel": "API key",
+      "apiKeyNotRequired": "(not required)",
+      "baseUrlLabel": "Ollama base URL",
+      "baseUrlPlaceholder": "http://localhost:11434",
+      "enableLabel": "Enable AI features",
+      "testConnection": "Test connection",
+      "saveAndContinue": "Save and continue",
+      "connected": "Connected"
+    },
+    "programs": {
+      "newProgramTitle": "New program",
+      "newProgramDesc": "Programs group designs and parts into a shippable effort.",
+      "programNameLabel": "Name",
+      "programNamePlaceholder": "e.g. Quadcopter",
+      "programCodeLabel": "Code",
+      "programCodePlaceholder": "e.g. QC-1",
+      "createProgram": "Create program",
+      "newDesignTitle": "New design",
+      "newDesignDesc": "Designs hold the engineering definition a program builds.",
+      "designNameLabel": "Name",
+      "designNamePlaceholder": "e.g. Airframe",
+      "designCodeLabel": "Code",
+      "designCodePlaceholder": "e.g. AF-100",
+      "designProgramLabel": "Program",
+      "designProgramPlaceholder": "Pick a program",
+      "designTypeLabel": "Type",
+      "createDesign": "Create design",
+      "newPartTitle": "New part",
+      "newPartDesc": "Seed one purchasable or manufactured item.",
+      "partNameLabel": "Name",
+      "partNamePlaceholder": "e.g. M3x12 bolt",
+      "partTypeLabel": "Part type",
+      "partDesignLabel": "Design (optional)",
+      "partDesignPlaceholder": "Pick a design",
+      "addPart": "Add part",
+      "partsCreated": "{{count}} part{{plural}} created",
+      "sampleTitle": "Sample data",
+      "sampleDesc": "Load the bundled fastener and raw stock catalog so the design engine has a baseline to draw from. Safe to re-run.",
+      "loadCatalog": "Load standard catalog",
+      "catalogDone": "{{inserted}} entries added, {{skipped}} skipped",
+      "bulkHint": "For larger datasets, you can bulk-import parts from a CSV at {{path}} once setup is finished.",
+      "createFailed": "Failed to create",
+      "seedFailed": "Failed to seed catalog",
+      "continue": "Continue",
+      "bulkHintBefore": "For larger datasets, you can bulk-import parts from a CSV at",
+      "bulkHintAfter": "once setup is finished."
+    },
+    "tools": {
+      "titleWithCount": "{{count}} tool{{plural}} on record",
+      "noTools": "No tools yet",
+      "addTool": "Add tool",
+      "uncategorized": "Uncategorized",
+      "emptyCta": "Add your first machine — a printer, mill, saw, or gauge",
+      "continue": "Continue",
+      "skipHint": "Skipping is fine — you can add tools later.",
+      "createFailed": "Failed to create tool",
+      "cardDesc": "Name, type, and subtype are all that’s required — capabilities can be tuned later from the tool page."
+    },
+    "legacy": {
+      "legacyProgramTitle": "Create a program to get started",
+      "legacyProgramExample": "e.g. ROBOTARM-V1",
+      "legacyName": "Name",
+      "legacyNamePh": "Robot Arm V1",
+      "legacyCode": "Code",
+      "legacyCodePh": "ROBOTARM-V1",
+      "legacyCreateProgram": "Create Program",
+      "legacyDesignTitle": "Create a design to get started",
+      "legacyDesignDesc": "A container for parts and documents",
+      "legacyDesignName": "Design name",
+      "legacyDesignNamePh": "Forearm Assembly",
+      "legacyDesignCode": "Design code",
+      "legacyDesignCodePh": "FOREARM",
+      "legacyDesignProgram": "Program (optional)",
+      "legacyDesignNone": "None",
+      "legacyDesignNoProgram": "No program",
+      "legacyDesignType": "Design type",
+      "legacyCreateDesign": "Create Design",
+      "legacyPartTitle": "Create a part to get started",
+      "legacyPartDesc": "Quick smoke test of part creation",
+      "legacyPartName": "Part name",
+      "legacyPartNamePh": "Forearm Bracket",
+      "legacyPartType": "Type",
+      "legacyPartDesign": "Design (optional)",
+      "legacyPartNone": "None",
+      "legacyPartNoDesign": "No design",
+      "legacyCreatePart": "Create Part"
+    }
+  }
+}

@@ -11,7 +11,7 @@ import {
   Package,
   Plus,
 } from 'lucide-react'
-import { strings } from '../strings'
+import { useTranslation } from 'react-i18next'
 import { designListQuery, programListQuery } from '@/query'
 import {
   Button,
@@ -28,6 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui'
+
+const { t } = useTranslation('setup')
 
 interface CreatedProgram {
   id: string
@@ -133,7 +135,7 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
 
   const handleCreateProgram = async () => {
     if (!programForm.name.trim() || !programForm.code.trim()) {
-      setProgramError('Name and code are required')
+      setProgramError(t('forms.programs.requiredNameCode'))
       return
     }
     setSavingProgram(true)
@@ -149,7 +151,7 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
       })
       if (!response.ok) {
         throw new Error(
-          await readErrorMessage(response, 'Failed to create program'),
+          await readErrorMessage(response, t('forms.programs.createFailed')),
         )
       }
       const json = await response.json()
@@ -167,7 +169,7 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
 
   const handleCreateDesign = async () => {
     if (!designForm.name.trim() || !designForm.code.trim()) {
-      setDesignError('Name and code are required')
+      setDesignError(t('forms.programs.requiredNameCode'))
       return
     }
     setSavingDesign(true)
@@ -185,7 +187,7 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
       })
       if (!response.ok) {
         throw new Error(
-          await readErrorMessage(response, 'Failed to create design'),
+          await readErrorMessage(response, t('forms.programs.createFailed')),
         )
       }
       const json = await response.json()
@@ -224,7 +226,7 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
       })
       if (!response.ok) {
         throw new Error(
-          await readErrorMessage(response, 'Failed to create part'),
+          await readErrorMessage(response, t('forms.programs.createFailed')),
         )
       }
       const json = await response.json()
@@ -278,10 +280,10 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
         <Database className="w-6 h-6 text-slate-700 dark:text-slate-300" />
         <div>
           <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">
-            {strings.steps.programs.title}
+            {t('steps.programs.title')}
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            {strings.steps.programs.description}
+            {t('steps.programs.description')}
           </p>
         </div>
       </div>
@@ -289,30 +291,30 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Create program</CardTitle>
-            <CardDescription>e.g. ROBOTARM-V1</CardDescription>
+            <CardTitle className="text-base">{t('forms.legacy.legacyProgramTitle')}</CardTitle>
+            <CardDescription>{t('forms.legacy.legacyProgramExample')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-1">
-              <Label htmlFor="prog-name">Name</Label>
+              <Label htmlFor="prog-name">{t('forms.legacy.legacyName')}</Label>
               <Input
                 id="prog-name"
                 value={programForm.name}
                 onChange={(e) =>
                   setProgramForm({ ...programForm, name: e.target.value })
                 }
-                placeholder="Robot Arm V1"
+                placeholder={t('forms.legacy.legacyNamePh')}
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="prog-code">Code</Label>
+              <Label htmlFor="prog-code">{t('forms.legacy.legacyCode')}</Label>
               <Input
                 id="prog-code"
                 value={programForm.code}
                 onChange={(e) =>
                   setProgramForm({ ...programForm, code: e.target.value })
                 }
-                placeholder="ROBOTARM-V1"
+                placeholder={t('forms.legacy.legacyCodePh')}
                 className="font-mono"
               />
             </div>
@@ -333,7 +335,7 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              Create program
+              {t('forms.legacy.legacyCreateProgram')}
             </Button>
             {programs.length > 0 && (
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -345,37 +347,35 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Create design</CardTitle>
-            <CardDescription>
-              Container for a related set of items
-            </CardDescription>
+            <CardTitle className="text-base">{t('forms.legacy.legacyDesignTitle')}</CardTitle>
+            <CardDescription>{t('forms.legacy.legacyDesignDesc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-1">
-              <Label htmlFor="des-name">Name</Label>
+              <Label htmlFor="des-name">{t('forms.legacy.legacyDesignName')}</Label>
               <Input
                 id="des-name"
                 value={designForm.name}
                 onChange={(e) =>
                   setDesignForm({ ...designForm, name: e.target.value })
                 }
-                placeholder="Forearm Assembly"
+                placeholder={t('forms.legacy.legacyDesignNamePh')}
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="des-code">Code</Label>
+              <Label htmlFor="des-code">{t('forms.legacy.legacyDesignCode')}</Label>
               <Input
                 id="des-code"
                 value={designForm.code}
                 onChange={(e) =>
                   setDesignForm({ ...designForm, code: e.target.value })
                 }
-                placeholder="FOREARM"
+                placeholder={t('forms.legacy.legacyDesignCodePh')}
                 className="font-mono"
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="des-program">Program (optional)</Label>
+              <Label htmlFor="des-program">{t('forms.legacy.legacyDesignProgram')}</Label>
               <Select
                 value={designForm.programId || 'none'}
                 onValueChange={(v) =>
@@ -386,10 +386,10 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
                 }
               >
                 <SelectTrigger id="des-program">
-                  <SelectValue placeholder="None" />
+                  <SelectValue placeholder={t('forms.legacy.legacyDesignNone')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No program</SelectItem>
+                  <SelectItem value="none">{t('forms.legacy.legacyDesignNoProgram')}</SelectItem>
                   {programs.map((p) => (
                     <SelectItem key={p.id} value={p.id}>
                       {p.name}
@@ -415,30 +415,30 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              Create design
+              {t('forms.legacy.legacyCreateDesign')}
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Add a part</CardTitle>
-            <CardDescription>Quick smoke test of part creation</CardDescription>
+            <CardTitle className="text-base">{t('forms.legacy.legacyPartTitle')}</CardTitle>
+            <CardDescription>{t('forms.legacy.legacyPartDesc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-1">
-              <Label htmlFor="part-name">Name</Label>
+              <Label htmlFor="part-name">{t('forms.legacy.legacyPartName')}</Label>
               <Input
                 id="part-name"
                 value={partForm.name}
                 onChange={(e) =>
                   setPartForm({ ...partForm, name: e.target.value })
                 }
-                placeholder="Forearm Bracket"
+                placeholder={t('forms.legacy.legacyPartNamePh')}
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="part-type">Type</Label>
+              <Label htmlFor="part-type">{t('forms.legacy.legacyPartType')}</Label>
               <Select
                 value={partForm.partType}
                 onValueChange={(v) =>
@@ -460,13 +460,13 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
               </Select>
             </div>
             <div className="space-y-1">
-              <Label htmlFor="part-design">Design</Label>
+              <Label htmlFor="part-design">{t('forms.legacy.legacyPartDesign')}</Label>
               <Select
                 value={partForm.designId}
                 onValueChange={(v) => setPartForm({ ...partForm, designId: v })}
               >
                 <SelectTrigger id="part-design">
-                  <SelectValue placeholder="Pick a design" />
+                  <SelectValue placeholder={t('forms.legacy.legacyPartDesignPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {designs.map((d) => (
@@ -494,14 +494,13 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              Add part
+              {t('forms.programs.addPart')}
             </Button>
             {createdParts.length > 0 && (
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {createdParts.length} part
-                {createdParts.length > 1 ? 's' : ''} created
-              </p>
-            )}
+                {t('forms.programs.partsCreated', { count: createdParts.length })}
+                </p>
+                )}
           </CardContent>
         </Card>
       </div>
@@ -510,11 +509,10 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Package className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-            <CardTitle>Sample data</CardTitle>
+            <CardTitle>{t('forms.programs.sampleTitle')}</CardTitle>
           </div>
           <CardDescription>
-            Load the bundled fastener and raw stock catalog so the design engine
-            has a baseline to draw from. Safe to re-run.
+            {t('forms.programs.sampleDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -529,7 +527,7 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
               ) : (
                 <Package className="w-4 h-4 mr-2" />
               )}
-              Load standard catalog
+              {t('forms.programs.loadCatalog')}
             </Button>
             {catalogResult && (
               <span className="flex items-center gap-1 text-sm text-green-600 dark:text-green-400">
@@ -562,7 +560,7 @@ export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
       </Card>
 
       <div>
-        <Button onClick={onCompleted}>Continue</Button>
+        <Button onClick={onCompleted}>{t('forms.programs.continue')}</Button>
       </div>
     </div>
   )

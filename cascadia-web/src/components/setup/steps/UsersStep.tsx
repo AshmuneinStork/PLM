@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { CheckCircle, Loader2, Plus, UserPlus, Users } from 'lucide-react'
-import { strings } from '../strings'
+import { useTranslation } from 'react-i18next'
 import { roleListQuery } from '@/query'
 import {
   Badge,
@@ -46,6 +46,7 @@ interface UsersStepProps {
 }
 
 export function UsersStep({ onCompleted }: UsersStepProps) {
+  const { t } = useTranslation('setup')
   const [draft, setDraft] = useState<UserDraft>(EMPTY_DRAFT)
   const [creating, setCreating] = useState(false)
   const [created, setCreated] = useState<Array<CreatedUser>>([])
@@ -65,15 +66,15 @@ export function UsersStep({ onCompleted }: UsersStepProps) {
 
   const handleAdd = async () => {
     if (!draft.email.trim() || !draft.name.trim() || !draft.password) {
-      setError('Email, name, and password are required')
+      setError(t('forms.users.required'))
       return
     }
     if (draft.password.length < 8) {
-      setError('Password must be at least 8 characters')
+      setError(t('forms.users.passwordMin'))
       return
     }
     if (!draft.roleId) {
-      setError('Pick a role')
+      setError(t('forms.users.pickRole'))
       return
     }
     setCreating(true)
@@ -90,7 +91,7 @@ export function UsersStep({ onCompleted }: UsersStepProps) {
       })
       if (!response.ok) {
         const json = await response.json().catch(() => ({}))
-        throw new Error(json.error?.message ?? 'Failed to create user')
+        throw new Error(json.error?.message ?? t('forms.users.createFailed'))
       }
       const json = await response.json()
       const newUser = json.data?.user ?? json.data
@@ -103,10 +104,10 @@ export function UsersStep({ onCompleted }: UsersStepProps) {
         body: JSON.stringify({ roleIds: [draft.roleId] }),
       })
       if (!roleResponse.ok) {
-        // User created but role assignment failed — surface but don't block.
+        // User created but role assignment failed — surface but don’t block.
         const json2 = await roleResponse.json().catch(() => ({}))
         setError(
-          `Created ${newUser.email} but role assignment failed: ${json2.error?.message ?? 'unknown error'}`,
+          t('forms.users.roleAssignFailed', { email: newUser.email, detail: json2.error?.message ?? 'unknown error' }),
         )
       }
 
@@ -138,10 +139,10 @@ export function UsersStep({ onCompleted }: UsersStepProps) {
         <Users className="w-6 h-6 text-slate-700 dark:text-slate-300" />
         <div>
           <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">
-            {strings.steps.users.title}
+{t('steps.users.title')}
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            {strings.steps.users.description}
+{t('steps.users.description')}
           </p>
         </div>
       </div>
@@ -150,26 +151,26 @@ export function UsersStep({ onCompleted }: UsersStepProps) {
         <CardContent className="pt-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="user-email">Email</Label>
+<Label htmlFor="user-email">{t('forms.users.emailLabel')}</Label>
               <Input
                 id="user-email"
                 type="email"
                 value={draft.email}
                 onChange={(e) => setDraft({ ...draft, email: e.target.value })}
-                placeholder="alex@acme-robotics.com"
+                placeholder={t('forms.users.emailPlaceholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="user-name">Name</Label>
+<Label htmlFor="user-name">{t('forms.users.nameLabel')}</Label>
               <Input
                 id="user-name"
                 value={draft.name}
                 onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-                placeholder="Alex Patel"
+                placeholder={t('forms.users.namePlaceholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="user-password">Initial password</Label>
+<Label htmlFor="user-password">{t('forms.users.passwordLabel')}</Label>
               <Input
                 id="user-password"
                 type="password"
@@ -177,17 +178,17 @@ export function UsersStep({ onCompleted }: UsersStepProps) {
                 onChange={(e) =>
                   setDraft({ ...draft, password: e.target.value })
                 }
-                placeholder="At least 8 characters"
+                placeholder={t('forms.users.passwordPlaceholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="user-role">Role</Label>
+<Label htmlFor="user-role">{t('forms.users.roleLabel')}</Label>
               <Select
                 value={draft.roleId}
                 onValueChange={(v) => setDraft({ ...draft, roleId: v })}
               >
                 <SelectTrigger id="user-role">
-                  <SelectValue placeholder="Pick a role" />
+<SelectValue placeholder={t('forms.users.rolePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {roles.map((role) => (
@@ -211,11 +212,11 @@ export function UsersStep({ onCompleted }: UsersStepProps) {
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              Add user
+{t('forms.users.addUser')}
             </Button>
             <Button onClick={handleContinue} disabled={creating}>
               <UserPlus className="w-4 h-4 mr-2" />
-              Continue
+{t('forms.users.continue')}
             </Button>
           </div>
         </CardContent>
@@ -224,7 +225,7 @@ export function UsersStep({ onCompleted }: UsersStepProps) {
       {created.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            Added in this session
+{t('forms.users.addedInSession')}
           </h3>
           <div className="space-y-1">
             {created.map((user) => (

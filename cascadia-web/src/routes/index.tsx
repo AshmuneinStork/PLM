@@ -4,6 +4,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowRight,
   Box,
@@ -50,6 +51,7 @@ export const Route = createFileRoute('/')({
 })
 
 function DashboardPage() {
+  const { t } = useTranslation(['dashboard', 'common'])
   const { data: parts = [] } = useQuery(recentPartsQuery())
   const { data: stats } = useQuery(dashboardStatsQuery())
   const { data: chartData } = useQuery(dashboardChartsQuery())
@@ -71,8 +73,7 @@ function DashboardPage() {
 
   const dashboardCards = [
     {
-      title: 'Parts',
-      description: 'Manage your parts library',
+      key: 'parts',
       icon: <Package className="w-6 h-6" />,
       listHref: '/parts',
       createHref: '/parts/new',
@@ -81,8 +82,7 @@ function DashboardPage() {
       bgColor: 'bg-blue-500/10',
     },
     {
-      title: 'Designs',
-      description: 'Engineering designs',
+      key: 'designs',
       icon: <Box className="w-6 h-6" />,
       listHref: '/designs',
       createHref: '/designs/new',
@@ -91,8 +91,7 @@ function DashboardPage() {
       bgColor: 'bg-purple-500/10',
     },
     {
-      title: 'Programs',
-      description: 'Program management',
+      key: 'programs',
       icon: <Briefcase className="w-6 h-6" />,
       listHref: '/programs',
       createHref: '/programs/new',
@@ -101,8 +100,7 @@ function DashboardPage() {
       bgColor: 'bg-green-500/10',
     },
     {
-      title: 'Change Orders',
-      description: 'Engineering changes',
+      key: 'changeOrders',
       icon: <GitBranch className="w-6 h-6" />,
       listHref: '/change-orders',
       createHref: '/change-orders/new',
@@ -117,10 +115,10 @@ function DashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-          Dashboard
+          {t("title")}
         </h1>
         <p className="text-slate-600 dark:text-slate-400 mt-2">
-          Welcome to Cascadia PLM
+          {t("subtitle")}
         </p>
       </div>
 
@@ -143,21 +141,21 @@ function DashboardPage() {
                   {card.count}
                 </div>
               </div>
-              <CardTitle className="text-xl mt-4">{card.title}</CardTitle>
-              <CardDescription>{card.description}</CardDescription>
+              <CardTitle className="text-xl mt-4">{t(`cards.${card.key}.title`)}</CardTitle>
+              <CardDescription>{t(`cards.${card.key}.description`)}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
                 <Link to={card.listHref} className="flex-1 min-w-[80px]">
                   <Button variant="outline" className="w-full">
                     <ArrowRight className="w-4 h-4 mr-2" />
-                    View
+                    {t('common:actions.view')}
                   </Button>
                 </Link>
                 <Link to={card.createHref} className="flex-1 min-w-[80px]">
                   <Button className="w-full">
                     <Plus className="w-4 h-4 mr-2" />
-                    Create
+                    {t('common:actions.create')}
                   </Button>
                 </Link>
               </div>
@@ -179,12 +177,12 @@ function DashboardPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Recent Parts</CardTitle>
-              <CardDescription>Latest created parts</CardDescription>
+              <CardTitle>{t('recentParts.title')}</CardTitle>
+              <CardDescription>{t('recentParts.description')}</CardDescription>
             </div>
             <Link to="/parts">
               <Button variant="ghost" size="sm">
-                View All
+                {t('common:actions.viewAll')}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
@@ -195,12 +193,12 @@ function DashboardPage() {
             <div className="text-center py-8">
               <Package className="w-12 h-12 mx-auto text-slate-400 mb-4" />
               <p className="text-slate-600 dark:text-slate-400 mb-4">
-                No parts yet
+                {t('recentParts.empty')}
               </p>
               <Link to="/parts">
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
-                  Create First Part
+                  {t('recentParts.createFirst')}
                 </Button>
               </Link>
             </div>

@@ -5,6 +5,7 @@ import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import cascadiaLogo from '/cascadia-plm-logo-icon.svg'
 import { ThemeToggle } from './ThemeToggle'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import { Sidebar } from './Sidebar'
 import type { UserInfo } from './types'
 import { authSessionQuery, invalidateEverything } from '@/query'
@@ -85,6 +86,7 @@ export function Header() {
           </Link>
           <div className="w-px h-5 bg-gray-300 dark:bg-gray-600" />
           <StartTourButton />
+          <LanguageSwitcher />
           <ThemeToggle />
           {user && <ProfileDropdown user={user} onLogout={handleLogout} />}
         </div>
