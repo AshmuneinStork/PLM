@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
-
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
@@ -11,7 +10,9 @@ import ruCommon from './locales/ru/common.json'
 import enAuth from './locales/en/auth.json'
 import ruAuth from './locales/ru/auth.json'
 import enDashboard from './locales/en/dashboard.json'
+import enEntities from './locales/en/entities.json'
 import ruDashboard from './locales/ru/dashboard.json'
+import ruEntities from './locales/ru/entities.json'
 import enLayout from './locales/en/layout.json'
 import ruLayout from './locales/ru/layout.json'
 import enSetup from './locales/en/setup.json'
@@ -40,6 +41,7 @@ if (!i18n.isInitialized) {
           common: enCommon,
           auth: enAuth,
           dashboard: enDashboard,
+          entities: enEntities,
           layout: enLayout,
           setup: enSetup,
         },
@@ -47,6 +49,7 @@ if (!i18n.isInitialized) {
           common: ruCommon,
           auth: ruAuth,
           dashboard: ruDashboard,
+          entities: ruEntities,
           layout: ruLayout,
           setup: ruSetup,
         },

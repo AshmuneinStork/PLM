@@ -1,0 +1,11 @@
+{
+  "common": {
+    "noResults": "Нет результатов",
+    "total": "Всего: {{count}}",
+    "confirmDeleteTitle": "Удалить?",
+    "confirmDeleteBody": "Это действие нельзя отменить.",
+    "actionsColumn": "Действия",
+    "searchPlaceholder": "Поиск…",
+    "viewingContext": "(просмотр: {{context}})"
+  }
+}

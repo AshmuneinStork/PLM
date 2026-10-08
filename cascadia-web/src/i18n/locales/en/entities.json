@@ -1,0 +1,11 @@
+{
+  "common": {
+    "noResults": "No results",
+    "total": "Total: {{count}}",
+    "confirmDeleteTitle": "Delete?",
+    "confirmDeleteBody": "This action cannot be undone.",
+    "actionsColumn": "Actions",
+    "searchPlaceholder": "Search…",
+    "viewingContext": "(viewing {{context}})"
+  }
+}

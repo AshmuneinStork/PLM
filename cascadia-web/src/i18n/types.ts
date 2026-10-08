@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
-
 /**
  * Shared i18n types: namespaces and supported languages.
  */
@@ -12,6 +11,7 @@ export type I18nNamespace =
   | 'dashboard'
   | 'layout'
   | 'setup'
+  | 'entities'
 
 export type Language = 'en' | 'ru'
 
