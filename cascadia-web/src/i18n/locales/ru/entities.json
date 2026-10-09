@@ -245,7 +245,15 @@
         "title": "Галерея",
         "subtitle": "Изображения изделия — нажмите, чтобы открыть в полном размере"
       },
-      "uploadFailed": "Загрузка не удалась"
+      "uploadFailed": "Загрузка не удалась",
+      "sidebar": {
+        "files": "Файлы",
+        "metadata": "Метаданные",
+        "created": "Создано",
+        "lastModified": "Изменено",
+        "masterId": "Master ID",
+        "partId": "ID изделия"
+      }
     }
   }
 }

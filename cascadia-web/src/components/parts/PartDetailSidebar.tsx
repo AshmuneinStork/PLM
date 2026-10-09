@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useTranslation } from 'react-i18next'
 import type { Part } from '@cascadia/commons/items/types/part'
 import type { VersionContext } from '@/hooks/useVersionContext'
 import type { CADViewerState } from './useCADViewerState'
@@ -59,6 +60,7 @@ export function PartDetailSidebar({
   onUploaded: () => void
   onUploadError: (error: unknown) => void
 }) {
+  const { t } = useTranslation('entities')
   const branchId = context.type === 'branch' ? context.branchId : undefined
 
   return (
@@ -79,7 +81,7 @@ export function PartDetailSidebar({
           >
             <CardHeader className="pb-3">
               <CollapsibleTrigger className="hover:opacity-70">
-                <CardTitle>Custom Attributes</CardTitle>
+                <CardTitle>{t('parts.attributes.title')}</CardTitle>
               </CollapsibleTrigger>
             </CardHeader>
             <CollapsibleContent>
@@ -113,7 +115,7 @@ export function PartDetailSidebar({
       {!isCreateMode && part.id && (
         <Card>
           <CardHeader>
-            <CardTitle>Files</CardTitle>
+            <CardTitle>{t('parts.detail.sidebar.files')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <FileUploadZone
@@ -143,13 +145,13 @@ export function PartDetailSidebar({
         <Card>
           <CardHeader>
             <CollapsibleTrigger className="hover:opacity-70">
-              <CardTitle>Metadata</CardTitle>
+              <CardTitle>{t('parts.detail.sidebar.metadata')}</CardTitle>
             </CollapsibleTrigger>
           </CardHeader>
           <CollapsibleContent>
             <CardContent className="space-y-3">
               <ViewEditStatic
-                label="Created"
+                label={t('parts.detail.sidebar.created')}
                 value={
                   part.createdAt
                     ? new Date(part.createdAt).toLocaleDateString()
@@ -157,7 +159,7 @@ export function PartDetailSidebar({
                 }
               />
               <ViewEditStatic
-                label="Last Modified"
+                label={t('parts.detail.sidebar.lastModified')}
                 value={
                   part.modifiedAt
                     ? new Date(part.modifiedAt).toLocaleDateString()
@@ -167,11 +169,11 @@ export function PartDetailSidebar({
               {!isCreateMode && (
                 <>
                   <ViewEditStatic
-                    label="Master ID"
+                    label={t('parts.detail.sidebar.masterId')}
                     value={part.masterId}
                     mono
                   />
-                  <ViewEditStatic label="Part ID" value={part.id} mono />
+                  <ViewEditStatic label={t('parts.detail.sidebar.partId')} value={part.id} mono />
                 </>
               )}
             </CardContent>

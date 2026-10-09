@@ -235,7 +235,15 @@
         "title": "Gallery",
         "subtitle": "Images attached to this part — click one to view it full size"
       },
-      "uploadFailed": "Upload failed"
+      "uploadFailed": "Upload failed",
+      "sidebar": {
+        "files": "Files",
+        "metadata": "Metadata",
+        "created": "Created",
+        "lastModified": "Last Modified",
+        "masterId": "Master ID",
+        "partId": "Part ID"
+      }
     }
   }
 }
