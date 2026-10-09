@@ -195,7 +195,47 @@
       "delete": "Delete",
       "fileUploadedTitle": "File uploaded",
       "fileUploadedBody": "File has been uploaded successfully",
-      "workInstructionsFailed": "Failed to load work instructions"
+      "workInstructionsFailed": "Failed to load work instructions",
+      "tabs": {
+        "details": "Details",
+        "gallery": "Gallery",
+        "relationships": "Relationships",
+        "variants": "Variants",
+        "sources": "Sources",
+        "workInstructions": "Work Instructions",
+        "history": "History"
+      },
+      "overview": {
+        "title": "Overview",
+        "subtitle": "General information about this part",
+        "itemNumber": "Item Number",
+        "itemNumberPlaceholder": "PART-001",
+        "revision": "Revision",
+        "name": "Name",
+        "namePlaceholder": "Part name",
+        "description": "Description",
+        "descriptionPlaceholder": "Enter a description..."
+      },
+      "manufacturing": {
+        "title": "Manufacturing Details",
+        "subtitle": "Production and sourcing information",
+        "type": "Type",
+        "tracking": "Tracking",
+        "notTracked": "Not tracked",
+        "lotTracked": "Lot tracked",
+        "serialTracked": "Serial tracked",
+        "material": "Material",
+        "materialPlaceholder": "e.g., Aluminum 6061",
+        "weight": "Weight",
+        "cost": "Cost",
+        "leadTime": "Lead Time",
+        "leadTimeUnit": "days"
+      },
+      "gallery": {
+        "title": "Gallery",
+        "subtitle": "Images attached to this part — click one to view it full size"
+      },
+      "uploadFailed": "Upload failed"
     }
   }
 }

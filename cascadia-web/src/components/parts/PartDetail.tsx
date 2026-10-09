@@ -781,22 +781,22 @@ export function PartDetail({
           <TabsList
             className={`grid w-full ${tabGridCols(isCreateMode, hasGallery, hasVariants)}`}
           >
-            <TabsTrigger value="details">Details</TabsTrigger>
-            {hasGallery && <TabsTrigger value="gallery">Gallery</TabsTrigger>}
-            <TabsTrigger value="relationships">Relationships</TabsTrigger>
+            <TabsTrigger value="details">{t('parts.detail.tabs.details')}</TabsTrigger>
+            {hasGallery && <TabsTrigger value="gallery">{t('parts.detail.tabs.gallery')}</TabsTrigger>}
+            <TabsTrigger value="relationships">{t('parts.detail.tabs.relationships')}</TabsTrigger>
             {hasVariants && (
-              <TabsTrigger value="variants">Variants</TabsTrigger>
+              <TabsTrigger value="variants">{t('parts.detail.tabs.variants')}</TabsTrigger>
             )}
             {!isCreateMode && (
-              <TabsTrigger value="sources">Sources</TabsTrigger>
+              <TabsTrigger value="sources">{t('parts.detail.tabs.sources')}</TabsTrigger>
             )}
             {!isCreateMode && (
               <TabsTrigger value="work-instructions">
-                Work Instructions
+                {t('parts.detail.tabs.workInstructions')}
               </TabsTrigger>
             )}
             {!isCreateMode && (
-              <TabsTrigger value="history">History</TabsTrigger>
+              <TabsTrigger value="history">{t('parts.detail.tabs.history')}</TabsTrigger>
             )}
           </TabsList>
 
@@ -808,47 +808,47 @@ export function PartDetail({
                 {/* Overview Card */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Overview</CardTitle>
+                    <CardTitle>{t('parts.detail.overview.title')}</CardTitle>
                     <CardDescription>
-                      General information about this part
+                      {t('parts.detail.overview.subtitle')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <ViewEditText
-                        label="Item Number"
+                        label={t('parts.detail.overview.itemNumber')}
                         value={
                           isEditing ? part.itemNumber : currentPart.itemNumber
                         }
                         onChange={(v) => updateField('itemNumber', v)}
                         isEditing={isEditing && isCreateMode} // Only editable when creating
-                        placeholder="PART-001"
+                        placeholder={t('parts.detail.overview.itemNumberPlaceholder')}
                         required
                         data-testid="part-item-number"
                       />
                       <ViewEditText
-                        label="Revision"
+                        label={t('parts.detail.overview.revision')}
                         value={isEditing ? part.revision : currentPart.revision}
                         onChange={(v) => updateField('revision', v)}
                         isEditing={false} // Revision is system-managed
                       />
                       <ViewEditText
-                        label="Name"
+                        label={t('parts.detail.overview.name')}
                         value={isEditing ? part.name : currentPart.name}
                         onChange={(v) => updateField('name', v)}
                         isEditing={isEditing}
-                        placeholder="Part name"
+                        placeholder={t('parts.detail.overview.namePlaceholder')}
                         required
                         data-testid="part-name"
                       />
                       <ViewEditTextarea
-                        label="Description"
+                        label={t('parts.detail.overview.description')}
                         value={
                           isEditing ? part.description : currentPart.description
                         }
                         onChange={(v) => updateField('description', v)}
                         isEditing={isEditing}
-                        placeholder="Enter a description..."
+                        placeholder={t('parts.detail.overview.descriptionPlaceholder')}
                         className="md:col-span-2"
                       />
                       {/* Where a new part is going: design, then branch */}
@@ -913,7 +913,7 @@ export function PartDetail({
                   void invalidate('files')
                 }}
                 onUploadError={(error) =>
-                  handleError(error, { title: 'Upload failed' })
+                  handleError(error, { title: t('parts.detail.uploadFailed') })
                 }
               />
             </div>
@@ -924,10 +924,9 @@ export function PartDetail({
             <TabsContent value="gallery" className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Gallery</CardTitle>
+                  <CardTitle>{t('parts.detail.gallery.title')}</CardTitle>
                   <CardDescription>
-                    Images attached to this part — click one to view it full
-                    size
+                    {t('parts.detail.gallery.subtitle')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

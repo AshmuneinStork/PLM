@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useTranslation } from 'react-i18next'
 import type { Part } from '@cascadia/commons/items/types/part'
 import {
   Card,
@@ -16,17 +17,12 @@ import {
 
 // Shared with the design page's in-place part form, so both offer the one
 // list of types.
+/** @deprecated Labels are EN-only; prefer `parts.typeLabels.*` via useTranslation. */
 export const PART_TYPE_OPTIONS = [
   { value: 'Manufacture', label: 'Manufacture' },
   { value: 'Purchase', label: 'Purchase' },
   { value: 'Software', label: 'Software' },
   { value: 'Phantom', label: 'Phantom' },
-]
-
-const TRACKING_MODE_OPTIONS = [
-  { value: 'none', label: 'Not tracked' },
-  { value: 'lot', label: 'Lot tracked' },
-  { value: 'serial', label: 'Serial tracked' },
 ]
 
 const WEIGHT_UNIT_OPTIONS = [
@@ -63,22 +59,34 @@ export function PartManufacturingCard({
   isEditing: boolean
   onFieldChange: (field: keyof Part, value: unknown) => void
 }) {
+  const { t } = useTranslation('entities')
   const updateField = onFieldChange
+  const typeOptions = [
+    { value: 'Manufacture', label: t('parts.typeLabels.manufacture') },
+    { value: 'Purchase', label: t('parts.typeLabels.purchase') },
+    { value: 'Software', label: t('parts.typeLabels.software') },
+    { value: 'Phantom', label: t('parts.typeLabels.phantom') },
+  ]
+  const trackingOptions = [
+    { value: 'none', label: t('parts.detail.manufacturing.notTracked') },
+    { value: 'lot', label: t('parts.detail.manufacturing.lotTracked') },
+    { value: 'serial', label: t('parts.detail.manufacturing.serialTracked') },
+  ]
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Manufacturing Details</CardTitle>
-        <CardDescription>Production and sourcing information</CardDescription>
+        <CardTitle>{t('parts.detail.manufacturing.title')}</CardTitle>
+        <CardDescription>{t('parts.detail.manufacturing.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
         <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ViewEditBadge
-            label="Type"
+            label={t('parts.detail.manufacturing.type')}
             value={isEditing ? edited.partType : displayed.partType}
             onChange={(v) => updateField('partType', v)}
             isEditing={isEditing}
-            options={PART_TYPE_OPTIONS}
+            options={typeOptions}
             variant={(v) => {
               const m: Record<
                 string,
@@ -93,7 +101,7 @@ export function PartManufacturingCard({
             }}
           />
           <ViewEditBadge
-            label="Tracking"
+            label={t('parts.detail.manufacturing.tracking')}
             value={
               isEditing
                 ? (edited.trackingMode ?? 'none')
@@ -101,7 +109,7 @@ export function PartManufacturingCard({
             }
             onChange={(v) => updateField('trackingMode', v)}
             isEditing={isEditing}
-            options={TRACKING_MODE_OPTIONS}
+            options={trackingOptions}
             variant={(v) => {
               const m: Record<
                 string,
@@ -115,14 +123,14 @@ export function PartManufacturingCard({
             }}
           />
           <ViewEditText
-            label="Material"
+            label={t('parts.detail.manufacturing.material')}
             value={isEditing ? edited.material : displayed.material}
             onChange={(v) => updateField('material', v)}
             isEditing={isEditing}
-            placeholder="e.g., Aluminum 6061"
+            placeholder={t('parts.detail.manufacturing.materialPlaceholder')}
           />
           <ViewEditNumber
-            label="Weight"
+            label={t('parts.detail.manufacturing.weight')}
             value={isEditing ? edited.weight : displayed.weight}
             onChange={(v) => updateField('weight', v)}
             isEditing={isEditing}
@@ -132,7 +140,7 @@ export function PartManufacturingCard({
             step="0.001"
           />
           <ViewEditCurrency
-            label="Cost"
+            label={t('parts.detail.manufacturing.cost')}
             value={isEditing ? edited.cost : displayed.cost}
             onChange={(v) => updateField('cost', v)}
             isEditing={isEditing}
@@ -141,13 +149,13 @@ export function PartManufacturingCard({
             onCurrencyChange={(v) => updateField('costCurrency', v)}
           />
           <ViewEditNumber
-            label="Lead Time"
+            label={t('parts.detail.manufacturing.leadTime')}
             value={isEditing ? edited.leadTimeDays : displayed.leadTimeDays}
             onChange={(v) =>
               updateField('leadTimeDays', v ? parseInt(v) : undefined)
             }
             isEditing={isEditing}
-            unit="days"
+            unit={t('parts.detail.manufacturing.leadTimeUnit')}
             min={0}
           />
         </dl>

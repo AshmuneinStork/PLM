@@ -205,7 +205,47 @@
       "delete": "Удалить",
       "fileUploadedTitle": "Файл загружен",
       "fileUploadedBody": "Файл успешно загружен",
-      "workInstructionsFailed": "Не удалось загрузить техпроцессы"
+      "workInstructionsFailed": "Не удалось загрузить техпроцессы",
+      "tabs": {
+        "details": "Детали",
+        "gallery": "Галерея",
+        "relationships": "Связи",
+        "variants": "Варианты",
+        "sources": "Источники",
+        "workInstructions": "Техпроцессы",
+        "history": "История"
+      },
+      "overview": {
+        "title": "Обзор",
+        "subtitle": "Общая информация об изделии",
+        "itemNumber": "Номер изделия",
+        "itemNumberPlaceholder": "PART-001",
+        "revision": "Ревизия",
+        "name": "Наименование",
+        "namePlaceholder": "Название изделия",
+        "description": "Описание",
+        "descriptionPlaceholder": "Введите описание..."
+      },
+      "manufacturing": {
+        "title": "Производство",
+        "subtitle": "Производственная информация и снабжение",
+        "type": "Тип",
+        "tracking": "Учёт",
+        "notTracked": "Без учёта",
+        "lotTracked": "Партионный учёт",
+        "serialTracked": "Серийный учёт",
+        "material": "Материал",
+        "materialPlaceholder": "напр., Алюминий 6061",
+        "weight": "Вес",
+        "cost": "Стоимость",
+        "leadTime": "Срок поставки",
+        "leadTimeUnit": "дн."
+      },
+      "gallery": {
+        "title": "Галерея",
+        "subtitle": "Изображения изделия — нажмите, чтобы открыть в полном размере"
+      },
+      "uploadFailed": "Загрузка не удалась"
     }
   }
 }
