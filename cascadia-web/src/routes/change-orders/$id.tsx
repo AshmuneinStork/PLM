@@ -3,6 +3,7 @@
 
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { ChangeOrder } from '@cascadia/commons/items/types/change-order'
 import type { ChangeOrderDetailTab } from '@/components/change-orders/ChangeOrderDetail'
@@ -28,6 +29,7 @@ export const Route = createFileRoute('/change-orders/$id')({
 })
 
 function ChangeOrderDetailPage() {
+  const { t } = useTranslation('entities')
   const router = useRouter()
   const navigate = useNavigate()
   const { showSuccess } = useErrorHandler()
@@ -52,8 +54,8 @@ function ChangeOrderDetailPage() {
     })
 
     showSuccess(
-      'Change order updated',
-      `${updatedChangeOrder.itemNumber} has been updated successfully`,
+      t('change-orders.toasts.updatedTitle'),
+      t('change-orders.toasts.updatedBody', { itemNumber: updatedChangeOrder.itemNumber }),
     )
     await invalidate('change-orders')
   }
@@ -66,8 +68,8 @@ function ChangeOrderDetailPage() {
     })
 
     showSuccess(
-      'Change order deleted',
-      `${changeOrder.itemNumber} has been deleted`,
+      t('change-orders.toasts.deletedTitle'),
+      t('change-orders.toasts.deletedBody', { itemNumber: changeOrder.itemNumber }),
     )
     await invalidate('change-orders')
     navigate({ to: '/change-orders' })

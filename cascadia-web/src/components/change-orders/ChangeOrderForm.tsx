@@ -3,6 +3,7 @@
 
 import { useForm } from '@tanstack/react-form'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { changeOrderSchema } from '@cascadia/commons/items/types/change-order'
 import type { ChangeOrder } from '@cascadia/commons/items/types/change-order'
 import { AttributesEditor } from '@/components/items/AttributesEditor'
@@ -35,6 +36,7 @@ export function ChangeOrderForm({
   onCancel,
   isSubmitting,
 }: ChangeOrderFormProps) {
+  const { t } = useTranslation('entities')
   const [attributes, setAttributes] = useState<Record<string, unknown>>(
     changeOrder?.attributes ?? {},
   )
@@ -85,11 +87,11 @@ export function ChangeOrderForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Item Number - Always auto-generated for Change Orders */}
         <FormField
-          label="Change Order Number"
+          label={t('change-orders.form.numberLabel')}
           helpText={getItemNumberHelpText('ChangeOrder')}
         >
           <div className="flex items-center h-10 px-3 rounded-md border border-input bg-muted text-muted-foreground">
-            Auto-generated on creation
+            {t('change-orders.form.autoValue')}
           </div>
         </FormField>
 
@@ -97,10 +99,10 @@ export function ChangeOrderForm({
         <form.Field name="name">
           {(field) => (
             <FormField
-              label="Name"
+              label={t('change-orders.form.name')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
-              helpText="Brief description of the change"
+              helpText={t('change-orders.form.nameHint')}
             >
               <Input
                 name={field.name}
@@ -119,10 +121,10 @@ export function ChangeOrderForm({
         <form.Field name="changeType">
           {(field) => (
             <FormField
-              label="Change Type"
+              label={t('change-orders.form.changeType')}
               required
               error={field.state.meta.errors[0]}
-              helpText="ECO: Engineering Change Order, ECN: Engineering Change Notice, MCO: Manufacturing Change Order"
+              helpText={t('change-orders.form.changeTypeHint')}
             >
               <Select
                 value={field.state.value}
@@ -133,7 +135,7 @@ export function ChangeOrderForm({
                 }
               >
                 <SelectTrigger error={!!field.state.meta.errors.length}>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t('change-orders.form.changeTypePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ECO">
@@ -145,7 +147,7 @@ export function ChangeOrderForm({
                   <SelectItem value="MCO">
                     MCO - Manufacturing Change Order
                   </SelectItem>
-                  <SelectItem value="Deviation">Deviation</SelectItem>
+                  <SelectItem value="Deviation">{t('change-orders.form.deviation')}</SelectItem>
                   <SelectItem value="XCO">
                     XCO - Flexible Change Order
                   </SelectItem>
@@ -159,9 +161,9 @@ export function ChangeOrderForm({
         <form.Field name="priority">
           {(field) => (
             <FormField
-              label="Priority"
+              label={t('change-orders.form.priority')}
               error={field.state.meta.errors[0]}
-              helpText="Impact urgency level"
+              helpText={t('change-orders.form.priorityHint')}
             >
               <Select
                 value={field.state.value}
@@ -172,13 +174,13 @@ export function ChangeOrderForm({
                 }
               >
                 <SelectTrigger error={!!field.state.meta.errors.length}>
-                  <SelectValue placeholder="Select priority" />
+                  <SelectValue placeholder={t('change-orders.form.priorityPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
+                  <SelectItem value="low">{t('change-orders.form.low')}</SelectItem>
+                  <SelectItem value="medium">{t('change-orders.form.medium')}</SelectItem>
+                  <SelectItem value="high">{t('change-orders.form.high')}</SelectItem>
+                  <SelectItem value="critical">{t('change-orders.form.critical')}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -189,17 +191,17 @@ export function ChangeOrderForm({
         <form.Field name="reasonForChange">
           {(field) => (
             <FormField
-              label="Reason for Change"
+              label={t('change-orders.form.reason')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
-              helpText="Explain why this change is necessary"
+              helpText={t('change-orders.form.reasonHint')}
             >
               <Textarea
                 name={field.name}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Describe the problem, opportunity, or requirement driving this change..."
+                placeholder={t('change-orders.form.reasonPlaceholder')}
                 rows={4}
                 error={!!field.state.meta.errors.length}
               />
@@ -211,17 +213,17 @@ export function ChangeOrderForm({
         <form.Field name="impactDescription">
           {(field) => (
             <FormField
-              label="Impact Description"
+              label={t('change-orders.form.impact')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
-              helpText="Describe expected impacts (will be refined by impact assessment)"
+              helpText={t('change-orders.form.impactHint')}
             >
               <Textarea
                 name={field.name}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Describe expected impacts on design, manufacturing, cost, schedule..."
+                placeholder={t('change-orders.form.impactPlaceholder')}
                 rows={4}
                 error={!!field.state.meta.errors.length}
               />
@@ -233,9 +235,9 @@ export function ChangeOrderForm({
         <form.Field name="implementationDate">
           {(field) => (
             <FormField
-              label="Target Implementation Date"
+              label={t('change-orders.form.targetDate')}
               error={field.state.meta.errors[0]}
-              helpText="When this change should be implemented"
+              helpText={t('change-orders.form.targetDateHint')}
             >
               <Input
                 name={field.name}
@@ -271,7 +273,7 @@ export function ChangeOrderForm({
                   htmlFor="isBaseline"
                   className="font-medium cursor-pointer"
                 >
-                  Create baseline on release
+                  {t('change-orders.form.baselineToggle')}
                 </Label>
               </div>
             )}
@@ -283,17 +285,17 @@ export function ChangeOrderForm({
                 <form.Field name="baselineName">
                   {(field) => (
                     <FormField
-                      label="Baseline Name"
+                      label={t('change-orders.form.baselineName')}
                       required
                       error={field.state.meta.errors[0]}
-                      helpText="Name for the baseline/tag (e.g., PDR, CDR, Rev A Release)"
+                      helpText={t('change-orders.form.baselineHint')}
                     >
                       <Input
                         name={field.name}
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
-                        placeholder="e.g., PDR, CDR, Production Release"
+                        placeholder={t('change-orders.form.baselinePlaceholder')}
                         error={!!field.state.meta.errors.length}
                       />
                     </FormField>
@@ -304,9 +306,9 @@ export function ChangeOrderForm({
           </form.Field>
 
           <p className="text-sm text-muted-foreground">
-            When enabled, releasing this ECO will create a named baseline (tag)
-            on all affected designs, marking the exact state of the design at
-            the time of release.
+            {t('change-orders.form.baselineInfo')}
+
+
           </p>
         </div>
       </div>
@@ -327,7 +329,7 @@ export function ChangeOrderForm({
             onClick={onCancel}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('change-orders.form.cancel')}
           </Button>
         )}
         <Button
@@ -336,10 +338,10 @@ export function ChangeOrderForm({
           data-testid="change-order-submit"
         >
           {isSubmitting
-            ? 'Saving...'
+            ? t('change-orders.form.saving')
             : changeOrder?.id
-              ? 'Update Change Order'
-              : 'Create Change Order'}
+              ? t('change-orders.form.updateAction')
+              : t('change-orders.form.createAction')}
         </Button>
       </div>
     </form>

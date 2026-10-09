@@ -3,6 +3,7 @@
 
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ChangeOrder } from '@cascadia/commons/items/types/change-order'
 import { ChangeOrderDetail } from '@/components/change-orders/ChangeOrderDetail'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
@@ -13,6 +14,7 @@ export const Route = createFileRoute('/change-orders/new')({
 })
 
 function NewChangeOrderPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { handleError, showSuccess } = useErrorHandler()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -53,15 +55,15 @@ function NewChangeOrderPage() {
 
       const designCount = designIds?.length ?? 0
       showSuccess(
-        'Change order created',
-        `${result.data.changeOrder.itemNumber} has been created successfully with ${designCount} design(s)`,
+        t('change-orders.toasts.createdTitle'),
+        t('change-orders.toasts.createdBodyWithDesigns', { itemNumber: result.data.changeOrder.itemNumber, count: designCount }),
       )
       navigate({
         to: '/change-orders/$id',
         params: { id: createdId },
       })
     } catch (error) {
-      handleError(error, { title: 'Failed to create change order' })
+      handleError(error, { title: t('change-orders.toasts.createFailedTitle') })
       throw error
     } finally {
       setIsSubmitting(false)

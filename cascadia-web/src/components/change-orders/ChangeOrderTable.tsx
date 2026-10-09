@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AlertCircle, Edit, Eye, MoreVertical, Trash2 } from 'lucide-react'
 import type { ChangeOrder } from '@cascadia/commons/items/types/change-order'
 import type { DataGridColumn, Row } from '@/components/ui'
@@ -68,6 +69,7 @@ export function ChangeOrderTable({
   onPageChange,
   isLoading,
 }: ChangeOrderTableProps) {
+  const { t } = useTranslation('entities')
   // State filter options and badges come from the ChangeOrder lifecycle's
   // configuration, not from a list in code
   const { data: lifecycle } = useLifecyclePhases('ChangeOrder')
@@ -92,11 +94,11 @@ export function ChangeOrderTable({
   const columns: Array<DataGridColumn<ChangeOrder>> = [
     {
       id: 'itemNumber',
-      header: 'CO Number',
+      header: t('change-orders.table.coNumber'),
       accessorKey: 'itemNumber',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Search...',
+      filterPlaceholder: t('change-orders.table.searchPlaceholder'),
       cell: ({ row }) =>
         row.original.id ? (
           <Link
@@ -118,7 +120,7 @@ export function ChangeOrderTable({
     },
     {
       id: 'name',
-      header: 'Name',
+      header: t('change-orders.table.name'),
       accessorKey: 'name',
       enableFiltering: true,
       filterType: 'text',
@@ -134,7 +136,7 @@ export function ChangeOrderTable({
     },
     {
       id: 'changeType',
-      header: 'Type',
+      header: t('change-orders.table.changeType'),
       accessorKey: 'changeType',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -153,7 +155,7 @@ export function ChangeOrderTable({
     },
     {
       id: 'priority',
-      header: 'Priority',
+      header: t('change-orders.table.priority'),
       accessorKey: 'priority',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -171,7 +173,7 @@ export function ChangeOrderTable({
     },
     {
       id: 'state',
-      header: 'State',
+      header: t('change-orders.table.state'),
       accessorKey: 'state',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -182,7 +184,7 @@ export function ChangeOrderTable({
     },
     {
       id: 'riskLevel',
-      header: 'Risk Level',
+      header: t('change-orders.table.riskLevel'),
       accessorKey: 'riskLevel',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -219,7 +221,7 @@ export function ChangeOrderTable({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t('change-orders.table.openMenu')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -227,14 +229,14 @@ export function ChangeOrderTable({
             <DropdownMenuItem asChild>
               <Link to="/change-orders/$id" params={{ id: co.id }}>
                 <Eye className="mr-2 h-4 w-4" />
-                View details
+                {t('change-orders.table.viewDetails')}
               </Link>
             </DropdownMenuItem>
           )}
           {onEdit && (
             <DropdownMenuItem onClick={() => onEdit(co)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('change-orders.table.edit')}
             </DropdownMenuItem>
           )}
           {canDelete && (
@@ -245,7 +247,7 @@ export function ChangeOrderTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('change-orders.table.del')}
               </DropdownMenuItem>
             </>
           )}
@@ -266,7 +268,7 @@ export function ChangeOrderTable({
           {onEdit && (
             <ContextMenuItem onClick={() => onEdit(co)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('change-orders.table.edit')}
             </ContextMenuItem>
           )}
           {canDelete && (
@@ -277,7 +279,7 @@ export function ChangeOrderTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('change-orders.table.del')}
               </ContextMenuItem>
             </>
           )}
@@ -301,8 +303,8 @@ export function ChangeOrderTable({
       enableContextMenu
       getRowUrl={getRowUrl}
       renderContextMenuItems={renderContextMenuItems}
-      emptyMessage="No change orders found"
-      emptyDescription="Create your first change order to get started"
+      emptyMessage={t('change-orders.table.emptyMessage')}
+      emptyDescription={t('change-orders.table.emptyDescription')}
       exportFilename="change-orders"
       serverSidePagination={serverSidePagination}
       totalRows={totalRows}
