@@ -3,6 +3,7 @@
 
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { z } from 'zod'
 import type { Document } from '@cascadia/commons/items/types/document'
@@ -97,6 +98,7 @@ export const Route = createFileRoute('/documents/')({
 })
 
 function DocumentsListPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
   const { handleError, showSuccess } = useErrorHandler()
@@ -134,10 +136,12 @@ function DocumentsListPage() {
     if (!document.id) return
 
     confirm({
-      title: 'Delete Document',
-      description: `Are you sure you want to delete ${document.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('documents.dialogs.deleteTitle'),
+      description: t('documents.dialogs.deleteBody', {
+        itemNumber: document.itemNumber,
+      }),
+      actionLabel: t('documents.dialogs.deleteAction'),
+      cancelLabel: t('documents.dialogs.cancelAction'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -146,12 +150,14 @@ function DocumentsListPage() {
           })
 
           showSuccess(
-            'Document deleted',
-            `${document.itemNumber} has been deleted`,
+            t('documents.toasts.deletedTitle'),
+            t('documents.toasts.deletedBody', {
+              itemNumber: document.itemNumber,
+            }),
           )
           await invalidate('documents')
         } catch (error) {
-          handleError(error, { title: 'Failed to delete document' })
+          handleError(error, { title: t('documents.toasts.deleteFailedTitle') })
         }
       },
     })
@@ -180,7 +186,7 @@ function DocumentsListPage() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-              Documents
+              {t('documents.list.title')}
             </h1>
             {selectedDesignId && (
               <Badge variant={getContextBadgeVariant()} className="text-sm">
@@ -189,9 +195,12 @@ function DocumentsListPage() {
             )}
           </div>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Manage your document library
+            {t('documents.list.subtitle')}
             {selectedDesign && (
-              <span className="text-slate-500"> in {selectedDesign.name}</span>
+              <span className="text-slate-500">
+                {' '}
+                {t('documents.list.inDesign')} {selectedDesign.name}
+              </span>
             )}
           </p>
         </div>
@@ -215,7 +224,7 @@ function DocumentsListPage() {
               data-testid="create-document-button"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Create Document
+              {t('documents.list.createAction')}
             </Button>
           </Link>
         </div>
@@ -226,18 +235,22 @@ function DocumentsListPage() {
         itemType="Document"
         filters={filters}
         total={total}
-        totalLabel="Total Documents"
+        totalLabel={t('documents.list.totalLabel')}
       />
 
       {/* Documents Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Documents</CardTitle>
+          <CardTitle>{t('documents.list.cardTitle')}</CardTitle>
           <CardDescription>
-            {total} {total === 1 ? 'document' : 'documents'} in the system
+            {total}{' '}
+            {total === 1
+              ? t('documents.list.cardSingular')
+              : t('documents.list.cardPlural')}{' '}
+            {t('documents.list.cardSuffix')}
             {selectedDesign && context.type !== 'main' && (
               <span className="ml-2 text-amber-600 dark:text-amber-400">
-                (viewing {contextLabel})
+                ({t('documents.list.viewing')} {contextLabel})
               </span>
             )}
           </CardDescription>

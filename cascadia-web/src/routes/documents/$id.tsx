@@ -3,6 +3,7 @@
 
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { Document } from '@cascadia/commons/items/types/document'
 import type { DocumentDetailTab } from '@/components/documents/DocumentDetail'
@@ -31,6 +32,7 @@ export const Route = createFileRoute('/documents/$id')({
 })
 
 function DocumentDetailPage() {
+  const { t } = useTranslation('entities')
   const router = useRouter()
   const navigate = useNavigate()
   const { showSuccess } = useErrorHandler()
@@ -52,8 +54,10 @@ function DocumentDetailPage() {
     })
 
     showSuccess(
-      'Document updated',
-      `${updatedDocument.itemNumber} has been updated successfully`,
+      t('documents.toasts.updatedTitle'),
+      t('documents.toasts.updatedBody', {
+        itemNumber: updatedDocument.itemNumber,
+      }),
     )
     await invalidate('documents')
   }
@@ -65,7 +69,12 @@ function DocumentDetailPage() {
       method: 'DELETE',
     })
 
-    showSuccess('Document deleted', `${document.itemNumber} has been deleted`)
+    showSuccess(
+      t('documents.toasts.deletedTitle'),
+      t('documents.toasts.deletedBody', {
+        itemNumber: document.itemNumber,
+      }),
+    )
     await invalidate('documents')
     navigate({ to: '/documents' })
   }

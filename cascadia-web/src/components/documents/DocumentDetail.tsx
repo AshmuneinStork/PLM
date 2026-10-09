@@ -3,6 +3,7 @@
 
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import {
   ArrowLeft,
@@ -151,6 +152,7 @@ export function DocumentDetail({
   activeTab = 'details',
   onTabChange,
 }: DocumentDetailProps) {
+  const { t } = useTranslation('entities')
   const invalidate = useInvalidateResources()
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
@@ -300,7 +302,7 @@ export function DocumentDetail({
       try {
         await editLock.acquire()
       } catch (error) {
-        handleError(error, { title: 'Cannot edit item' })
+        handleError(error, { title: t('documents.header.cannotEdit') })
         return
       }
     }
@@ -366,10 +368,12 @@ export function DocumentDetail({
     if (!onDelete || !currentDocument.id) return
 
     confirm({
-      title: 'Delete Document',
-      description: `Are you sure you want to delete ${currentDocument.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('documents.dialogs.deleteTitle'),
+      description: t('documents.dialogs.deleteBody', {
+        itemNumber: currentDocument.itemNumber,
+      }),
+      actionLabel: t('documents.dialogs.deleteAction'),
+      cancelLabel: t('documents.dialogs.cancelAction'),
       variant: 'destructive',
       onConfirm: onDelete,
     })
@@ -383,19 +387,21 @@ export function DocumentDetail({
     // button opens the CheckoutDialog and revises onto a branch. What is left
     // is the context itself.
     if (editLock.lockedByOther) {
-      return `Checked out by ${editLock.lockHolderLabel}`
+      return t('documents.header.editLockedBy', {
+        name: editLock.lockHolderLabel,
+      })
     }
     if (needsCheckout) {
       return undefined
     }
     if (!isEditable) {
       if (context.type === 'tag' || context.type === 'commit') {
-        return 'Cannot edit historical versions'
+        return t('documents.header.historyLocked')
       }
       if (context.type === 'main' && editLock.isMainProtected) {
-        return 'This design has released items, so main is protected. Switch to an ECO or workspace branch to edit this item.'
+        return t('documents.header.mainProtected')
       }
-      return 'Editing not available in this context'
+      return t('documents.header.contextLocked')
     }
     return undefined
   }
@@ -429,8 +435,8 @@ export function DocumentDetail({
             <div className="flex items-center gap-3">
               <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
                 {isCreateMode
-                  ? 'Create New Document'
-                  : currentDocument.itemNumber || 'New Document'}
+                  ? t('documents.header.createTitle')
+                  : currentDocument.itemNumber || t('documents.header.newFallback')}
               </h1>
               {!isCreateMode && isLoadingVersion && (
                 <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
@@ -460,15 +466,20 @@ export function DocumentDetail({
                 >
                   <Lock className="h-3 w-3 mr-1" />
                   {editLock.heldByMe
-                    ? 'Checked out by you'
-                    : `Checked out by ${editLock.lockHolderLabel}`}
+                    ? t('documents.header.checkedOutByYou')
+                    : t('documents.header.checkedOutBy', {
+                        name: editLock.lockHolderLabel,
+                      })}
                 </Badge>
               )}
             </div>
             <p className="text-slate-600 dark:text-slate-400 mt-1">
               {isCreateMode
-                ? 'Enter the details for the new document'
-                : `Revision ${currentDocument.revision} • ${currentDocument.name || 'Unnamed'}`}
+                ? t('documents.header.createSubtitle')
+                : t('documents.header.revisionLine', {
+                    revision: currentDocument.revision,
+                    name: currentDocument.name || t('documents.header.unnamed'),
+                  })}
             </p>
           </div>
         </div>
@@ -483,7 +494,7 @@ export function DocumentDetail({
                   disabled={isSubmitting}
                 >
                   <X className="h-4 w-4 mr-2" />
-                  Cancel
+                  {t('documents.header.cancel')}
                 </Button>
                 <Button
                   onClick={handleSave}
@@ -495,10 +506,10 @@ export function DocumentDetail({
                 >
                   <Save className="h-4 w-4 mr-2" />
                   {isSubmitting
-                    ? 'Saving...'
+                    ? t('documents.header.saving')
                     : isCreateMode
-                      ? 'Create Document'
-                      : 'Save Changes'}
+                      ? t('documents.header.createAction')
+                      : t('documents.header.saveChanges')}
                 </Button>
               </>
             ) : (
@@ -519,12 +530,12 @@ export function DocumentDetail({
                           {needsCheckout ? (
                             <>
                               <GitBranch className="h-4 w-4 mr-2" />
-                              Revise
+                              {t('documents.header.revise')}
                             </>
                           ) : (
                             <>
                               <Edit className="h-4 w-4 mr-2" />
-                              Edit
+                              {t('documents.header.edit')}
                             </>
                           )}
                         </Button>
@@ -545,12 +556,12 @@ export function DocumentDetail({
                     {needsCheckout ? (
                       <>
                         <GitBranch className="h-4 w-4 mr-2" />
-                        Revise
+                        {t('documents.header.revise')}
                       </>
                     ) : (
                       <>
                         <Edit className="h-4 w-4 mr-2" />
-                        Edit
+                        {t('documents.header.edit')}
                       </>
                     )}
                   </Button>
@@ -562,7 +573,7 @@ export function DocumentDetail({
                     disabled={!isEditable}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    {t('documents.header.del')}
                   </Button>
                 )}
               </>
@@ -588,11 +599,11 @@ export function DocumentDetail({
         <TabsList
           className={`grid w-full ${tabGridCols(isCreateMode, hasPreview, hasGallery)}`}
         >
-          <TabsTrigger value="details">Details</TabsTrigger>
-          {hasPreview && <TabsTrigger value="preview">Preview</TabsTrigger>}
-          {hasGallery && <TabsTrigger value="gallery">Gallery</TabsTrigger>}
-          <TabsTrigger value="relationships">Relationships</TabsTrigger>
-          {!isCreateMode && <TabsTrigger value="history">History</TabsTrigger>}
+          <TabsTrigger value="details">{t('documents.detail.tabs.details')}</TabsTrigger>
+          {hasPreview && <TabsTrigger value="preview">{t('documents.detail.tabs.preview')}</TabsTrigger>}
+          {hasGallery && <TabsTrigger value="gallery">{t('documents.detail.tabs.gallery')}</TabsTrigger>}
+          <TabsTrigger value="relationships">{t('documents.detail.tabs.relationships')}</TabsTrigger>
+          {!isCreateMode && <TabsTrigger value="history">{t('documents.detail.tabs.history')}</TabsTrigger>}
         </TabsList>
 
         {/* Details Tab */}
@@ -607,15 +618,15 @@ export function DocumentDetail({
               {/* Overview Card */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>{t('documents.detail.overview')}</CardTitle>
                   <CardDescription>
-                    General information about this document
+                    {t('documents.detail.overviewHint')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ViewEditText
-                      label="Item Number"
+                      label={t('documents.detail.itemNumber')}
                       value={
                         isEditing
                           ? document.itemNumber
@@ -628,7 +639,7 @@ export function DocumentDetail({
                       data-testid="document-item-number"
                     />
                     <ViewEditText
-                      label="Revision"
+                      label={t('documents.detail.revision')}
                       value={
                         isEditing ? document.revision : currentDocument.revision
                       }
@@ -636,16 +647,16 @@ export function DocumentDetail({
                       isEditing={false}
                     />
                     <ViewEditText
-                      label="Name"
+                      label={t('documents.detail.name')}
                       value={isEditing ? document.name : currentDocument.name}
                       onChange={(v) => updateField('name', v)}
                       isEditing={isEditing}
-                      placeholder="Document name"
+                      placeholder={t('documents.detail.namePlaceholder')}
                       required
                       data-testid="document-name"
                     />
                     <ViewEditTextarea
-                      label="Description"
+                      label={t('documents.detail.description')}
                       value={
                         isEditing
                           ? document.description
@@ -653,7 +664,7 @@ export function DocumentDetail({
                       }
                       onChange={(v) => updateField('description', v)}
                       isEditing={isEditing}
-                      placeholder="Enter a description..."
+                      placeholder={t('documents.detail.descriptionPlaceholder')}
                       className="md:col-span-2"
                     />
                     {(isCreateMode || !currentDocument.designId) &&
@@ -680,15 +691,15 @@ export function DocumentDetail({
               {/* File Information Card */}
               <Card>
                 <CardHeader>
-                  <CardTitle>File Information</CardTitle>
+                  <CardTitle>{t('documents.detail.fileInfo')}</CardTitle>
                   <CardDescription>
-                    Details about the attached file
+                    {t('documents.detail.fileInfoHint')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ViewEditText
-                      label="File Name"
+                      label={t('documents.detail.fileName')}
                       value={
                         isEditing ? document.fileName : currentDocument.fileName
                       }
@@ -697,11 +708,11 @@ export function DocumentDetail({
                       placeholder="document.pdf"
                     />
                     <ViewEditStatic
-                      label="File Size"
+                      label={t('documents.detail.fileSize')}
                       value={formatFileSize(currentDocument.fileSize)}
                     />
                     <ViewEditText
-                      label="MIME Type"
+                      label={t('documents.detail.mimeType')}
                       value={
                         isEditing ? document.mimeType : currentDocument.mimeType
                       }
@@ -710,12 +721,12 @@ export function DocumentDetail({
                       placeholder="application/pdf"
                     />
                     <ViewEditStatic
-                      label="File ID"
+                      label={t('documents.detail.fileId')}
                       value={currentDocument.fileId}
                       mono
                     />
                     <ViewEditStatic
-                      label="Storage Path"
+                      label={t('documents.detail.storagePath')}
                       value={currentDocument.storagePath}
                       mono
                       className="md:col-span-2"
@@ -731,7 +742,7 @@ export function DocumentDetail({
               {!isCreateMode && currentDocument.id && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Files</CardTitle>
+                    <CardTitle>{t('documents.detail.files')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <FileUploadZone
@@ -742,13 +753,13 @@ export function DocumentDetail({
                       }
                       onUploadComplete={() => {
                         showSuccess(
-                          'File uploaded',
-                          'File has been uploaded successfully',
+                          t('documents.detail.uploadedTitle'),
+                          t('documents.detail.uploadedBody'),
                         )
                         void invalidate('files')
                       }}
                       onUploadError={(error) =>
-                        handleError(error, { title: 'Upload failed' })
+                        handleError(error, { title: t('documents.detail.uploadFailedTitle') })
                       }
                     />
                     <FileList
@@ -768,13 +779,13 @@ export function DocumentDetail({
                 <Card>
                   <CardHeader>
                     <CollapsibleTrigger className="hover:opacity-70">
-                      <CardTitle>Metadata</CardTitle>
+                      <CardTitle>{t('documents.detail.metadata')}</CardTitle>
                     </CollapsibleTrigger>
                   </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="space-y-3">
                       <ViewEditStatic
-                        label="Created"
+                        label={t('documents.detail.created')}
                         value={
                           currentDocument.createdAt
                             ? new Date(
@@ -784,7 +795,7 @@ export function DocumentDetail({
                         }
                       />
                       <ViewEditStatic
-                        label="Last Modified"
+                        label={t('documents.detail.lastModified')}
                         value={
                           currentDocument.modifiedAt
                             ? new Date(
@@ -796,12 +807,12 @@ export function DocumentDetail({
                       {!isCreateMode && (
                         <>
                           <ViewEditStatic
-                            label="Master ID"
+                            label={t('documents.detail.masterId')}
                             value={currentDocument.masterId}
                             mono
                           />
                           <ViewEditStatic
-                            label="Document ID"
+                            label={t('documents.detail.documentId')}
                             value={currentDocument.id}
                             mono
                           />
@@ -834,10 +845,9 @@ export function DocumentDetail({
           <TabsContent value="gallery" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Gallery</CardTitle>
+                <CardTitle>{t('documents.detail.galleryTitle')}</CardTitle>
                 <CardDescription>
-                  Images attached to this document — click one to view it full
-                  size
+                  {t('documents.detail.galleryHint')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -873,7 +883,7 @@ export function DocumentDetail({
             <Card>
               <CardContent className="py-12 text-center">
                 <p className="text-slate-500 dark:text-slate-400">
-                  Save the document first to manage relationships
+                  {t('documents.detail.relationshipsHint')}
                 </p>
               </CardContent>
             </Card>

@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Edit, Eye, MoreVertical, Trash2 } from 'lucide-react'
 import type { Document } from '@cascadia/commons/items/types/document'
 import type { DataGridColumn, Row } from '@/components/ui'
@@ -55,6 +56,7 @@ export function DocumentTable({
   onPageChange,
   isLoading,
 }: DocumentTableProps) {
+  const { t } = useTranslation('entities')
   // State filter options and badges come from the Document lifecycle's
   // configuration, not from a list in code
   const { data: lifecycle } = useLifecyclePhases('Document')
@@ -66,11 +68,11 @@ export function DocumentTable({
   const columns: Array<DataGridColumn<Document>> = [
     {
       id: 'itemNumber',
-      header: 'Item Number',
+      header: t('documents.table.itemNumber'),
       accessorKey: 'itemNumber',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Search...',
+      filterPlaceholder: t('documents.table.searchPlaceholder'),
       cell: ({ row }) =>
         row.original.id ? (
           <Link
@@ -86,31 +88,31 @@ export function DocumentTable({
     },
     {
       id: 'revision',
-      header: 'Rev',
+      header: t('documents.table.revision'),
       accessorKey: 'revision',
       enableSorting: true,
     },
     {
       id: 'name',
-      header: 'Name',
+      header: t('documents.table.name'),
       accessorKey: 'name',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Search...',
+      filterPlaceholder: t('documents.table.searchPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'fileName',
-      header: 'File Name',
+      header: t('documents.table.fileName'),
       accessorKey: 'fileName',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Search files...',
+      filterPlaceholder: t('documents.table.fileSearchPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'fileSize',
-      header: 'File Size',
+      header: t('documents.table.fileSize'),
       accessorKey: 'fileSize',
       enableSorting: true,
       enableFiltering: true,
@@ -120,7 +122,7 @@ export function DocumentTable({
     },
     {
       id: 'state',
-      header: 'State',
+      header: t('documents.table.state'),
       accessorKey: 'state',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -173,7 +175,7 @@ export function DocumentTable({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t('documents.table.openMenu')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -181,14 +183,14 @@ export function DocumentTable({
             <DropdownMenuItem asChild>
               <Link to="/documents/$id" params={{ id: document.id }}>
                 <Eye className="mr-2 h-4 w-4" />
-                View details
+                {t('documents.table.viewDetails')}
               </Link>
             </DropdownMenuItem>
           )}
           {onEdit && (
             <DropdownMenuItem onClick={() => onEdit(document)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('documents.table.edit')}
             </DropdownMenuItem>
           )}
           {onDelete && (
@@ -199,7 +201,7 @@ export function DocumentTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('documents.table.del')}
               </DropdownMenuItem>
             </>
           )}
@@ -219,7 +221,7 @@ export function DocumentTable({
           {onEdit && (
             <ContextMenuItem onClick={() => onEdit(document)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('documents.table.edit')}
             </ContextMenuItem>
           )}
           {onDelete && (
@@ -230,7 +232,7 @@ export function DocumentTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('documents.table.del')}
               </ContextMenuItem>
             </>
           )}
@@ -254,8 +256,8 @@ export function DocumentTable({
       enableContextMenu
       getRowUrl={getRowUrl}
       renderContextMenuItems={renderContextMenuItems}
-      emptyMessage="No documents found"
-      emptyDescription="Create your first document to get started"
+      emptyMessage={t('documents.table.emptyMessage')}
+      emptyDescription={t('documents.table.emptyDescription')}
       exportFilename="documents"
       serverSidePagination={serverSidePagination}
       totalRows={totalRows}

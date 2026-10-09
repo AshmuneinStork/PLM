@@ -4,6 +4,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { Document } from '@cascadia/commons/items/types/document'
 import { DocumentDetail } from '@/components/documents/DocumentDetail'
@@ -23,6 +24,7 @@ export const Route = createFileRoute('/documents/new')({
 })
 
 function NewDocumentPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { handleError, showSuccess } = useErrorHandler()
   const invalidate = useInvalidateResources()
@@ -47,15 +49,17 @@ function NewDocumentPage() {
       )
 
       showSuccess(
-        'Document created',
-        `${document.itemNumber} has been created successfully`,
+        t('documents.toasts.createdTitle'),
+        t('documents.toasts.createdBody', {
+          itemNumber: document.itemNumber,
+        }),
       )
 
       await invalidate('documents')
 
       navigate({ to: '/documents/$id', params: { id: result.data.item.id! } })
     } catch (error) {
-      handleError(error, { title: 'Failed to create document' })
+      handleError(error, { title: t('documents.toasts.createFailedTitle') })
       throw error
     } finally {
       setIsSubmitting(false)

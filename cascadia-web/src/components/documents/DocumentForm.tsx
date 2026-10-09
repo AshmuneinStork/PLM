@@ -3,6 +3,7 @@
 
 import { useForm, useStore } from '@tanstack/react-form'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Info } from 'lucide-react'
 import { documentSchema } from '@cascadia/commons/items/types/document'
@@ -37,6 +38,7 @@ export function DocumentForm({
   onCancel,
   isSubmitting,
 }: DocumentFormProps) {
+  const { t } = useTranslation('entities')
   // Track selected design's protection status
   const [selectedBranchId, setSelectedBranchId] = useState<string | undefined>()
   const [attributes, setAttributes] = useState<Record<string, unknown>>(
@@ -102,7 +104,7 @@ export function DocumentForm({
         <form.Field name="designId">
           {(field) => (
             <FormField
-              label="Design"
+              label={t('documents.form.design')}
               required
               error={field.state.meta.errors[0]}
               helpText="The design this document belongs to"
@@ -130,7 +132,7 @@ export function DocumentForm({
         {/* Branch Selection - Available for new items in both phases */}
         {showBranchSelector && (
           <FormField
-            label="Target Branch"
+            label={t('documents.form.targetBranch')}
             required={branchRequired}
             error={
               branchRequired && !selectedBranchId
@@ -194,7 +196,7 @@ export function DocumentForm({
         <form.Field name="name">
           {(field) => (
             <FormField
-              label="Name"
+              label={t('documents.form.name')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -215,7 +217,7 @@ export function DocumentForm({
         <form.Field name="description">
           {(field) => (
             <FormField
-              label="Description"
+              label={t('documents.form.description')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -235,7 +237,7 @@ export function DocumentForm({
         {/* File Name */}
         <form.Field name="fileName">
           {(field) => (
-            <FormField label="File Name" error={field.state.meta.errors[0]}>
+            <FormField label={t('documents.form.fileName')} error={field.state.meta.errors[0]}>
               <Input
                 name={field.name}
                 value={field.state.value}
@@ -251,7 +253,7 @@ export function DocumentForm({
         {/* MIME Type */}
         <form.Field name="mimeType">
           {(field) => (
-            <FormField label="MIME Type" error={field.state.meta.errors[0]}>
+            <FormField label={t('documents.form.mimeType')} error={field.state.meta.errors[0]}>
               <Input
                 name={field.name}
                 value={field.state.value}
@@ -268,7 +270,7 @@ export function DocumentForm({
         <form.Field name="fileSize">
           {(field) => (
             <FormField
-              label="File Size (bytes)"
+              label={t('documents.form.fileSizeBytes')}
               error={field.state.meta.errors[0]}
             >
               <Input
@@ -290,7 +292,7 @@ export function DocumentForm({
         {/* Storage Path */}
         <form.Field name="storagePath">
           {(field) => (
-            <FormField label="Storage Path" error={field.state.meta.errors[0]}>
+            <FormField label={t('documents.form.storagePath')} error={field.state.meta.errors[0]}>
               <Input
                 name={field.name}
                 value={field.state.value}
@@ -321,7 +323,7 @@ export function DocumentForm({
             disabled={isSubmitting}
             data-testid="document-cancel"
           >
-            Cancel
+            {t('documents.form.cancel')}
           </Button>
         )}
         <Button
@@ -330,10 +332,10 @@ export function DocumentForm({
           data-testid="document-submit"
         >
           {isSubmitting
-            ? 'Saving...'
+            ? t('documents.form.saving')
             : document?.id
-              ? 'Update Document'
-              : 'Create Document'}
+              ? t('documents.form.updateAction')
+              : t('documents.form.createAction')}
         </Button>
       </div>
     </form>
