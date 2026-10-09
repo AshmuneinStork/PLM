@@ -178,6 +178,34 @@
       "valuePlaceholder": "Значение",
       "add": "Добавить атрибут",
       "structuredHint": "Структурное значение — правьте там, где оно записано, или удалите здесь"
+    },
+    "detail": {
+      "createTitle": "Новое изделие",
+      "newPartFallback": "Новое изделие",
+      "createSubtitle": "Введите данные нового изделия",
+      "subtitleRevision": "Ревизия {{revision}} • {{name}}",
+      "unnamed": "Без названия",
+      "configurableBadge": "Настраиваемое",
+      "configurableHint": "У изделия есть семейства опций; строки BOM могут нести условия опций",
+      "familyHint": "Семейство продуктов и независимо ревизуемый вариант",
+      "checkedOutByYou": "Захвачено вами",
+      "checkedOutBy": "Захватил {{name}}",
+      "cannotEdit": "Нельзя редактировать объект",
+      "editLockedBy": "Захватил {{name}}",
+      "historyLocked": "Нельзя править исторические версии",
+      "mainProtected": "В проекте есть выпущенные объекты, main защищён. Перейдите в ветку ECO или workspace.",
+      "contextLocked": "Редактирование в этом контексте недоступно",
+      "cancel": "Отмена",
+      "saving": "Сохранение…",
+      "createPart": "Создать изделие",
+      "saveChanges": "Сохранить изменения",
+      "impact": "Анализ влияния",
+      "revise": "Ревизия",
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "fileUploadedTitle": "Файл загружен",
+      "fileUploadedBody": "Файл успешно загружен",
+      "workInstructionsFailed": "Не удалось загрузить техпроцессы"
     }
   }
 }

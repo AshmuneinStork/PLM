@@ -15,6 +15,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Part } from '@cascadia/commons/items/types/part'
 import type { Design } from '@cascadia/commons/types/design'
 import type { EnrichmentResult } from '@/components/items/useDropEnrichment'
@@ -180,6 +181,7 @@ export function PartDetail({
   activeTab = 'details',
   onTabChange,
 }: PartDetailProps) {
+  const { t } = useTranslation('entities')
   const invalidate = useInvalidateResources()
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
@@ -427,7 +429,7 @@ export function PartDetail({
       try {
         await editLock.acquire()
       } catch (error) {
-        handleError(error, { title: 'Cannot edit item' })
+        handleError(error, { title: t('parts.detail.cannotEdit') })
         return
       }
     }
@@ -500,10 +502,10 @@ export function PartDetail({
     if (!onDelete || !currentPart.id) return
 
     confirm({
-      title: 'Delete Part',
-      description: `Are you sure you want to delete ${currentPart.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('parts.dialogs.deleteTitle'),
+      description: t('parts.dialogs.deleteBody', { itemNumber: currentPart.itemNumber }),
+      actionLabel: t('parts.dialogs.deleteAction'),
+      cancelLabel: t('parts.dialogs.cancelAction'),
       variant: 'destructive',
       onConfirm: onDelete,
     })
@@ -517,19 +519,19 @@ export function PartDetail({
     // button opens the CheckoutDialog and revises onto a branch. What is left
     // is the context itself.
     if (editLock.lockedByOther) {
-      return `Checked out by ${editLock.lockHolderLabel}`
+      return t('parts.detail.editLockedBy', { name: editLock.lockHolderLabel })
     }
     if (needsCheckout) {
       return undefined
     }
     if (!isEditable) {
       if (context.type === 'tag' || context.type === 'commit') {
-        return 'Cannot edit historical versions'
+        return t('parts.detail.historyLocked')
       }
       if (context.type === 'main' && editLock.isMainProtected) {
-        return 'This design has released items, so main is protected. Switch to an ECO or workspace branch to edit this item.'
+        return t('parts.detail.mainProtected')
       }
-      return 'Editing not available in this context'
+      return t('parts.detail.contextLocked')
     }
     return undefined
   }
@@ -571,8 +573,8 @@ export function PartDetail({
               <div className="flex items-center gap-3">
                 <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
                   {isCreateMode
-                    ? 'Create New Part'
-                    : currentPart.itemNumber || 'New Part'}
+                    ? t('parts.detail.createTitle')
+                    : currentPart.itemNumber || t('parts.detail.newPartFallback')}
                 </h1>
                 {!isCreateMode && isLoadingVersion && (
                   <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
@@ -602,16 +604,16 @@ export function PartDetail({
                   <Badge
                     variant="outline"
                     className="text-sm text-cyan-700 dark:text-cyan-300 border-cyan-300 dark:border-cyan-700"
-                    title="This part has option families; its BOM lines can carry option conditions"
+                    title={t('parts.detail.configurableHint')}
                   >
-                    Configurable
+                    {t('parts.detail.configurableBadge')}
                   </Badge>
                 )}
                 {!isCreateMode && currentPart.productFamilyCode && (
                   <Badge
                     variant="outline"
                     className="text-sm font-mono"
-                    title="Product family and independently revisioned variant"
+                    title={t('parts.detail.familyHint')}
                   >
                     {currentPart.productFamilyCode} / {currentPart.variantCode}
                   </Badge>
@@ -623,15 +625,15 @@ export function PartDetail({
                   >
                     <Lock className="h-3 w-3 mr-1" />
                     {editLock.heldByMe
-                      ? 'Checked out by you'
-                      : `Checked out by ${editLock.lockHolderLabel}`}
+                      ? t('parts.detail.checkedOutByYou')
+                      : t('parts.detail.checkedOutBy', { name: editLock.lockHolderLabel })}
                   </Badge>
                 )}
               </div>
               <p className="text-slate-600 dark:text-slate-400 mt-1">
                 {isCreateMode
-                  ? 'Enter the details for the new part'
-                  : `Revision ${currentPart.revision} • ${currentPart.name || 'Unnamed'}`}
+                  ? t('parts.detail.createSubtitle')
+                  : t('parts.detail.subtitleRevision', { revision: currentPart.revision, name: currentPart.name || t('parts.detail.unnamed') })}
               </p>
             </div>
           </div>
@@ -646,7 +648,7 @@ export function PartDetail({
                     disabled={isSubmitting}
                   >
                     <X className="h-4 w-4 mr-2" />
-                    Cancel
+                    {t('parts.detail.cancel')}
                   </Button>
                   <Button
                     onClick={handleSave}
@@ -658,10 +660,10 @@ export function PartDetail({
                   >
                     <Save className="h-4 w-4 mr-2" />
                     {isSubmitting
-                      ? 'Saving...'
+                      ? t('parts.detail.saving')
                       : isCreateMode
-                        ? 'Create Part'
-                        : 'Save Changes'}
+                        ? t('parts.detail.createPart')
+                        : t('parts.detail.saveChanges')}
                   </Button>
                 </>
               ) : (
@@ -672,7 +674,7 @@ export function PartDetail({
                       onClick={() => setIsImpactDialogOpen(true)}
                     >
                       <Search className="h-4 w-4 mr-2" />
-                      Impact Analysis
+                      {t('parts.detail.impact')}
                     </Button>
                   )}
                   {/* Edit button with tooltip when disabled */}
@@ -692,12 +694,12 @@ export function PartDetail({
                               {needsCheckout ? (
                                 <>
                                   <GitBranch className="h-4 w-4 mr-2" />
-                                  Revise
+                                  {t('parts.detail.revise')}
                                 </>
                               ) : (
                                 <>
                                   <Edit className="h-4 w-4 mr-2" />
-                                  Edit
+                                  {t('parts.detail.edit')}
                                 </>
                               )}
                             </Button>
@@ -720,12 +722,12 @@ export function PartDetail({
                       {needsCheckout ? (
                         <>
                           <GitBranch className="h-4 w-4 mr-2" />
-                          Revise
+                          {t('parts.detail.revise')}
                         </>
                       ) : (
                         <>
                           <Edit className="h-4 w-4 mr-2" />
-                          Edit
+                          {t('parts.detail.edit')}
                         </>
                       )}
                     </Button>
@@ -737,7 +739,7 @@ export function PartDetail({
                       disabled={!isEditable}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
+                      {t('parts.detail.delete')}
                     </Button>
                   )}
                   {!isCreateMode && (
@@ -903,8 +905,8 @@ export function PartDetail({
                 cadViewer={cadViewer}
                 onUploaded={() => {
                   showSuccess(
-                    'File uploaded',
-                    'File has been uploaded successfully',
+                    t('parts.detail.fileUploadedTitle'),
+                    t('parts.detail.fileUploadedBody'),
                   )
                   cadViewer.refreshFiles()
                   cadViewer.bumpThumbnail()
@@ -981,7 +983,7 @@ export function PartDetail({
                 partId={currentPart.id}
                 onError={(error) =>
                   handleError(error, {
-                    title: 'Failed to load work instructions',
+                    title: t('parts.detail.workInstructionsFailed'),
                   })
                 }
               />

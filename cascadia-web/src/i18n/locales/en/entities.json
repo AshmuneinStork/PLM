@@ -168,6 +168,34 @@
       "valuePlaceholder": "Value",
       "add": "Add Attribute",
       "structuredHint": "Structured value — edit it where it is written, or remove it here"
+    },
+    "detail": {
+      "createTitle": "Create New Part",
+      "newPartFallback": "New Part",
+      "createSubtitle": "Enter the details for the new part",
+      "subtitleRevision": "Revision {{revision}} • {{name}}",
+      "unnamed": "Unnamed",
+      "configurableBadge": "Configurable",
+      "configurableHint": "This part has option families; its BOM lines can carry option conditions",
+      "familyHint": "Product family and independently revisioned variant",
+      "checkedOutByYou": "Checked out by you",
+      "checkedOutBy": "Checked out by {{name}}",
+      "cannotEdit": "Cannot edit item",
+      "editLockedBy": "Checked out by {{name}}",
+      "historyLocked": "Cannot edit historical versions",
+      "mainProtected": "This design has released items, so main is protected. Switch to an ECO or workspace branch to edit this item.",
+      "contextLocked": "Editing not available in this context",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "createPart": "Create Part",
+      "saveChanges": "Save Changes",
+      "impact": "Impact Analysis",
+      "revise": "Revise",
+      "edit": "Edit",
+      "delete": "Delete",
+      "fileUploadedTitle": "File uploaded",
+      "fileUploadedBody": "File has been uploaded successfully",
+      "workInstructionsFailed": "Failed to load work instructions"
     }
   }
 }
