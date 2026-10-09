@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useTranslation } from 'react-i18next'
 import { FormField, Input } from '@/components/ui'
 import {
-  ITEM_NUMBER_PLACEHOLDER,
   getItemNumberHelpText,
+  getItemNumberPlaceholder,
 } from '@/items/numbering/format'
 
 interface ItemNumberFieldProps {
@@ -36,15 +37,17 @@ export function ItemNumberField({
   onChange,
   onBlur,
   error,
-  label = 'Item Number',
+  label,
   name,
   disabled,
   className,
   'data-testid': testId,
 }: ItemNumberFieldProps) {
+  const { t } = useTranslation('entities')
+  const resolvedLabel = label ?? t('parts.form.numberLabel')
   return (
     <FormField
-      label={label}
+      label={resolvedLabel}
       error={error}
       helpText={getItemNumberHelpText(itemType)}
       className={className}
@@ -54,7 +57,7 @@ export function ItemNumberField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
-        placeholder={ITEM_NUMBER_PLACEHOLDER}
+        placeholder={getItemNumberPlaceholder()}
         error={!!error}
         disabled={disabled}
         data-testid={testId}

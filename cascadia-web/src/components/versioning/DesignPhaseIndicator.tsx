@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Lock, Unlock } from 'lucide-react'
 import type { DesignStatus } from '@/query/options/branches'
 import { Badge } from '@/components/ui'
@@ -31,6 +32,7 @@ export function DesignPhaseIndicator({
   showDetails = false,
   status: initialStatus,
 }: DesignPhaseIndicatorProps) {
+  const { t } = useTranslation('entities')
   // A caller that already holds the status passes it in rather than paying for
   // a second request.
   const { data: fetchedStatus, isLoading: loading } = useQuery(
@@ -54,8 +56,8 @@ export function DesignPhaseIndicator({
 
   // Build tooltip text
   const tooltipText = isPreRelease
-    ? `Pre-Release Phase: Create and edit items directly on main branch. ${draftItemCount} draft item(s) ready for release.`
-    : `Change Control Active: Main branch is protected. Use change-order branches to make changes. ${releasedItemCount} item(s) released.`
+    ? t('parts.form.phasePreReleaseHint', { draftCount: draftItemCount })
+    : t('parts.form.phaseChangeControlHint', { releasedCount: releasedItemCount })
 
   return (
     <div
@@ -69,18 +71,21 @@ export function DesignPhaseIndicator({
         {isPreRelease ? (
           <>
             <Unlock className="h-3 w-3" />
-            Pre-Release
+            {t('parts.form.phasePreRelease')}
           </>
         ) : (
           <>
             <Lock className="h-3 w-3" />
-            Change Control
+            {t('parts.form.phaseChangeControl')}
           </>
         )}
       </Badge>
       {showDetails && (
         <span className="text-xs text-slate-500">
-          {draftItemCount} draft, {releasedItemCount} released
+          {t('parts.form.phaseCounts', {
+            draftCount: draftItemCount,
+            releasedCount: releasedItemCount,
+          })}
         </span>
       )}
     </div>

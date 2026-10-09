@@ -20,8 +20,14 @@ import type {
   NumberSegment,
   SequenceScope,
 } from '@cascadia/commons/items/numbering/types'
+import i18n from '@/i18n/config'
 
 /** Placeholder shown in every item-number input when the field is left blank. */
+export function getItemNumberPlaceholder(): string {
+  return i18n.t('parts.numbering.autoPlaceholder', { ns: 'entities' })
+}
+
+/** @deprecated Use getItemNumberPlaceholder() so the string follows the locale. */
 export const ITEM_NUMBER_PLACEHOLDER = 'Auto-generated if blank'
 
 /**
@@ -71,10 +77,12 @@ export function allowsManualEntry(itemType: string): boolean {
  */
 export function getItemNumberHelpText(itemType: string): string {
   const example = formatSchemeExample(itemType)
-  const suffix = example ? ` (e.g., ${example})` : ''
+  const suffix = example
+    ? i18n.t('parts.numbering.exampleSuffix', { ns: 'entities', example })
+    : ''
   return allowsManualEntry(itemType)
-    ? `Leave blank to auto-generate${suffix}`
-    : `Auto-generated on creation${suffix}`
+    ? i18n.t('parts.numbering.autoHint', { ns: 'entities', example: suffix })
+    : i18n.t('parts.numbering.lockedHint', { ns: 'entities', example: suffix })
 }
 
 /** Human-readable description of when a sequence counter resets. */

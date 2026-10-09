@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { GitBranch, Lock, Plus, Unlock } from 'lucide-react'
 import { BRANCH_TYPES } from '@cascadia/commons/versioning/branch-types'
 import {
@@ -70,9 +71,11 @@ export function BranchSelector({
   showMainOption = true,
   disabled = false,
   className,
-  placeholder = 'Select branch...',
+  placeholder,
   onCreateChangeOrder: onCreateChangeOrder,
 }: BranchSelectorProps) {
+  const { t } = useTranslation('entities')
+  const resolvedPlaceholder = placeholder ?? t('parts.form.selectBranch')
   const invalidate = useInvalidateResources()
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [newWorkspaceName, setNewWorkspaceName] = useState('')
@@ -92,7 +95,7 @@ export function BranchSelector({
 
   const handleCreateWorkspace = async () => {
     if (!newWorkspaceName.trim()) {
-      setCreateError('Please enter a name for the workspace')
+      setCreateError(t('parts.form.workspaceNameRequired'))
       return
     }
 
@@ -115,7 +118,7 @@ export function BranchSelector({
       setNewWorkspaceName('')
     } catch (error) {
       setCreateError(
-        error instanceof Error ? error.message : 'Failed to create workspace',
+        error instanceof Error ? error.message : t('parts.form.failedLoadBranches'),
       )
     } finally {
       setCreating(false)
@@ -163,7 +166,7 @@ export function BranchSelector({
           <SelectTrigger className="w-56">
             <div className="flex items-center gap-2">
               <GitBranch className="h-4 w-4 text-slate-500" />
-              <SelectValue placeholder={placeholder}>
+              <SelectValue placeholder={resolvedPlaceholder}>
                 {selectedBranch && (
                   <span className="flex items-center gap-2">
                     {selectedBranch.branchType === 'main' &&
@@ -182,7 +185,7 @@ export function BranchSelector({
             {/* Main branch */}
             {showMainOption && mainBranch && (
               <SelectGroup>
-                <SelectLabel>Main Branch</SelectLabel>
+                <SelectLabel>{t('parts.form.branchMain')}</SelectLabel>
                 <SelectItem value={mainBranch.id} disabled={isProtected}>
                   <div className="flex items-center gap-2">
                     {isProtected ? (
@@ -190,10 +193,10 @@ export function BranchSelector({
                     ) : (
                       <Unlock className="h-3 w-3 text-green-500" />
                     )}
-                    <span>main</span>
+                    <span>{t('parts.form.branchMain')}</span>
                     {isProtected && (
                       <Badge variant="outline" className="text-xs ml-2">
-                        Protected
+                        {t('parts.form.branchLocked')}
                       </Badge>
                     )}
                   </div>
@@ -206,7 +209,7 @@ export function BranchSelector({
               <>
                 {showMainOption && mainBranch && <SelectSeparator />}
                 <SelectGroup>
-                  <SelectLabel>Change Order Branches</SelectLabel>
+                  <SelectLabel>{t('parts.form.ecoBranches')}</SelectLabel>
                   {changeOrderBranches.map((branch) => (
                     <SelectItem
                       key={branch.id}
@@ -220,7 +223,7 @@ export function BranchSelector({
                         <span>{branch.name.replace('eco/', '')}</span>
                         {branch.isLocked && (
                           <Badge variant="secondary" className="text-xs ml-2">
-                            Locked
+                            {t('parts.form.branchLocked')}
                           </Badge>
                         )}
                       </div>
@@ -235,7 +238,7 @@ export function BranchSelector({
               <>
                 <SelectSeparator />
                 <SelectGroup>
-                  <SelectLabel>My Workspaces</SelectLabel>
+                  <SelectLabel>{t('parts.form.myWorkspaces')}</SelectLabel>
                   {workspaceBranches.map((branch) => (
                     <SelectItem key={branch.id} value={branch.id}>
                       <div className="flex items-center gap-2">
@@ -253,18 +256,18 @@ export function BranchSelector({
             {/* Create new workspace option - always available */}
             <SelectSeparator />
             <SelectGroup>
-              <SelectLabel>Create New</SelectLabel>
+              <SelectLabel>{t('parts.form.createNew')}</SelectLabel>
               <SelectItem value="__create_workspace__">
                 <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
                   <Plus className="h-3 w-3" />
-                  New Workspace...
+                  {t('parts.form.newWorkspace')}
                 </div>
               </SelectItem>
               {onCreateChangeOrder && (
                 <SelectItem value="__create_eco__">
                   <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
                     <Plus className="h-3 w-3" />
-                    Create ECO
+                    {t('parts.form.createEco')}
                   </div>
                 </SelectItem>
               )}
@@ -277,20 +280,20 @@ export function BranchSelector({
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create Workspace</DialogTitle>
+            <DialogTitle>{t('parts.form.createWorkspaceTitle')}</DialogTitle>
             <DialogDescription>
-              Create a new private workspace branch for development work.
+              {t('parts.form.createWorkspaceBody')}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
             <FormField
-              label="Workspace Name"
+              label={t('parts.form.workspaceName')}
               required
               error={createError || undefined}
-              helpText="Use a descriptive name like 'motor-redesign' or 'prototype-v2'"
+              helpText={t('parts.form.workspaceNameHelp')}
             >
               <Input
-                placeholder="my-workspace"
+                placeholder={t('parts.form.workspacePlaceholder')}
                 value={newWorkspaceName}
                 onChange={(e) => {
                   setNewWorkspaceName(e.target.value)
@@ -315,10 +318,10 @@ export function BranchSelector({
               }}
               disabled={creating}
             >
-              Cancel
+              {t('parts.form.cancel')}
             </Button>
             <Button onClick={handleCreateWorkspace} disabled={creating}>
-              {creating ? 'Creating...' : 'Create Workspace'}
+              {creating ? t('parts.form.creating') : t('parts.form.createWorkspace')}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -3,6 +3,7 @@
 
 import { useForm, useStore } from '@tanstack/react-form'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Info } from 'lucide-react'
 import { partSchema } from '@cascadia/commons/items/types/part'
@@ -47,6 +48,7 @@ export function PartForm({
   onCancel,
   isSubmitting,
 }: PartFormProps) {
+  const { t } = useTranslation('entities')
   // Track selected design's protection status
   const [selectedBranchId, setSelectedBranchId] = useState<string | undefined>()
   const [attributes, setAttributes] = useState<Record<string, unknown>>(
@@ -117,10 +119,10 @@ export function PartForm({
         <form.Field name="designId">
           {(field) => (
             <FormField
-              label="Design"
+              label={t('parts.form.design')}
               required
               error={field.state.meta.errors[0]}
-              helpText="The design this part belongs to"
+              helpText={t('parts.form.designHelp')}
               className="md:col-span-2"
             >
               <div className="flex items-center gap-4">
@@ -145,17 +147,17 @@ export function PartForm({
         {/* Branch Selection - Available for new items in both phases */}
         {showBranchSelector && (
           <FormField
-            label="Target Branch"
+            label={t('parts.form.targetBranch')}
             required={branchRequired}
             error={
               branchRequired && !selectedBranchId
-                ? 'Please select a branch to create this part on'
+                ? t('parts.form.branchRequiredError')
                 : undefined
             }
             helpText={
               branchRequired
-                ? 'Select a change-order or workspace branch for the new part'
-                : 'Optional: Create on a workspace branch for private development'
+                ? t('parts.form.branchRequiredHelp')
+                : t('parts.form.branchOptionalHelp')
             }
             className="md:col-span-2"
           >
@@ -165,15 +167,14 @@ export function PartForm({
               onChange={setSelectedBranchId}
               showMainOption={!branchRequired}
               placeholder={
-                branchRequired ? 'Select branch...' : 'Main branch (default)'
+                branchRequired ? t('parts.form.branchProtected') : t('parts.form.branchMainDefault')
               }
             />
             {branchRequired && (
               <div className="flex items-start gap-2 mt-2 p-3 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-sm rounded-md">
                 <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <span>
-                  This design is under change control. New parts must be created
-                  on an ECO or workspace branch.
+                  {t('parts.form.branchChangeControlNotice')}
                 </span>
               </div>
             )}
@@ -181,8 +182,7 @@ export function PartForm({
               <div className="flex items-start gap-2 mt-2 p-3 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm rounded-md">
                 <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <span>
-                  No branch selected - part will be created on the main branch.
-                  Select a workspace branch for private development work.
+                  {t('parts.form.branchMainNotice')}
                 </span>
               </div>
             )}
@@ -208,7 +208,7 @@ export function PartForm({
         <form.Field name="name">
           {(field) => (
             <FormField
-              label="Name"
+              label={t('parts.form.name')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -217,7 +217,7 @@ export function PartForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Widget Assembly"
+                placeholder={t('parts.form.namePlaceholder')}
                 error={!!field.state.meta.errors.length}
                 data-testid="part-name"
               />
@@ -229,7 +229,7 @@ export function PartForm({
         <form.Field name="description">
           {(field) => (
             <FormField
-              label="Description"
+              label={t('parts.form.description')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -238,7 +238,7 @@ export function PartForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Detailed description of the part..."
+                placeholder={t('parts.form.descriptionPlaceholder')}
                 rows={4}
                 error={!!field.state.meta.errors.length}
               />
@@ -249,7 +249,7 @@ export function PartForm({
         {/* Type */}
         <form.Field name="partType">
           {(field) => (
-            <FormField label="Type" error={field.state.meta.errors[0]}>
+            <FormField label={t('parts.form.partType')} error={field.state.meta.errors[0]}>
               <Select
                 value={field.state.value}
                 onValueChange={(value) =>
@@ -260,13 +260,13 @@ export function PartForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select option" />
+                  <SelectValue placeholder={t('parts.form.selectType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Manufacture">Manufacture</SelectItem>
-                  <SelectItem value="Purchase">Purchase</SelectItem>
-                  <SelectItem value="Software">Software</SelectItem>
-                  <SelectItem value="Phantom">Phantom</SelectItem>
+                  <SelectItem value="Manufacture">{t('parts.typeLabels.manufacture')}</SelectItem>
+                  <SelectItem value="Purchase">{t('parts.typeLabels.purchase')}</SelectItem>
+                  <SelectItem value="Software">{t('parts.typeLabels.software')}</SelectItem>
+                  <SelectItem value="Phantom">{t('parts.typeLabels.phantom')}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -276,7 +276,7 @@ export function PartForm({
         {/* Tracking Mode */}
         <form.Field name="trackingMode">
           {(field) => (
-            <FormField label="Tracking" error={field.state.meta.errors[0]}>
+            <FormField label={t('parts.form.trackingMode')} error={field.state.meta.errors[0]}>
               <Select
                 value={field.state.value}
                 onValueChange={(value) =>
@@ -284,12 +284,12 @@ export function PartForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select option" />
+                  <SelectValue placeholder={t('parts.form.selectType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">Not tracked</SelectItem>
-                  <SelectItem value="lot">Lot tracked</SelectItem>
-                  <SelectItem value="serial">Serial tracked</SelectItem>
+                  <SelectItem value="none">{t('parts.form.tracking.none')}</SelectItem>
+                  <SelectItem value="lot">{t('parts.form.tracking.lot')}</SelectItem>
+                  <SelectItem value="serial">{t('parts.form.tracking.serial')}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -299,13 +299,13 @@ export function PartForm({
         {/* Material */}
         <form.Field name="material">
           {(field) => (
-            <FormField label="Material" error={field.state.meta.errors[0]}>
+            <FormField label={t('parts.form.material')} error={field.state.meta.errors[0]}>
               <Input
                 name={field.name}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Steel, Aluminum, etc."
+                placeholder={t('parts.form.materialPlaceholder')}
                 error={!!field.state.meta.errors.length}
               />
             </FormField>
@@ -315,7 +315,7 @@ export function PartForm({
         {/* Weight */}
         <form.Field name="weight">
           {(field) => (
-            <FormField label="Weight" error={field.state.meta.errors[0]}>
+            <FormField label={t('parts.form.weight')} error={field.state.meta.errors[0]}>
               <div className="flex gap-2">
                 <Input
                   name={field.name}
@@ -354,7 +354,7 @@ export function PartForm({
         {/* Cost */}
         <form.Field name="cost">
           {(field) => (
-            <FormField label="Cost" error={field.state.meta.errors[0]}>
+            <FormField label={t('parts.form.cost')} error={field.state.meta.errors[0]}>
               <div className="flex gap-2">
                 <form.Field name="costCurrency">
                   {(currencyField) => (
@@ -396,7 +396,7 @@ export function PartForm({
         <form.Field name="leadTimeDays">
           {(field) => (
             <FormField
-              label="Lead Time (days)"
+              label={t('parts.form.leadTime')}
               error={field.state.meta.errors[0]}
             >
               <Input
@@ -433,7 +433,7 @@ export function PartForm({
             disabled={isSubmitting}
             data-testid="part-cancel"
           >
-            Cancel
+            {t('parts.form.cancel')}
           </Button>
         )}
         <Button
@@ -442,10 +442,10 @@ export function PartForm({
           data-testid="part-submit"
         >
           {isSubmitting
-            ? 'Saving...'
+            ? t('parts.form.saving')
             : part?.id
-              ? 'Update Part'
-              : 'Create Part'}
+              ? t('parts.form.updatePart')
+              : t('parts.form.createPart')}
         </Button>
       </div>
     </form>
