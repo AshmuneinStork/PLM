@@ -3,6 +3,7 @@
 
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { Part } from '@cascadia/commons/items/types/part'
 import type { PartDetailTab } from '@/components/parts/PartDetail'
@@ -27,6 +28,7 @@ export const Route = createFileRoute('/parts/$id')({
 })
 
 function PartDetailPage() {
+  const { t } = useTranslation('entities')
   const router = useRouter()
   const navigate = useNavigate()
   const { showSuccess } = useErrorHandler()
@@ -43,8 +45,8 @@ function PartDetailPage() {
     invalidates: ['parts'],
     onSuccess: (_data, updated) => {
       showSuccess(
-        'Part updated',
-        `${updated.itemNumber} has been updated successfully`,
+        t('parts.toasts.updatedTitle'),
+        t('parts.toasts.updatedBody', { itemNumber: updated.itemNumber }),
       )
     },
   })
@@ -58,7 +60,7 @@ function PartDetailPage() {
       apiFetch(`/api/v1/parts/${deleted.id}`, { method: 'DELETE' }),
     invalidates: ['parts'],
     onSuccess: (_data, deleted) => {
-      showSuccess('Part deleted', `${deleted.itemNumber} has been deleted`)
+      showSuccess(t('parts.toasts.deletedTitle'), t('parts.toasts.deletedBody', { itemNumber: deleted.itemNumber }))
       navigate({ to: '/parts' })
     },
   })

@@ -7,5 +7,78 @@
     "actionsColumn": "Actions",
     "searchPlaceholder": "Search…",
     "viewingContext": "(viewing {{context}})"
+  },
+  "parts": {
+    "columns": {
+      "itemNumber": "Item Number",
+      "name": "Name",
+      "state": "State",
+      "phase": "Phase",
+      "partType": "Type",
+      "actions": "Actions",
+      "revision": "Rev",
+      "variants": "Variants",
+      "material": "Material",
+      "cost": "Cost",
+      "usedIn": "Used In"
+    },
+    "typeLabels": {
+      "manufacture": "Manufacture",
+      "purchase": "Purchase",
+      "software": "Software",
+      "phantom": "Phantom",
+      "unspecified": "—"
+    },
+    "partTypeFilterAll": "All types",
+    "filters": {
+      "filterPlaceholder": "Filter...",
+      "anyPlaceholder": "Any",
+      "configurable": "Configurable",
+      "notConfigurable": "Not configurable",
+      "configurableBadge": "Configurable"
+    },
+    "usage": {
+      "design_one": "{{count}} design",
+      "design_other": "{{count}} designs"
+    },
+    "menu": {
+      "open": "Open",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "table": {
+      "emptyTitle": "No parts found",
+      "emptyHint": "Create your first part to get started",
+      "searchPlaceholder": "Search parts…"
+    },
+    "list": {
+      "title": "Parts",
+      "totalLabel": "Total Parts",
+      "cardTitle": "All Parts",
+      "cardCount_one": "{{count}} part in the system",
+      "cardCount_other": "{{count}} parts in the system",
+      "viewing": "(viewing {{context}})",
+      "create": "Create Part"
+    },
+    "toasts": {
+      "createdTitle": "Part created",
+      "createdBody": "{{itemNumber}} has been created successfully",
+      "createdNoImagesTitle": "Part created, but {{imageWord}} could not be attached",
+      "imageSingular": "the image",
+      "imagePlural": "the images",
+      "updatedTitle": "Part updated",
+      "updatedBody": "{{itemNumber}} has been updated successfully",
+      "deletedTitle": "Part deleted",
+      "deletedBody": "{{itemNumber}} has been deleted",
+      "deleteFailedTitle": "Failed to delete part",
+      "createFailedTitle": "Failed to create part"
+    },
+    "dialogs": {
+      "deleteTitle": "Delete Part",
+      "deleteBody": "Are you sure you want to delete {{itemNumber}}? This action cannot be undone.",
+      "deleteAction": "Delete",
+      "cancelAction": "Cancel"
+    }
   }
 }

@@ -4,6 +4,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { Part } from '@cascadia/commons/items/types/part'
 import type { PartSaveOptions } from '@/components/parts/PartDetail'
@@ -26,6 +27,7 @@ export const Route = createFileRoute('/parts/new')({
 })
 
 function NewPartPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { handleError, showSuccess, showWarning } = useErrorHandler()
   const invalidate = useInvalidateResources()
@@ -52,8 +54,8 @@ function NewPartPage() {
       const itemId = result.data.item.id!
 
       showSuccess(
-        'Part created',
-        `${part.itemNumber} has been created successfully`,
+        t('parts.toasts.createdTitle'),
+        t('parts.toasts.createdBody', { itemNumber: part.itemNumber }),
       )
 
       // Images dropped onto the form while it was being filled in. The part
@@ -68,7 +70,9 @@ function NewPartPage() {
           await invalidate('files')
         } catch (error) {
           showWarning(
-            `Part created, but ${attachments.length === 1 ? 'the image' : 'the images'} could not be attached`,
+            t('parts.toasts.createdNoImagesTitle', {
+              imageWord: t(`parts.toasts.${attachments.length === 1 ? 'imageSingular' : 'imagePlural'}`),
+            }),
             error instanceof Error ? error.message : undefined,
           )
         }
@@ -79,7 +83,7 @@ function NewPartPage() {
       // Navigate to the new part's detail page
       navigate({ to: '/parts/$id', params: { id: itemId } })
     } catch (error) {
-      handleError(error, { title: 'Failed to create part' })
+      handleError(error, { title: t('parts.toasts.createFailedTitle') })
       throw error // Re-throw so PartDetail knows save failed
     } finally {
       setIsSubmitting(false)

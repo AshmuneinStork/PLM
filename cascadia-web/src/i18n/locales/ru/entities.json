@@ -7,5 +7,82 @@
     "actionsColumn": "Действия",
     "searchPlaceholder": "Поиск…",
     "viewingContext": "(просмотр: {{context}})"
+  },
+  "parts": {
+    "columns": {
+      "itemNumber": "Номер изделия",
+      "name": "Название",
+      "state": "Статус",
+      "phase": "Фаза",
+      "partType": "Тип",
+      "actions": "Действия",
+      "revision": "Рев.",
+      "variants": "Варианты",
+      "material": "Материал",
+      "cost": "Стоимость",
+      "usedIn": "Используется в"
+    },
+    "typeLabels": {
+      "manufacture": "Производство",
+      "purchase": "Закупка",
+      "software": "ПО",
+      "phantom": "Фантом",
+      "unspecified": "—"
+    },
+    "partTypeFilterAll": "Все типы",
+    "filters": {
+      "filterPlaceholder": "Фильтр...",
+      "anyPlaceholder": "Любое",
+      "configurable": "Настраиваемое",
+      "notConfigurable": "Ненастраиваемое",
+      "configurableBadge": "Настраиваемое"
+    },
+    "usage": {
+      "design_one": "{{count}} изделие",
+      "design_few": "{{count}} изделия",
+      "design_many": "{{count}} изделий",
+      "design_other": "{{count}} изделий"
+    },
+    "menu": {
+      "open": "Открыть",
+      "viewDetails": "Подробности",
+      "edit": "Изменить",
+      "delete": "Удалить"
+    },
+    "table": {
+      "emptyTitle": "Изделия не найдены",
+      "emptyHint": "Создайте первое изделие, чтобы начать",
+      "searchPlaceholder": "Поиск изделий…"
+    },
+    "list": {
+      "title": "Изделия",
+      "totalLabel": "Всего изделий",
+      "cardTitle": "Все изделия",
+      "cardCount_one": "{{count}} изделие в системе",
+      "cardCount_few": "{{count}} изделия в системе",
+      "cardCount_many": "{{count}} изделий в системе",
+      "cardCount_other": "{{count}} изделий в системе",
+      "viewing": "(просмотр {{context}})",
+      "create": "Создать изделие"
+    },
+    "toasts": {
+      "createdTitle": "Изделие создано",
+      "createdBody": "{{itemNumber}} успешно создано",
+      "createdNoImagesTitle": "Изделие создано, но {{imageWord}} не удалось прикрепить",
+      "imageSingular": "изображение",
+      "imagePlural": "изображения",
+      "updatedTitle": "Изделие обновлено",
+      "updatedBody": "{{itemNumber}} успешно обновлено",
+      "deletedTitle": "Изделие удалено",
+      "deletedBody": "{{itemNumber}} удалено",
+      "deleteFailedTitle": "Не удалось удалить изделие",
+      "createFailedTitle": "Не удалось создать изделие"
+    },
+    "dialogs": {
+      "deleteTitle": "Удалить изделие",
+      "deleteBody": "Вы уверены, что хотите удалить {{itemNumber}}? Это действие нельзя отменить.",
+      "deleteAction": "Удалить",
+      "cancelAction": "Отмена"
+    }
   }
 }

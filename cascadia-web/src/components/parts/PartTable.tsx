@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Edit, Eye, MoreVertical, Trash2 } from 'lucide-react'
 import { PartThumbnail } from './PartThumbnail'
 import type { Part } from '@cascadia/commons/items/types/part'
@@ -77,6 +78,7 @@ export function PartTable({
 }: PartTableProps) {
   // State filter options and badges come from the Part lifecycle's
   // configuration, not from a list in code
+  const { t } = useTranslation('entities')
   const { data: lifecycle } = useLifecyclePhases('Part')
   const stateFilterOptions = (lifecycle?.states ?? []).map((state) => ({
     label: state.name,
@@ -97,11 +99,11 @@ export function PartTable({
     },
     {
       id: 'itemNumber',
-      header: 'Item Number',
+      header: t('parts.columns.itemNumber'),
       accessorKey: 'itemNumber',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('parts.filters.filterPlaceholder'),
       cell: ({ row }) =>
         row.original.id ? (
           <Link
@@ -117,30 +119,30 @@ export function PartTable({
     },
     {
       id: 'revision',
-      header: 'Rev',
+      header: t('parts.columns.revision'),
       accessorKey: 'revision',
       enableSorting: true,
       enableFiltering: false, // Revisions are short, filtering not useful
     },
     {
       id: 'name',
-      header: 'Name',
+      header: t('parts.columns.name'),
       accessorKey: 'name',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('parts.filters.filterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'configurable',
-      header: 'Variants',
+      header: t('parts.columns.variants'),
       accessorFn: (row) => (row.optionModel ? 'yes' : 'no'),
       enableSorting: true,
       enableFiltering: true,
       filterType: 'select',
       filterOptions: [
-        { label: 'Configurable', value: 'yes' },
-        { label: 'Not configurable', value: 'no' },
+        { label: t('parts.filters.configurable'), value: 'yes' },
+        { label: t('parts.filters.notConfigurable'), value: 'no' },
       ],
       cell: ({ getValue }) =>
         getValue() === 'yes' ? (
@@ -148,21 +150,21 @@ export function PartTable({
             variant="outline"
             className="text-cyan-700 dark:text-cyan-300 border-cyan-300 dark:border-cyan-700"
           >
-            Configurable
+            {t('parts.filters.configurableBadge')}
           </Badge>
         ) : null,
     },
     {
       id: 'partType',
-      header: 'Type',
+      header: t('parts.columns.partType'),
       accessorKey: 'partType',
       enableFiltering: true,
       filterType: 'multiSelect',
       filterOptions: [
-        { label: 'Manufacture', value: 'Manufacture' },
-        { label: 'Purchase', value: 'Purchase' },
-        { label: 'Software', value: 'Software' },
-        { label: 'Phantom', value: 'Phantom' },
+        { label: t('parts.typeLabels.manufacture'), value: 'Manufacture' },
+        { label: t('parts.typeLabels.purchase'), value: 'Purchase' },
+        { label: t('parts.typeLabels.software'), value: 'Software' },
+        { label: t('parts.typeLabels.phantom'), value: 'Phantom' },
       ],
       cell: ({ getValue }) => {
         const value = getValue() as
@@ -179,23 +181,23 @@ export function PartTable({
               }[value]
             }
           >
-            {value}
+            {t(`parts.typeLabels.${value.toLowerCase()}`)}
           </Badge>
         )
       },
     },
     {
       id: 'material',
-      header: 'Material',
+      header: t('parts.columns.material'),
       accessorKey: 'material',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('parts.filters.filterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'state',
-      header: 'State',
+      header: t('parts.columns.state'),
       accessorKey: 'state',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -206,7 +208,7 @@ export function PartTable({
     },
     {
       id: 'phase',
-      header: 'Phase',
+      header: t('parts.columns.phase'),
       enableSorting: false,
       enableFiltering: false,
       meta: { width: '120px' },
@@ -220,11 +222,11 @@ export function PartTable({
     },
     {
       id: 'cost',
-      header: 'Cost',
+      header: t('parts.columns.cost'),
       accessorKey: 'cost',
       enableFiltering: true,
       filterType: 'range',
-      filterPlaceholder: 'Any',
+      filterPlaceholder: t('parts.filters.anyPlaceholder'),
       meta: { align: 'right' },
       cell: ({ row }) => {
         const cost = row.original.cost
@@ -235,7 +237,7 @@ export function PartTable({
     },
     {
       id: 'usageCount',
-      header: 'Used In',
+      header: t('parts.columns.usedIn'),
       accessorKey: 'usageCount',
       enableFiltering: false,
       enableSorting: true,
@@ -246,7 +248,7 @@ export function PartTable({
         if (count === 0) return <span className="text-slate-400">-</span>
         return (
           <Badge variant="outline" className="text-xs">
-            {count} {count === 1 ? 'design' : 'designs'}
+            {t('parts.usage.design', { count })}
           </Badge>
         )
       },
@@ -263,7 +265,7 @@ export function PartTable({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t('parts.menu.open')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -271,14 +273,14 @@ export function PartTable({
             <DropdownMenuItem asChild>
               <Link to="/parts/$id" params={{ id: part.id }}>
                 <Eye className="mr-2 h-4 w-4" />
-                View details
+                {t('parts.menu.viewDetails')}
               </Link>
             </DropdownMenuItem>
           )}
           {onEdit && (
             <DropdownMenuItem onClick={() => onEdit(part)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('parts.menu.edit')}
             </DropdownMenuItem>
           )}
           {onDelete && (
@@ -289,7 +291,7 @@ export function PartTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('parts.menu.delete')}
               </DropdownMenuItem>
             </>
           )}
@@ -310,7 +312,7 @@ export function PartTable({
           {onEdit && (
             <ContextMenuItem onClick={() => onEdit(part)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('parts.menu.edit')}
             </ContextMenuItem>
           )}
           {onDelete && (
@@ -321,14 +323,14 @@ export function PartTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('parts.menu.delete')}
               </ContextMenuItem>
             </>
           )}
         </>
       )
     },
-    [onEdit, onDelete],
+    [onEdit, onDelete, t],
   )
 
   // Get URL for row (for "Open in new tab")
@@ -353,8 +355,8 @@ export function PartTable({
         defaultSorting={defaultSorting}
         defaultColumnFilters={defaultColumnFilters}
         defaultGlobalFilter={defaultGlobalFilter}
-        emptyMessage="No parts found"
-        emptyDescription="Create your first part to get started"
+        emptyMessage={t('parts.table.emptyTitle')}
+        emptyDescription={t('parts.table.emptyHint')}
         exportFilename="parts"
         serverSidePagination={serverSidePagination}
         totalRows={totalRows}
