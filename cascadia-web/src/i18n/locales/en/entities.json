@@ -246,6 +246,58 @@
       }
     }
   },
+  "requirements": {
+    "table": {
+      "itemNumber": "Item Number",
+      "searchPlaceholder": "Search...",
+      "revision": "Rev",
+      "name": "Name",
+      "type": "Type",
+      "typeFilterPlaceholder": "Filter type...",
+      "priority": "Priority",
+      "priorityFilterPlaceholder": "Filter priority...",
+      "state": "State",
+      "openMenu": "Open menu",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "del": "Delete",
+      "emptyMessage": "No requirements found",
+      "emptyDescription": "Create your first requirement to get started"
+    },
+    "priorityLabels": {
+      "MustHave": "Must Have",
+      "ShouldHave": "Should Have",
+      "CouldHave": "Could Have",
+      "WontHave": "Won't Have"
+    },
+    "list": {
+      "title": "Requirements",
+      "subtitle": "Manage your requirements library",
+      "inDesign": "in",
+      "createAction": "Create Requirement",
+      "totalLabel": "Total Requirements",
+      "cardTitle": "All Requirements",
+      "cardCount_one": "{{count}} requirement in the system",
+      "cardCount_other": "{{count}} requirements in the system",
+      "viewing": "viewing"
+    },
+    "toasts": {
+      "createdTitle": "Requirement created",
+      "createdBody": "{{itemNumber}} has been created successfully",
+      "updatedTitle": "Requirement updated",
+      "updatedBody": "{{itemNumber}} has been updated successfully",
+      "deletedTitle": "Requirement deleted",
+      "deletedBody": "{{itemNumber}} has been deleted",
+      "deleteFailedTitle": "Failed to delete requirement",
+      "createFailedTitle": "Failed to create requirement"
+    },
+    "dialogs": {
+      "deleteTitle": "Delete Requirement",
+      "deleteBody": "Are you sure you want to delete {{itemNumber}}? This action cannot be undone.",
+      "deleteAction": "Delete",
+      "cancelAction": "Cancel"
+    }
+  },
   "documents": {
     "table": {
       "itemNumber": "Item Number",

@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Edit, Eye, MoreVertical, Trash2 } from 'lucide-react'
 import type { Requirement } from '@cascadia/commons/items/types/requirement'
 import type { DataGridColumn, Row } from '@/components/ui'
@@ -42,11 +43,11 @@ const priorityColors: Record<
   WontHave: 'secondary',
 }
 
-const priorityLabels: Record<string, string> = {
-  MustHave: 'Must Have',
-  ShouldHave: 'Should Have',
-  CouldHave: 'Could Have',
-  WontHave: "Won't Have",
+const priorityLabelKeys: Record<string, string> = {
+  MustHave: 'requirements.priorityLabels.MustHave',
+  ShouldHave: 'requirements.priorityLabels.ShouldHave',
+  CouldHave: 'requirements.priorityLabels.CouldHave',
+  WontHave: 'requirements.priorityLabels.WontHave',
 }
 
 export function RequirementTable({
@@ -58,6 +59,7 @@ export function RequirementTable({
   onPageChange,
   isLoading,
 }: RequirementTableProps) {
+  const { t } = useTranslation('entities')
   // State filter options and badges come from the Requirement lifecycle's
   // configuration, not from a list in code
   const { data: lifecycle } = useLifecyclePhases('Requirement')
@@ -69,11 +71,11 @@ export function RequirementTable({
   const columns: Array<DataGridColumn<Requirement>> = [
     {
       id: 'itemNumber',
-      header: 'Item Number',
+      header: t('requirements.table.itemNumber'),
       accessorKey: 'itemNumber',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Search...',
+      filterPlaceholder: t('requirements.table.searchPlaceholder'),
       cell: ({ row }) =>
         row.original.id ? (
           <Link
@@ -89,31 +91,31 @@ export function RequirementTable({
     },
     {
       id: 'revision',
-      header: 'Rev',
+      header: t('requirements.table.revision'),
       accessorKey: 'revision',
       enableSorting: true,
     },
     {
       id: 'name',
-      header: 'Name',
+      header: t('requirements.table.name'),
       accessorKey: 'name',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Search...',
+      filterPlaceholder: t('requirements.table.searchPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'type',
-      header: 'Type',
+      header: t('requirements.table.type'),
       accessorKey: 'type',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter type...',
+      filterPlaceholder: t('requirements.table.typeFilterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'priority',
-      header: 'Priority',
+      header: t('requirements.table.priority'),
       accessorKey: 'priority',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -128,14 +130,14 @@ export function RequirementTable({
         if (!value) return null
         return (
           <Badge variant={priorityColors[value]}>
-            {priorityLabels[value] || value}
+            {t(priorityLabelKeys[value] ?? 'requirements.priorityLabels.MustHave')}
           </Badge>
         )
       },
     },
     {
       id: 'state',
-      header: 'State',
+      header: t('requirements.table.state'),
       accessorKey: 'state',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -156,7 +158,7 @@ export function RequirementTable({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t('requirements.table.openMenu')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -164,14 +166,14 @@ export function RequirementTable({
             <DropdownMenuItem asChild>
               <Link to="/requirements/$id" params={{ id: requirement.id }}>
                 <Eye className="mr-2 h-4 w-4" />
-                View details
+                {t('requirements.table.viewDetails')}
               </Link>
             </DropdownMenuItem>
           )}
           {onEdit && (
             <DropdownMenuItem onClick={() => onEdit(requirement)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('requirements.table.edit')}
             </DropdownMenuItem>
           )}
           {onDelete && (
@@ -182,7 +184,7 @@ export function RequirementTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('requirements.table.del')}
               </DropdownMenuItem>
             </>
           )}
@@ -202,7 +204,7 @@ export function RequirementTable({
           {onEdit && (
             <ContextMenuItem onClick={() => onEdit(requirement)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('requirements.table.edit')}
             </ContextMenuItem>
           )}
           {onDelete && (
@@ -213,7 +215,7 @@ export function RequirementTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('requirements.table.del')}
               </ContextMenuItem>
             </>
           )}
@@ -237,8 +239,8 @@ export function RequirementTable({
       enableContextMenu
       getRowUrl={getRowUrl}
       renderContextMenuItems={renderContextMenuItems}
-      emptyMessage="No requirements found"
-      emptyDescription="Create your first requirement to get started"
+      emptyMessage={t('requirements.table.emptyMessage')}
+      emptyDescription={t('requirements.table.emptyDescription')}
       exportFilename="requirements"
       serverSidePagination={serverSidePagination}
       totalRows={totalRows}

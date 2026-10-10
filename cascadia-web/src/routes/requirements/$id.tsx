@@ -3,6 +3,7 @@
 
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { Requirement } from '@cascadia/commons/items/types/requirement'
 import type { RequirementDetailTab } from '@/components/requirements/RequirementDetail'
@@ -35,6 +36,7 @@ export const Route = createFileRoute('/requirements/$id')({
 })
 
 function RequirementDetailPage() {
+  const { t } = useTranslation('entities')
   const router = useRouter()
   const navigate = useNavigate()
   const { showSuccess } = useErrorHandler()
@@ -56,8 +58,10 @@ function RequirementDetailPage() {
     })
 
     showSuccess(
-      'Requirement updated',
-      `${updatedRequirement.itemNumber} has been updated successfully`,
+      t('requirements.toasts.updatedTitle'),
+      t('requirements.toasts.updatedBody', {
+        itemNumber: updatedRequirement.itemNumber,
+      }),
     )
     await invalidate('requirements')
   }
@@ -70,8 +74,10 @@ function RequirementDetailPage() {
     })
 
     showSuccess(
-      'Requirement deleted',
-      `${requirement.itemNumber} has been deleted`,
+      t('requirements.toasts.deletedTitle'),
+      t('requirements.toasts.deletedBody', {
+        itemNumber: requirement.itemNumber,
+      }),
     )
     await invalidate('requirements')
     navigate({ to: '/requirements' })

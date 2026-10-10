@@ -12,6 +12,7 @@
 - [x] Wave 2 B2c-1 (840c3ea): change-orders add-dialogs EN/RU — AddToChangeOrderDialog + AddPartChoice + AddPartToStructureDialog + AddAffectedItemDialog; entities.change-orders.addDialogs 39 ключей, паритет 100%, гейты зелёные.
 - [x] Wave 2 B2c-2a: change-orders panels set 1 EN/RU — ApprovalStatusPanel + ConflictsList + InstanceStatePropertiesPanel + InstanceTransitionPropertiesPanel + LifecycleInstanceEditor; entities.change-orders.panels 107 ключей, паритет 100%, typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0.
 - [x] Wave 2 B2c-2b: change-orders тяжёлые панели EN/RU — AffectedItems + Impact(impact-i18n.ts) + DesignStructureTree + SummaryDashboard + HistoryGraph + TreeTable + GraphItemNode; entities.change-orders.panels actions+7 секций, паритет 100% (EN 917 / RU 959), typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0.
+- [x] Wave 2 B3a: requirements table/routes EN/RU — RequirementTable (table/priorityLabels через priorityLabelKeys/menu/empty), routes index (list.title/subtitle/create/totalLabel/cardTitle/cardCount плюралы/viewing + delete dialogs/toasts), new ($id) тосты created/updated/deleted; entities.requirements 40 базовых ключей EN/RU, паритет 100%, typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0.
 
 ## Осталось
 - [ ] Волна 2: сущности.

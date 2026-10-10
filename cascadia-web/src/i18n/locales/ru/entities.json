@@ -256,6 +256,60 @@
       }
     }
   },
+  "requirements": {
+    "table": {
+      "itemNumber": "Номер",
+      "searchPlaceholder": "Поиск...",
+      "revision": "Рев.",
+      "name": "Название",
+      "type": "Тип",
+      "typeFilterPlaceholder": "Фильтр типа...",
+      "priority": "Приоритет",
+      "priorityFilterPlaceholder": "Фильтр приоритета...",
+      "state": "Статус",
+      "openMenu": "Открыть меню",
+      "viewDetails": "Подробности",
+      "edit": "Изменить",
+      "del": "Удалить",
+      "emptyMessage": "Требования не найдены",
+      "emptyDescription": "Создайте первое требование, чтобы начать"
+    },
+    "priorityLabels": {
+      "MustHave": "Обязательно",
+      "ShouldHave": "Желательно",
+      "CouldHave": "Возможно",
+      "WontHave": "Не будет"
+    },
+    "list": {
+      "title": "Требования",
+      "subtitle": "Управление библиотекой требований",
+      "inDesign": "в",
+      "createAction": "Создать требование",
+      "totalLabel": "Всего требований",
+      "cardTitle": "Все требования",
+      "cardCount_one": "{{count}} требование в системе",
+      "cardCount_few": "{{count}} требования в системе",
+      "cardCount_many": "{{count}} требований в системе",
+      "cardCount_other": "{{count}} требований в системе",
+      "viewing": "просмотр"
+    },
+    "toasts": {
+      "createdTitle": "Требование создано",
+      "createdBody": "{{itemNumber}} успешно создано",
+      "updatedTitle": "Требование обновлено",
+      "updatedBody": "{{itemNumber}} успешно обновлено",
+      "deletedTitle": "Требование удалено",
+      "deletedBody": "{{itemNumber}} удалено",
+      "deleteFailedTitle": "Не удалось удалить требование",
+      "createFailedTitle": "Не удалось создать требование"
+    },
+    "dialogs": {
+      "deleteTitle": "Удалить требование",
+      "deleteBody": "Вы уверены, что хотите удалить {{itemNumber}}? Это действие нельзя отменить.",
+      "deleteAction": "Удалить",
+      "cancelAction": "Отмена"
+    }
+  },
   "documents": {
     "table": {
       "itemNumber": "Номер",

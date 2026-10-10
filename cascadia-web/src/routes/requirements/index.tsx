@@ -3,6 +3,7 @@
 
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { z } from 'zod'
 import type { Requirement } from '@cascadia/commons/items/types/requirement'
@@ -97,6 +98,7 @@ export const Route = createFileRoute('/requirements/')({
 })
 
 function RequirementsListPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
   const { handleError, showSuccess } = useErrorHandler()
@@ -134,10 +136,12 @@ function RequirementsListPage() {
     if (!requirement.id) return
 
     confirm({
-      title: 'Delete Requirement',
-      description: `Are you sure you want to delete ${requirement.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('requirements.dialogs.deleteTitle'),
+      description: t('requirements.dialogs.deleteBody', {
+        itemNumber: requirement.itemNumber,
+      }),
+      actionLabel: t('requirements.dialogs.deleteAction'),
+      cancelLabel: t('requirements.dialogs.cancelAction'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -146,12 +150,14 @@ function RequirementsListPage() {
           })
 
           showSuccess(
-            'Requirement deleted',
-            `${requirement.itemNumber} has been deleted`,
+            t('requirements.toasts.deletedTitle'),
+            t('requirements.toasts.deletedBody', {
+              itemNumber: requirement.itemNumber,
+            }),
           )
           await invalidate('requirements')
         } catch (error) {
-          handleError(error, { title: 'Failed to delete requirement' })
+          handleError(error, { title: t('requirements.toasts.deleteFailedTitle') })
         }
       },
     })
@@ -180,7 +186,7 @@ function RequirementsListPage() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-              Requirements
+              {t('requirements.list.title')}
             </h1>
             {selectedDesignId && (
               <Badge variant={getContextBadgeVariant()} className="text-sm">
@@ -189,9 +195,9 @@ function RequirementsListPage() {
             )}
           </div>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Manage your requirements library
+            {t('requirements.list.subtitle')}
             {selectedDesign && (
-              <span className="text-slate-500"> in {selectedDesign.name}</span>
+              <span className="text-slate-500"> {t('requirements.list.inDesign')} {selectedDesign.name}</span>
             )}
           </p>
         </div>
@@ -201,7 +207,7 @@ function RequirementsListPage() {
         >
           <Button disabled={!isEditable && context.type !== 'main'}>
             <Plus className="h-4 w-4 mr-2" />
-            Create Requirement
+            {t('requirements.list.createAction')}
           </Button>
         </Link>
       </div>
@@ -211,18 +217,18 @@ function RequirementsListPage() {
         itemType="Requirement"
         filters={filters}
         total={total}
-        totalLabel="Total Requirements"
+        totalLabel={t('requirements.list.totalLabel')}
       />
 
       {/* Requirements Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Requirements</CardTitle>
+          <CardTitle>{t('requirements.list.cardTitle')}</CardTitle>
           <CardDescription>
-            {total} {total === 1 ? 'requirement' : 'requirements'} in the system
+            {t('requirements.list.cardCount', { count: total })}
             {selectedDesign && context.type !== 'main' && (
               <span className="ml-2 text-amber-600 dark:text-amber-400">
-                (viewing {contextLabel})
+                ({t('requirements.list.viewing')} {contextLabel})
               </span>
             )}
           </CardDescription>

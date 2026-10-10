@@ -4,6 +4,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import type { Requirement } from '@cascadia/commons/items/types/requirement'
 import { RequirementDetail } from '@/components/requirements/RequirementDetail'
@@ -23,6 +24,7 @@ export const Route = createFileRoute('/requirements/new')({
 })
 
 function NewRequirementPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { handleError, showSuccess } = useErrorHandler()
   const invalidate = useInvalidateResources()
@@ -47,8 +49,10 @@ function NewRequirementPage() {
       )
 
       showSuccess(
-        'Requirement created',
-        `${requirement.itemNumber} has been created successfully`,
+        t('requirements.toasts.createdTitle'),
+        t('requirements.toasts.createdBody', {
+          itemNumber: requirement.itemNumber,
+        }),
       )
 
       await invalidate('requirements')
@@ -58,7 +62,7 @@ function NewRequirementPage() {
         params: { id: result.data.item.id! },
       })
     } catch (error) {
-      handleError(error, { title: 'Failed to create requirement' })
+      handleError(error, { title: t('requirements.toasts.createFailedTitle') })
       throw error
     } finally {
       setIsSubmitting(false)
