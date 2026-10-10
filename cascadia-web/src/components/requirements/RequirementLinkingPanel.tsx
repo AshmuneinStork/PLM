@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { ExternalLink, Link as LinkIcon, Plus, Trash2 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
@@ -72,6 +73,7 @@ export function RequirementLinkingPanel({
   readOnly = false,
   onUpdate,
 }: RequirementLinkingPanelProps) {
+  const { t } = useTranslation('entities')
   const { confirm } = useAlertDialog()
   const { handleError } = useErrorHandler()
   const [addDialogOpen, setAddDialogOpen] = useState(false)
@@ -125,11 +127,10 @@ export function RequirementLinkingPanel({
 
   const handleRemoveLink = (requirementId: string) => {
     confirm({
-      title: 'Remove Requirement Link',
-      description:
-        'Are you sure you want to remove this satisfaction link? The item will no longer be recorded as satisfying this requirement.',
-      actionLabel: 'Remove',
-      cancelLabel: 'Cancel',
+      title: t('requirements.linking.confirmTitle'),
+      description: t('requirements.linking.confirmBody'),
+      actionLabel: t('requirements.linking.confirmAction'),
+      cancelLabel: t('requirements.linking.cancel'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -140,7 +141,9 @@ export function RequirementLinkingPanel({
           await invalidate('items')
           onUpdate?.()
         } catch (error) {
-          handleError(error, { title: 'Failed to remove requirement link' })
+          handleError(error, {
+            title: t('requirements.linking.errors.removeFailed'),
+          })
         }
       },
     })
@@ -174,7 +177,9 @@ export function RequirementLinkingPanel({
       setSearchQuery('')
       onUpdate?.()
     } catch (error) {
-      handleError(error, { title: 'Failed to link requirements' })
+      handleError(error, {
+        title: t('requirements.linking.errors.linkFailed'),
+      })
     } finally {
       setAdding(false)
     }
@@ -192,6 +197,21 @@ export function RequirementLinkingPanel({
     }
     return variants[priority || ''] || 'secondary'
   }
+
+  const priorityLabelKeys = {
+    MustHave: 'requirements.priorityLabels.MustHave',
+    ShouldHave: 'requirements.priorityLabels.ShouldHave',
+    CouldHave: 'requirements.priorityLabels.CouldHave',
+    WontHave: 'requirements.priorityLabels.WontHave',
+  } as const
+
+  const verificationLabelKeys = {
+    NotStarted: 'requirements.verificationStatusLabels.NotStarted',
+    InProgress: 'requirements.verificationStatusLabels.InProgress',
+    Passed: 'requirements.verificationStatusLabels.Passed',
+    Failed: 'requirements.verificationStatusLabels.Failed',
+    Waived: 'requirements.verificationStatusLabels.Waived',
+  } as const
 
   const verificationStatusVariant = (status: string | null) => {
     const variants: Record<
@@ -211,7 +231,7 @@ export function RequirementLinkingPanel({
     () => [
       {
         id: 'itemNumber',
-        header: 'Requirement',
+        header: t('requirements.linking.columns.itemNumber'),
         accessorKey: 'itemNumber',
         enableSorting: true,
         cell: ({ row }) => (
@@ -226,7 +246,7 @@ export function RequirementLinkingPanel({
       },
       {
         id: 'name',
-        header: 'Name',
+        header: t('requirements.linking.columns.name'),
         accessorKey: 'name',
         enableSorting: true,
         cell: ({ getValue }) => (
@@ -237,19 +257,19 @@ export function RequirementLinkingPanel({
       },
       {
         id: 'priority',
-        header: 'Priority',
+        header: t('requirements.linking.columns.priority'),
         accessorKey: 'priority',
         enableSorting: true,
         meta: { width: '100px' },
         cell: ({ getValue }) => {
           const priority = getValue() as string | null
           if (!priority) return '-'
-          return <Badge variant={priorityVariant(priority)}>{priority}</Badge>
+          return <Badge variant={priorityVariant(priority)}>{t(priorityLabelKeys[priority as keyof typeof priorityLabelKeys])}</Badge>
         },
       },
       {
         id: 'verificationStatus',
-        header: 'Verification',
+        header: t('requirements.linking.columns.verificationStatus'),
         accessorKey: 'verificationStatus',
         enableSorting: true,
         meta: { width: '110px' },
@@ -257,7 +277,7 @@ export function RequirementLinkingPanel({
           const status = getValue() as string | null
           if (!status) return '-'
           return (
-            <Badge variant={verificationStatusVariant(status)}>{status}</Badge>
+            <Badge variant={verificationStatusVariant(status)}>{t(verificationLabelKeys[status as keyof typeof verificationLabelKeys])}</Badge>
           )
         },
       },
@@ -275,7 +295,7 @@ export function RequirementLinkingPanel({
                   variant="ghost"
                   size="icon"
                   onClick={() => handleRemoveLink(row.original.id)}
-                  title="Remove link"
+                  title={t('requirements.linking.removeAction')}
                 >
                   <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
                 </Button>
@@ -283,7 +303,7 @@ export function RequirementLinkingPanel({
             },
           ] as Array<DataGridColumn<SatisfiedRequirement>>)),
     ],
-    [readOnly],
+    [readOnly, t],
   )
 
   if (loading) {
@@ -296,7 +316,7 @@ export function RequirementLinkingPanel({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-slate-500">Loading requirements...</p>
+          <p className="text-sm text-slate-500">{t('requirements.linking.loading')}</p>
         </CardContent>
       </Card>
     )
@@ -310,10 +330,10 @@ export function RequirementLinkingPanel({
             <div>
               <CardTitle className="flex items-center gap-2">
                 <LinkIcon className="h-5 w-5" />
-                Requirements Satisfied
+                {t('requirements.linking.title')}
               </CardTitle>
               <CardDescription>
-                Requirements that this item helps satisfy
+                {t('requirements.linking.subtitle')}
               </CardDescription>
             </div>
             {!readOnly && (
@@ -324,7 +344,7 @@ export function RequirementLinkingPanel({
                 onClick={() => setAddDialogOpen(true)}
               >
                 <Plus className="h-4 w-4 mr-1" />
-                Link Requirement
+                {t('requirements.linking.addAction')}
               </Button>
             )}
           </div>
@@ -333,7 +353,7 @@ export function RequirementLinkingPanel({
           {requirements.length === 0 ? (
             <div className="text-center py-6">
               <p className="text-sm text-slate-500 mb-4">
-                No requirements linked yet
+                {t('requirements.linking.emptyLinked')}
               </p>
               {!readOnly && (
                 <Button
@@ -343,7 +363,7 @@ export function RequirementLinkingPanel({
                   onClick={() => setAddDialogOpen(true)}
                 >
                   <Plus className="h-4 w-4 mr-1" />
-                  Link First Requirement
+                  {t('requirements.linking.addFirstAction')}
                 </Button>
               )}
             </div>
@@ -354,7 +374,7 @@ export function RequirementLinkingPanel({
               getRowId={(row) => row.id}
               enablePagination={requirements.length > 10}
               defaultPageSize={10}
-              emptyMessage="No requirements linked"
+              emptyMessage={t('requirements.linking.emptyLinkedReadOnly')}
             />
           )}
         </CardContent>
@@ -363,23 +383,22 @@ export function RequirementLinkingPanel({
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Link Requirements</DialogTitle>
+            <DialogTitle>{t('requirements.linking.dialogTitle')}</DialogTitle>
             <DialogDescription>
-              Search for requirements to link to this item. This records that
-              the item helps satisfy the selected requirements.
+              {t('requirements.linking.dialogSubtitle')}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <Input
-              placeholder="Search requirements by number or name..."
+              placeholder={t('requirements.linking.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus
             />
 
             {searchLoading ? (
-              <p className="text-sm text-slate-500">Searching...</p>
+              <p className="text-sm text-slate-500">{t('requirements.linking.searching')}</p>
             ) : searchResults.length > 0 ? (
               <div className="border border-slate-300 dark:border-slate-700 rounded-lg divide-y divide-slate-200 dark:divide-slate-700 max-h-80 overflow-auto">
                 {searchResults.map((req) => (
@@ -405,7 +424,7 @@ export function RequirementLinkingPanel({
                             variant={priorityVariant(req.priority)}
                             className="text-xs"
                           >
-                            {req.priority}
+                            {t(priorityLabelKeys[req.priority as keyof typeof priorityLabelKeys])}
                           </Badge>
                         )}
                       </div>
@@ -420,7 +439,7 @@ export function RequirementLinkingPanel({
                         {req.state}
                       </Badge>
                       {selectedIds.has(req.id) && (
-                        <Badge variant="default">Selected</Badge>
+                        <Badge variant="default">{t('requirements.linking.selectedBadge')}</Badge>
                       )}
                     </div>
                   </div>
@@ -428,20 +447,21 @@ export function RequirementLinkingPanel({
               </div>
             ) : searchQuery.length === 1 ? (
               <p className="text-sm text-slate-500">
-                Type at least 2 characters to search
+                {t('requirements.linking.minCharsHint')}
               </p>
             ) : searchQuery.length >= 2 ? (
-              <p className="text-sm text-slate-500">No requirements found</p>
+              <p className="text-sm text-slate-500">{t('requirements.linking.noResults')}</p>
             ) : (
               <p className="text-sm text-slate-500">
-                No requirements available to link
+                {t('requirements.linking.emptyBrowse')}
               </p>
             )}
 
             <div className="flex items-center justify-between pt-4 border-t">
               <span className="text-sm text-slate-500">
-                {selectedIds.size} requirement
-                {selectedIds.size !== 1 ? 's' : ''} selected
+                {t('requirements.linking.selectedCount', {
+                  count: selectedIds.size,
+                })}
               </span>
               <div className="flex gap-2">
                 <Button
@@ -453,7 +473,7 @@ export function RequirementLinkingPanel({
                     setSearchQuery('')
                   }}
                 >
-                  Cancel
+                  {t('requirements.linking.cancel')}
                 </Button>
                 <Button
                   type="button"
@@ -461,8 +481,10 @@ export function RequirementLinkingPanel({
                   onClick={handleAddSelected}
                 >
                   {adding
-                    ? 'Linking...'
-                    : `Link ${selectedIds.size} Requirement${selectedIds.size !== 1 ? 's' : ''}`}
+                    ? t('requirements.linking.linking')
+                    : t('requirements.linking.linkCount', {
+                        count: selectedIds.size,
+                      })}
                 </Button>
               </div>
             </div>

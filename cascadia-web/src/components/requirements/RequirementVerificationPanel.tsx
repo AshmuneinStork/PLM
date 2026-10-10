@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import {
@@ -47,6 +48,7 @@ export function RequirementVerificationPanel({
   designId,
   isEditable = false,
 }: RequirementVerificationPanelProps) {
+  const { t } = useTranslation('entities')
   const { handleError } = useErrorHandler()
   const [searchQuery, setSearchQuery] = useState('')
   const [showSearch, setShowSearch] = useState(false)
@@ -74,7 +76,7 @@ export function RequirementVerificationPanel({
     }),
     enabled: Boolean(debouncedSearch.trim()) && Boolean(designId),
   })
-  const linkedIds = new Set(verifyingTests.map((t) => t.id))
+  const linkedIds = new Set(verifyingTests.map((test) => test.id))
   const searchResults = debouncedSearch.trim()
     ? candidates.filter((tc) => !linkedIds.has(tc.id))
     : []
@@ -92,7 +94,9 @@ export function RequirementVerificationPanel({
       // A released requirement is not editable outside a change order, so
       // this legitimately refuses. Silently dropping it left the user
       // clicking + with nothing happening and no reason given.
-      handleError(error, { title: 'Could not link test case' })
+      handleError(error, {
+        title: t('requirements.verification.errors.linkFailed'),
+      })
     } finally {
       setLinking(null)
     }
@@ -107,11 +111,20 @@ export function RequirementVerificationPanel({
       )
       await invalidate('requirements')
     } catch (error) {
-      handleError(error, { title: 'Could not remove test case' })
+      handleError(error, {
+        title: t('requirements.verification.errors.unlinkFailed'),
+      })
     } finally {
       setUnlinking(null)
     }
   }
+
+  const executionStatusLabelKeys = {
+    NotRun: 'requirements.verification.statusLabels.NotRun',
+    Passed: 'requirements.verification.statusLabels.Passed',
+    Failed: 'requirements.verification.statusLabels.Failed',
+    Blocked: 'requirements.verification.statusLabels.Blocked',
+  } as const
 
   const getStatusIcon = (status?: string) => {
     switch (status) {
@@ -144,12 +157,14 @@ export function RequirementVerificationPanel({
   // Calculate summary
   const summary = {
     total: verifyingTests.length,
-    passed: verifyingTests.filter((t) => t.executionStatus === 'Passed').length,
-    failed: verifyingTests.filter((t) => t.executionStatus === 'Failed').length,
-    blocked: verifyingTests.filter((t) => t.executionStatus === 'Blocked')
+    passed: verifyingTests.filter((test) => test.executionStatus === 'Passed')
+      .length,
+    failed: verifyingTests.filter((test) => test.executionStatus === 'Failed')
+      .length,
+    blocked: verifyingTests.filter((test) => test.executionStatus === 'Blocked')
       .length,
     notRun: verifyingTests.filter(
-      (t) => !t.executionStatus || t.executionStatus === 'NotRun',
+      (test) => !test.executionStatus || test.executionStatus === 'NotRun',
     ).length,
   }
 
@@ -158,9 +173,9 @@ export function RequirementVerificationPanel({
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Verification</CardTitle>
+            <CardTitle>{t('requirements.verification.title')}</CardTitle>
             <CardDescription>
-              Test cases that verify this requirement
+              {t('requirements.verification.subtitle')}
             </CardDescription>
           </div>
           {isEditable && !showSearch && (
@@ -170,7 +185,7 @@ export function RequirementVerificationPanel({
               onClick={() => setShowSearch(true)}
             >
               <Plus className="h-4 w-4 mr-2" />
-              Link Test
+              {t('requirements.verification.linkAction')}
             </Button>
           )}
         </div>
@@ -181,31 +196,31 @@ export function RequirementVerificationPanel({
           <div className="flex gap-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
             <div className="text-center">
               <div className="text-xl font-bold">{summary.total}</div>
-              <div className="text-xs text-slate-500">Total</div>
+              <div className="text-xs text-slate-500">{t('requirements.verification.summary.total')}</div>
             </div>
             <div className="text-center">
               <div className="text-xl font-bold text-green-600 dark:text-green-400">
                 {summary.passed}
               </div>
-              <div className="text-xs text-slate-500">Passed</div>
+              <div className="text-xs text-slate-500">{t('requirements.verification.summary.passed')}</div>
             </div>
             <div className="text-center">
               <div className="text-xl font-bold text-red-600 dark:text-red-400">
                 {summary.failed}
               </div>
-              <div className="text-xs text-slate-500">Failed</div>
+              <div className="text-xs text-slate-500">{t('requirements.verification.summary.failed')}</div>
             </div>
             <div className="text-center">
               <div className="text-xl font-bold text-yellow-600 dark:text-yellow-400">
                 {summary.blocked}
               </div>
-              <div className="text-xs text-slate-500">Blocked</div>
+              <div className="text-xs text-slate-500">{t('requirements.verification.summary.blocked')}</div>
             </div>
             <div className="text-center">
               <div className="text-xl font-bold text-slate-400">
                 {summary.notRun}
               </div>
-              <div className="text-xs text-slate-500">Not Run</div>
+              <div className="text-xs text-slate-500">{t('requirements.verification.summary.notRun')}</div>
             </div>
           </div>
         )}
@@ -218,7 +233,7 @@ export function RequirementVerificationPanel({
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for test cases to link..."
+                placeholder={t('requirements.verification.searchPlaceholder')}
                 className="pl-10"
               />
               {searching && (
@@ -263,7 +278,7 @@ export function RequirementVerificationPanel({
                   setSearchQuery('')
                 }}
               >
-                Cancel
+                {t('requirements.verification.cancel')}
               </Button>
             </div>
           </div>
@@ -276,7 +291,7 @@ export function RequirementVerificationPanel({
           </div>
         ) : verifyingTests.length === 0 ? (
           <div className="text-center py-8 text-slate-500">
-            No test cases linked to this requirement
+            {t('requirements.verification.empty')}
           </div>
         ) : (
           <div className="space-y-2">
@@ -298,7 +313,7 @@ export function RequirementVerificationPanel({
                   <Badge
                     variant={getStatusVariant(test.executionStatus) as any}
                   >
-                    {test.executionStatus || 'Not Run'}
+                    {t(executionStatusLabelKeys[test.executionStatus ?? 'NotRun'])}
                   </Badge>
                 </Link>
                 {isEditable && (

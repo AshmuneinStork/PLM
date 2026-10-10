@@ -404,6 +404,69 @@
       "relationshipsHint": "Save the requirement first to manage relationships",
       "itemNumberPlaceholder": "REQ-001",
       "categoryPlaceholder": "Category"
+    },
+    "linking": {
+      "title": "Requirements Satisfied",
+      "subtitle": "Requirements that this item helps satisfy",
+      "loading": "Loading requirements...",
+      "columns": {
+        "itemNumber": "Requirement",
+        "name": "Name",
+        "priority": "Priority",
+        "verificationStatus": "Verification"
+      },
+      "emptyLinked": "No requirements linked yet",
+      "emptyLinkedReadOnly": "No requirements linked",
+      "addAction": "Link Requirement",
+      "addFirstAction": "Link First Requirement",
+      "removeAction": "Remove link",
+      "dialogTitle": "Link Requirements",
+      "dialogSubtitle": "Search for requirements to link to this item. This records that the item helps satisfy the selected requirements.",
+      "searchPlaceholder": "Search requirements by number or name...",
+      "searching": "Searching...",
+      "minCharsHint": "Type at least 2 characters to search",
+      "noResults": "No requirements found",
+      "emptyBrowse": "No requirements available to link",
+      "selectedBadge": "Selected",
+      "selectedCount_one": "{{count}} requirement selected",
+      "selectedCount_other": "{{count}} requirements selected",
+      "cancel": "Cancel",
+      "linking": "Linking...",
+      "linkCount_one": "Link {{count}} Requirement",
+      "linkCount_other": "Link {{count}} Requirements",
+      "confirmTitle": "Remove Requirement Link",
+      "confirmBody": "Are you sure you want to remove this satisfaction link? The item will no longer be recorded as satisfying this requirement.",
+      "confirmAction": "Remove",
+      "removedTitle": "Requirement link removed",
+      "errors": {
+        "removeFailed": "Failed to remove requirement link",
+        "linkFailed": "Failed to link requirements"
+      }
+    },
+    "verification": {
+      "title": "Verification",
+      "subtitle": "Test cases that verify this requirement",
+      "linkAction": "Link Test",
+      "searchPlaceholder": "Search for test cases to link...",
+      "cancel": "Cancel",
+      "empty": "No test cases linked to this requirement",
+      "summary": {
+        "total": "Total",
+        "passed": "Passed",
+        "failed": "Failed",
+        "blocked": "Blocked",
+        "notRun": "Not Run"
+      },
+      "statusLabels": {
+        "NotRun": "Not Run",
+        "Passed": "Passed",
+        "Failed": "Failed",
+        "Blocked": "Blocked"
+      },
+      "errors": {
+        "linkFailed": "Could not link test case",
+        "unlinkFailed": "Could not remove test case"
+      }
     }
   },
   "documents": {
