@@ -29,6 +29,7 @@ import {
   CardTitle,
 } from '@/components/ui'
 import { designBranchesQuery, itemHistoryQuery } from '@/query'
+import { formatDate } from '@/format-date'
 import { SourceChangesList } from '@/components/software/SourceChangesList'
 
 interface FieldChange {
@@ -458,9 +459,7 @@ export function ItemHistoryTab({
                           </p>
                           <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
                             <span>
-                              {new Date(
-                                entry.commit.createdAt,
-                              ).toLocaleDateString()}
+                              {formatDate(entry.commit.createdAt)}
                             </span>
                             {entry.author && <span>{entry.author.name}</span>}
                             {entry.previousItem && (
