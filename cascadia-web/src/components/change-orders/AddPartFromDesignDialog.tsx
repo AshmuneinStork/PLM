@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Info, Loader2, Search } from 'lucide-react'
 import { formatRevision } from '@cascadia/commons/types/lifecycle'
@@ -83,6 +84,7 @@ export function AddPartFromDesignDialog({
   branchId,
   onSuccess,
 }: AddPartFromDesignDialogProps) {
+  const { t } = useTranslation('entities')
   const { alert } = useAlertDialog()
   const { handleError, showWarning } = useErrorHandler()
   const isLibrary = designType === 'Library'
@@ -289,10 +291,7 @@ export function AddPartFromDesignDialog({
       })
 
       if (itemsPayload.length === 0) {
-        showWarning(
-          'Nothing to add',
-          'None of the selected items are in a state this change order can act on.',
-        )
+        showWarning(t('change-orders.addDialogs.partFromDesign.nothingTitle'), t('change-orders.addDialogs.partFromDesign.nothingBody'))
         return
       }
 
@@ -303,14 +302,14 @@ export function AddPartFromDesignDialog({
       })
 
       alert({
-        title: 'Items Added',
-        description: `${selectedItems.length} item${selectedItems.length !== 1 ? 's' : ''} added to the change order.`,
+        title: t('change-orders.addDialogs.partFromDesign.addedTitle'),
+        description: t('change-orders.addDialogs.batchAdd.addedCountBody', { count: selectedItems.length }),
       })
 
       onOpenChange(false)
       onSuccess()
     } catch (error) {
-      handleError(error, { title: 'Failed to add items to the change order' })
+      handleError(error, { title: t('change-orders.addDialogs.partFromDesign.failedTitle') })
     } finally {
       setSubmitting(false)
     }
@@ -366,15 +365,15 @@ export function AddPartFromDesignDialog({
       }
 
       alert({
-        title: 'Parts Imported',
-        description: `${selectedImportItems.length} part${selectedImportItems.length !== 1 ? 's' : ''} imported as usages into the Library.`,
+        title: t('change-orders.addDialogs.partFromDesign.importedTitle'),
+        description: t('change-orders.addDialogs.partFromDesign.importedBody', { count: selectedImportItems.length }),
       })
 
       onOpenChange(false)
       onSuccess()
     } catch (error) {
       handleError(error, {
-        title: 'Failed to import parts — some may have been partially imported',
+        title: t('change-orders.addDialogs.partFromDesign.importFailedTitle'),
       })
     } finally {
       setSubmitting(false)
@@ -382,8 +381,8 @@ export function AddPartFromDesignDialog({
   }
 
   const scopeOptions: Array<{ value: ImportDesignScope; label: string }> = [
-    { value: 'all', label: 'All Designs' },
-    { value: 'library', label: 'Standard Library' },
+    { value: 'all', label: t('change-orders.addDialogs.partFromDesign.allDesigns') },
+    { value: 'library', label: t('change-orders.addDialogs.partFromDesign.standardLibrary') },
   ]
 
   // Determine effective selected items for display
@@ -436,14 +435,14 @@ export function AddPartFromDesignDialog({
     },
     {
       id: 'itemNumber',
-      header: 'Item',
+      header: t('change-orders.addDialogs.partFromDesign.item'),
       accessorKey: 'itemNumber',
       enableSorting: false,
       meta: { width: '140px' },
     },
     {
       id: 'name',
-      header: 'Name',
+      header: t('change-orders.addDialogs.partFromDesign.name'),
       accessorKey: 'name',
       enableSorting: false,
       cell: ({
@@ -462,7 +461,7 @@ export function AddPartFromDesignDialog({
     },
     {
       id: 'revision',
-      header: 'Rev',
+      header: t('change-orders.addDialogs.partFromDesign.rev'),
       accessorKey: 'revision',
       enableSorting: false,
       meta: { width: '60px', align: 'center' as const },
@@ -470,7 +469,7 @@ export function AddPartFromDesignDialog({
     },
     {
       id: 'state',
-      header: 'State',
+      header: t('change-orders.addDialogs.partFromDesign.state'),
       accessorKey: 'state',
       enableSorting: false,
       cell: ({
@@ -512,7 +511,7 @@ export function AddPartFromDesignDialog({
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
-            placeholder="Search by item number or name..."
+            placeholder={t('change-orders.addDialogs.partFromDesign.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-8"
@@ -564,8 +563,9 @@ export function AddPartFromDesignDialog({
           pageSizeOptions={[20, 50, 100]}
           emptyMessage={
             searchQuery
-              ? 'No parts match your search.'
-              : 'No parts found in this design.'
+
+              ? t('change-orders.addDialogs.partFromDesign.noMatch')
+              : t('change-orders.addDialogs.partFromDesign.noParts')
           }
         />
       </div>
@@ -579,18 +579,19 @@ export function AddPartFromDesignDialog({
           <DialogTitle>
             {step === 'select'
               ? isLibrary
-                ? `Add Parts to ${designName}`
-                : `Add Parts from ${designName}`
-              : `Review ${effectiveSelectedCount} Items`}
+
+                ? t('change-orders.addDialogs.partFromDesign.addToTitle', { name: designName })
+                : t('change-orders.addDialogs.partFromDesign.addFromTitle', { name: designName })
+              : t('change-orders.addDialogs.partFromDesign.reviewTitle', { count: effectiveSelectedCount })}
           </DialogTitle>
           <DialogDescription>
             {step === 'select'
               ? isLibrary
-                ? 'Add existing library parts or import from other designs.'
-                : 'Select parts to add as affected items in this change order.'
+                ? t('change-orders.addDialogs.partFromDesign.libraryHint')
+                : t('change-orders.addDialogs.partFromDesign.selectHint')
               : isLibrary && libraryMode === 'import'
-                ? 'Review the parts to be imported as usages.'
-                : 'Review the change actions for each item before adding them.'}
+                ? t('change-orders.addDialogs.partFromDesign.reviewImport')
+                : t('change-orders.addDialogs.partFromDesign.reviewActions')}
           </DialogDescription>
         </DialogHeader>
 
@@ -610,7 +611,7 @@ export function AddPartFromDesignDialog({
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white',
                   )}
                 >
-                  Add from Library
+                  {t('change-orders.addDialogs.partFromDesign.addFromLibrary')}
                 </button>
                 <button
                   type="button"
@@ -622,7 +623,7 @@ export function AddPartFromDesignDialog({
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white',
                   )}
                 >
-                  Import from Designs
+                  {t('change-orders.addDialogs.partFromDesign.importFromDesigns')}
                 </button>
               </div>
 
@@ -632,7 +633,7 @@ export function AddPartFromDesignDialog({
                   {/* Scope selector */}
                   <div>
                     <Label className="text-sm font-medium mb-2 block">
-                      Source
+                      {t('change-orders.addDialogs.partFromDesign.source')}
                     </Label>
                     <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
                       {scopeOptions.map((option) => (
@@ -658,7 +659,7 @@ export function AddPartFromDesignDialog({
                     <div className="relative flex-1">
                       <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
-                        placeholder="Search by part number or name (min 2 characters)..."
+                        placeholder={t('change-orders.addDialogs.partFromDesign.searchMinPlaceholder')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-9 h-8"
@@ -730,7 +731,7 @@ export function AddPartFromDesignDialog({
                               )}
                               {isAffected && (
                                 <Badge variant="outline" className="text-xs">
-                                  Already in ECO
+                                  {t('change-orders.addDialogs.partFromDesign.alreadyInEco')}
                                 </Badge>
                               )}
                             </label>
@@ -759,12 +760,11 @@ export function AddPartFromDesignDialog({
               <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
               <div className="text-sm">
                 <p className="font-medium text-blue-900 dark:text-blue-100">
-                  Importing as Usages
+                  {t('change-orders.addDialogs.partFromDesign.importingTitle')}
                 </p>
                 <p className="text-blue-700 dark:text-blue-300 mt-0.5">
-                  These parts will be imported as usages into the Library design
-                  and registered as ECO affected items with action{' '}
-                  <strong>Add</strong>.
+                  {t('change-orders.addDialogs.partFromDesign.importingBody1')}{' '}
+                  <strong>{t('change-orders.addDialogs.partFromDesign.actionAdd')}</strong>.
                 </p>
               </div>
             </div>
@@ -773,12 +773,12 @@ export function AddPartFromDesignDialog({
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 dark:bg-slate-800 sticky top-0">
                   <tr className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-                    <th className="text-left px-3 py-1.5">Item</th>
-                    <th className="text-left px-3 py-1.5">Name</th>
-                    <th className="text-center px-3 py-1.5">Rev</th>
-                    <th className="text-center px-3 py-1.5">State</th>
-                    <th className="text-center px-3 py-1.5">Source</th>
-                    <th className="text-center px-3 py-1.5">Action</th>
+                    <th className="text-left px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.item')}</th>
+                    <th className="text-left px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.name')}</th>
+                    <th className="text-center px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.rev')}</th>
+                    <th className="text-center px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.state')}</th>
+                    <th className="text-center px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.source')}</th>
+                    <th className="text-center px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.action')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y dark:divide-slate-700">
@@ -823,11 +823,11 @@ export function AddPartFromDesignDialog({
 
             <div className="space-y-2">
               <Label htmlFor="import-parts-description">
-                Description (optional)
+                {t('change-orders.addDialogs.partFromDesign.description')}
               </Label>
               <Textarea
                 id="import-parts-description"
-                placeholder="Describe why these parts are being imported..."
+                placeholder={t('change-orders.addDialogs.partFromDesign.importReasonPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
@@ -841,12 +841,12 @@ export function AddPartFromDesignDialog({
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 dark:bg-slate-800 sticky top-0">
                   <tr className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-                    <th className="text-left px-3 py-1.5">Item</th>
-                    <th className="text-left px-3 py-1.5">Name</th>
-                    <th className="text-center px-3 py-1.5">Rev</th>
-                    <th className="text-center px-3 py-1.5">State</th>
-                    <th className="text-center px-3 py-1.5">Action</th>
-                    <th className="text-center px-3 py-1.5">Target</th>
+                    <th className="text-left px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.item')}</th>
+                    <th className="text-left px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.name')}</th>
+                    <th className="text-center px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.rev')}</th>
+                    <th className="text-center px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.state')}</th>
+                    <th className="text-center px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.action')}</th>
+                    <th className="text-center px-3 py-1.5">{t('change-orders.addDialogs.partFromDesign.target')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y dark:divide-slate-700">
@@ -911,7 +911,7 @@ export function AddPartFromDesignDialog({
                               }
                               className="text-xs"
                             >
-                              {available.at(0)?.label ?? 'No action available'}
+                              {available.at(0)?.label ?? t('change-orders.addDialogs.partFromDesign.noAction')}
                             </Badge>
                           )}
                         </td>
@@ -931,11 +931,11 @@ export function AddPartFromDesignDialog({
 
             <div className="space-y-2">
               <Label htmlFor="add-parts-description">
-                Description (optional)
+                {t('change-orders.addDialogs.partFromDesign.description')}
               </Label>
               <Textarea
                 id="add-parts-description"
-                placeholder="Describe the changes..."
+                placeholder={t('change-orders.addDialogs.partFromDesign.describePlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
@@ -952,18 +952,18 @@ export function AddPartFromDesignDialog({
               className="mr-auto"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
-              Back
+              {t('change-orders.addDialogs.partFromDesign.back')}
             </Button>
           )}
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('change-orders.addDialogs.partFromDesign.cancel')}
           </Button>
           {step === 'select' ? (
             <Button
               onClick={() => setStep('review')}
               disabled={selectedIds.size === 0}
             >
-              Review ({selectedIds.size})
+              {t('change-orders.addDialogs.partFromDesign.reviewCount', { count: selectedIds.size })}
             </Button>
           ) : (
             <Button

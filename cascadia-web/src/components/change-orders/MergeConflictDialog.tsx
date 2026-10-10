@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   AlertTriangle,
   Check,
@@ -57,9 +58,9 @@ function formatFieldName(fieldName: string): string {
 }
 
 // Helper to format values for display
-function formatValue(value: unknown): string {
-  if (value === null || value === undefined) return '(empty)'
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No'
+function formatValue(value: unknown, t: (key: string) => string): string {
+  if (value === null || value === undefined) return t('change-orders.addDialogs.merge.empty')
+  if (typeof value === 'boolean') return value ? t('change-orders.addDialogs.merge.yes') : t('change-orders.addDialogs.merge.no')
   if (typeof value === 'object') return JSON.stringify(value)
   return String(value)
 }
@@ -79,6 +80,7 @@ function FieldConflictResolver({
   fieldResolutions,
   onFieldResolutionChange,
   disabled,
+  t,
 }: {
   conflict: ExtendedMergeConflict
   fieldResolutions: Record<string, FieldResolution>
@@ -87,6 +89,7 @@ function FieldConflictResolver({
     resolution: FieldResolution,
   ) => void
   disabled: boolean
+  t: (key: string) => string
 }) {
   const [expanded, setExpanded] = useState(true)
 
@@ -134,7 +137,7 @@ function FieldConflictResolver({
                       }
                       disabled={disabled}
                     >
-                      Ours
+                      {t('change-orders.addDialogs.merge.oursBtn')}
                     </button>
                     <button
                       className={`px-2 py-1 text-xs rounded ${
@@ -147,31 +150,31 @@ function FieldConflictResolver({
                       }
                       disabled={disabled}
                     >
-                      Theirs
+                      {t('change-orders.addDialogs.merge.theirsBtn')}
                     </button>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-xs">
                   <div>
-                    <span className="text-slate-500">Base:</span>
+                    <span className="text-slate-500">{t('change-orders.addDialogs.merge.base')}</span>
                     <p className="text-slate-600 dark:text-slate-400 truncate">
-                      {formatValue(fc.baseValue)}
+                      {formatValue(fc.baseValue, t)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-blue-500">Ours:</span>
+                    <span className="text-blue-500">{t('change-orders.addDialogs.merge.ours')}</span>
                     <p
                       className={`truncate ${resolution === 'ours' ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-blue-600/70'}`}
                     >
-                      {formatValue(fc.ourValue)}
+                      {formatValue(fc.ourValue, t)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-orange-500">Theirs:</span>
+                    <span className="text-orange-500">{t('change-orders.addDialogs.merge.theirs')}</span>
                     <p
                       className={`truncate ${resolution === 'theirs' ? 'font-bold text-orange-600 dark:text-orange-400' : 'text-orange-600/70'}`}
                     >
-                      {formatValue(fc.theirValue)}
+                      {formatValue(fc.theirValue, t)}
                     </p>
                   </div>
                 </div>
@@ -192,6 +195,7 @@ export function MergeConflictDialog({
   onResolve,
   isResolving = false,
 }: MergeConflictDialogProps) {
+  const { t } = useTranslation('entities')
   // Track item-level resolution for each conflict
   const [resolutions, setResolutions] = useState<
     Map<string, ConflictResolution>
@@ -275,7 +279,7 @@ export function MergeConflictDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-yellow-500" />
-            Merge Conflicts Detected
+            {t('change-orders.addDialogs.merge.title')}
           </DialogTitle>
           <DialogDescription>
             The following items have been modified on the main branch since{' '}
@@ -289,7 +293,7 @@ export function MergeConflictDialog({
           {otherConflicts.length > 0 && (
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-destructive">
-                Blocking Issues
+                {t('change-orders.addDialogs.merge.blocking')}
               </h4>
               {otherConflicts.map((conflict, index) => (
                 <div
@@ -314,7 +318,7 @@ export function MergeConflictDialog({
           {resolvableConflicts.length > 0 && (
             <div className="space-y-3">
               <h4 className="text-sm font-medium text-slate-700 dark:text-slate-200">
-                Concurrent Modifications
+                {t('change-orders.addDialogs.merge.concurrent')}
               </h4>
               {resolvableConflicts.map((conflict) => {
                 const currentResolution = resolutions.get(conflict.itemId)
@@ -355,7 +359,7 @@ export function MergeConflictDialog({
                         disabled={isResolving}
                       >
                         <Check className="h-4 w-4 mr-1" />
-                        Keep ECO Changes
+                        {t('change-orders.addDialogs.merge.keepOurs')}
                       </Button>
                       <Button
                         size="sm"
@@ -370,7 +374,7 @@ export function MergeConflictDialog({
                         disabled={isResolving}
                       >
                         <RefreshCw className="h-4 w-4 mr-1" />
-                        Keep Main Version
+                        {t('change-orders.addDialogs.merge.keepTheirs')}
                       </Button>
                       <Button
                         size="sm"
@@ -381,7 +385,7 @@ export function MergeConflictDialog({
                         disabled={isResolving}
                       >
                         <X className="h-4 w-4 mr-1" />
-                        Skip Item
+                        {t('change-orders.addDialogs.merge.skip')}
                       </Button>
                     </div>
 
@@ -402,6 +406,7 @@ export function MergeConflictDialog({
                             )
                           }
                           disabled={isResolving}
+                          t={t}
                         />
                       )}
                   </div>
@@ -412,7 +417,7 @@ export function MergeConflictDialog({
 
           {conflicts.length === 0 && (
             <p className="text-center text-muted-foreground py-4">
-              No conflicts to resolve.
+              {t('change-orders.addDialogs.merge.noConflicts')}
             </p>
           )}
         </div>
@@ -423,7 +428,7 @@ export function MergeConflictDialog({
             onClick={handleClose}
             disabled={isResolving}
           >
-            Cancel
+            {t('change-orders.addDialogs.merge.cancel')}
           </Button>
           {resolvableConflicts.length > 0 && otherConflicts.length === 0 && (
             <Button
@@ -431,8 +436,8 @@ export function MergeConflictDialog({
               disabled={!allResolved || isResolving}
             >
               {isResolving
-                ? 'Resolving...'
-                : `Resolve ${resolvableConflicts.length} Conflicts`}
+                ? t('change-orders.addDialogs.merge.resolving')
+                : t('change-orders.addDialogs.merge.resolveCount', { count: resolvableConflicts.length })}
             </Button>
           )}
         </DialogFooter>

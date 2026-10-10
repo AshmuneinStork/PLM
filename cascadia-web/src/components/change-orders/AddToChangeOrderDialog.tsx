@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { formatRevision } from '@cascadia/commons/types/lifecycle'
@@ -44,6 +45,7 @@ export function AddToChangeOrderDialog({
   item,
   onSuccess,
 }: AddToChangeOrderDialogProps) {
+  const { t } = useTranslation('entities')
   const { alert } = useAlertDialog()
   const { handleError } = useErrorHandler()
   const [loading, setLoading] = useState(false)
@@ -77,13 +79,13 @@ export function AddToChangeOrderDialog({
       })
 
       alert({
-        title: 'Item Added',
-        description: `${item.itemNumber} has been added to the change order.`,
+        title: t('change-orders.addDialogs.addTo.addedTitle'),
+        description: t('change-orders.addDialogs.addTo.addedBody', { number: item.itemNumber }),
       })
 
       onSuccess()
     } catch (error) {
-      handleError(error, { title: 'Failed to add item to the change order' })
+      handleError(error, { title: t('change-orders.addDialogs.addTo.failedTitle') })
     } finally {
       setLoading(false)
     }
@@ -93,9 +95,9 @@ export function AddToChangeOrderDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add to Change Order</DialogTitle>
+          <DialogTitle>{t('change-orders.addDialogs.addTo.title')}</DialogTitle>
           <DialogDescription>
-            Add {item.itemNumber} to this engineering change order.
+            {t('change-orders.addDialogs.addTo.descBody', { number: item.itemNumber })}
           </DialogDescription>
         </DialogHeader>
 
@@ -112,17 +114,17 @@ export function AddToChangeOrderDialog({
               {item.name}
             </div>
             <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Current: Rev {formatRevision(item.revision)} ({item.state})
+              {t('change-orders.addDialogs.addTo.current', { rev: formatRevision(item.revision), state: item.state })}
             </div>
           </div>
 
           {/* Change action */}
           <div className="space-y-2">
-            <Label>Change Action</Label>
+            <Label>{t('change-orders.addDialogs.addTo.changeAction')}</Label>
             {loadingOptions ? (
               <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Resolving available actions...
+                {t('change-orders.addDialogs.addTo.resolving')}
               </div>
             ) : availableActions.length > 0 ? (
               <Select
@@ -130,7 +132,7 @@ export function AddToChangeOrderDialog({
                 onValueChange={(v) => setSelectedAction(v as ChangeAction)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select action" />
+                  <SelectValue placeholder={t('change-orders.addDialogs.addTo.selectAction')} />
                 </SelectTrigger>
                 <SelectContent>
                   {availableActions.map((action) => (
@@ -143,7 +145,7 @@ export function AddToChangeOrderDialog({
             ) : (
               <div className="text-sm text-slate-500 dark:text-slate-400">
                 {itemOptions?.blockedReason ??
-                  `No change action is available for items in ${item.state} state.`}
+                  t('change-orders.addDialogs.addTo.noActionForState', { state: item.state })}
               </div>
             )}
           </div>
@@ -153,7 +155,7 @@ export function AddToChangeOrderDialog({
           {targetInfo?.targetState && (
             <div className="text-sm">
               <span className="text-slate-500 dark:text-slate-400">
-                Target:{' '}
+                {t('change-orders.addDialogs.addTo.targetLabel')}
               </span>
               <span className="font-medium text-slate-900 dark:text-slate-100">
                 {targetInfo.targetRevision
@@ -165,10 +167,10 @@ export function AddToChangeOrderDialog({
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optional)</Label>
+            <Label htmlFor="description">{t('change-orders.addDialogs.addTo.description')}</Label>
             <Textarea
               id="description"
-              placeholder="Describe the change..."
+              placeholder={t('change-orders.addDialogs.addTo.describePlaceholder')}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
@@ -178,14 +180,14 @@ export function AddToChangeOrderDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('change-orders.addDialogs.addTo.cancel')}
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={loading || loadingOptions || !changeAction}
           >
             {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            Add to ECO
+            {t('change-orders.addDialogs.addTo.addToEco')}
           </Button>
         </DialogFooter>
       </DialogContent>

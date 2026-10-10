@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Info, Link2, Search } from 'lucide-react'
 import { formatRevision } from '@cascadia/commons/types/lifecycle'
@@ -61,6 +62,7 @@ export function AddBomChildToChangeOrderDialog({
   currentDesignCode,
   onSuccess,
 }: AddBomChildToChangeOrderDialogProps) {
+  const { t } = useTranslation('entities')
   const { handleError } = useErrorHandler()
   const [designScope, setDesignScope] = useState<DesignScope>('current')
   const [searchQuery, setSearchQuery] = useState('')
@@ -118,27 +120,24 @@ export function AddBomChildToChangeOrderDialog({
       onSuccess()
       onOpenChange(false)
     } catch (error) {
-      handleError(error, { title: 'Failed to add BOM relationship' })
+      handleError(error, { title: t('change-orders.addDialogs.addBomChild.failedTitle') })
     } finally {
       setLoading(false)
     }
   }
 
   const scopeOptions: Array<{ value: DesignScope; label: string }> = [
-    { value: 'current', label: 'This Design' },
-    { value: 'library', label: 'Standard Library' },
+    { value: 'current', label: t('change-orders.addDialogs.addBomChild.thisDesign') },
+    { value: 'library', label: t('change-orders.addDialogs.addBomChild.standardLibrary') },
   ]
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto auto-hide-scroll">
         <DialogHeader>
-          <DialogTitle>Add BOM Child</DialogTitle>
+          <DialogTitle>{t('change-orders.addDialogs.addBomChild.title')}</DialogTitle>
           <DialogDescription>
-            Add a child part to{' '}
-            <span className="font-medium">{parentItemNumber}</span> in{' '}
-            <span className="font-medium">{currentDesignCode}</span> through
-            this ECO
+            {t('change-orders.addDialogs.addBomChild.descBody', { parent: parentItemNumber, design: currentDesignCode })}
           </DialogDescription>
         </DialogHeader>
 
@@ -148,19 +147,19 @@ export function AddBomChildToChangeOrderDialog({
             <Info className="h-5 w-5 text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" />
             <div className="text-sm">
               <p className="font-medium text-cyan-900 dark:text-cyan-100">
-                BOM Change via ECO
+                {t('change-orders.addDialogs.addBomChild.bannerTitle')}
               </p>
               <p className="text-cyan-700 dark:text-cyan-300 mt-0.5">
-                This BOM change will be tracked by the ECO. The child part will{' '}
-                <strong>not</strong> be automatically added as an affected item
-                - only the parent's BOM is being modified.
+                {t('change-orders.addDialogs.addBomChild.bannerBody1')}{' '}
+                <strong>{t('change-orders.addDialogs.addBomChild.bannerBodyNot')}</strong>{' '}
+                {t('change-orders.addDialogs.addBomChild.bannerBody2')}
               </p>
             </div>
           </div>
 
           {/* Source Selector */}
           <div>
-            <Label className="text-sm font-medium mb-2 block">Source</Label>
+            <Label className="text-sm font-medium mb-2 block">{t('change-orders.addDialogs.addBomChild.source')}</Label>
             <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
               {scopeOptions.map((option) => (
                 <button
@@ -182,12 +181,12 @@ export function AddBomChildToChangeOrderDialog({
 
           {/* Search Input */}
           <div>
-            <Label>Search Parts</Label>
+            <Label>{t('change-orders.addDialogs.addBomChild.searchParts')}</Label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 type="text"
-                placeholder="Search by part number or name..."
+                placeholder={t('change-orders.addDialogs.addBomChild.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9"
@@ -199,15 +198,15 @@ export function AddBomChildToChangeOrderDialog({
           <div className="border border-slate-300 dark:border-slate-700 rounded-lg max-h-48 overflow-y-auto auto-hide-scroll">
             {searching ? (
               <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">
-                Searching...
+                {t('change-orders.addDialogs.addBomChild.searching')}
               </div>
             ) : searchQuery.length < 2 ? (
               <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">
-                Type at least 2 characters to search
+                {t('change-orders.addDialogs.addBomChild.typeMin')}
               </div>
             ) : searchResults.length === 0 ? (
               <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">
-                No parts found matching "{searchQuery}"
+                {t('change-orders.addDialogs.addBomChild.noPartsMatch', { q: searchQuery })}
               </div>
             ) : (
               <div className="divide-y divide-slate-200 dark:divide-slate-700">
@@ -274,7 +273,7 @@ export function AddBomChildToChangeOrderDialog({
           {selectedItem && (
             <div className="grid grid-cols-2 gap-4 pt-2 border-t">
               <div>
-                <Label>Quantity</Label>
+                <Label>{t('change-orders.addDialogs.addBomChild.quantity')}</Label>
                 <Input
                   type="number"
                   min="0"
@@ -289,18 +288,18 @@ export function AddBomChildToChangeOrderDialog({
                 />
                 {quantityInvalid && (
                   <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                    A BOM line needs a decimal quantity, e.g. 4 or 2.5
+                    {t('change-orders.addDialogs.addBomChild.quantityHint')}
                   </p>
                 )}
               </div>
               <div>
-                <Label>Find Number</Label>
+                <Label>{t('change-orders.addDialogs.addBomChild.findNumber')}</Label>
                 <Input
                   type="number"
                   min="1"
                   value={findNumber}
                   onChange={(e) => setFindNumber(e.target.value)}
-                  placeholder="Optional"
+                  placeholder={t('change-orders.addDialogs.addBomChild.optional')}
                 />
               </div>
             </div>
@@ -313,14 +312,14 @@ export function AddBomChildToChangeOrderDialog({
             variant="outline"
             onClick={() => onOpenChange(false)}
           >
-            Cancel
+            {t('change-orders.addDialogs.addBomChild.cancel')}
           </Button>
           <Button
             type="button"
             onClick={handleAdd}
             disabled={!selectedItem || quantityInvalid || loading}
           >
-            {loading ? 'Adding...' : 'Add to BOM'}
+            {loading ? t('change-orders.addDialogs.addBomChild.adding') : t('change-orders.addDialogs.addBomChild.addToBom')}
           </Button>
         </DialogFooter>
       </DialogContent>

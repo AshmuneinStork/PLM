@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, Loader2, X } from 'lucide-react'
 import type { CanApproveResult } from '@cascadia/commons/lifecycles/types'
 import {
@@ -43,6 +44,7 @@ export function ApprovalDialog({
   onApprovalSubmitted,
   changeOrderNumber,
 }: ApprovalDialogProps) {
+  const { t } = useTranslation('entities')
   const { handleError, showSuccess } = useErrorHandler()
   const [submitting, setSubmitting] = useState(false)
   const [selectedRoleId, setSelectedRoleId] = useState<string | undefined>(
@@ -86,8 +88,8 @@ export function ApprovalDialog({
       })
 
       showSuccess(
-        vote === 'approved' ? 'Approval submitted' : 'Rejection submitted',
-        `Your ${vote === 'approved' ? 'approval' : 'rejection'} has been recorded`,
+        vote === 'approved' ? t('change-orders.addDialogs.approval.approvedTitle') : t('change-orders.addDialogs.approval.rejectedTitle'),
+        t(vote === 'approved' ? 'change-orders.addDialogs.approval.recordedApproval' : 'change-orders.addDialogs.approval.recordedRejection'),
       )
       onApprovalSubmitted()
       onOpenChange(false)
@@ -98,7 +100,7 @@ export function ApprovalDialog({
       setSelectedRoleId(undefined)
       setComments('')
     } catch (error) {
-      handleError(error, { title: 'Failed to submit approval' })
+      handleError(error, { title: t('change-orders.addDialogs.approval.failedTitle') })
     } finally {
       setSubmitting(false)
     }
@@ -108,7 +110,7 @@ export function ApprovalDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Submit Approval</DialogTitle>
+          <DialogTitle>{t('change-orders.addDialogs.approval.title')}</DialogTitle>
           <DialogDescription>
             Review and submit your approval decision for this workflow state.
           </DialogDescription>
@@ -118,7 +120,7 @@ export function ApprovalDialog({
           {/* Approval Identity Selection */}
           {hasMultipleOptions && (
             <div className="space-y-2">
-              <Label>Approve as</Label>
+              <Label>{t('change-orders.addDialogs.approval.approveAs')}</Label>
               <Select
                 value={selectedRoleId || 'self'}
                 onValueChange={(value) =>
@@ -126,11 +128,11 @@ export function ApprovalDialog({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select how to approve" />
+                  <SelectValue placeholder={t('change-orders.addDialogs.approval.selectHow')} />
                 </SelectTrigger>
                 <SelectContent>
                   {canApproveAsUser && (
-                    <SelectItem value="self">Yourself</SelectItem>
+                    <SelectItem value="self">{t('change-orders.addDialogs.approval.yourself')}</SelectItem>
                   )}
                   {canApproveAsRoles.map((role) => (
                     <SelectItem key={role.id} value={role.id}>
@@ -146,11 +148,11 @@ export function ApprovalDialog({
           {!hasMultipleOptions && (
             <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-md">
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Approving as:{' '}
+                {t('change-orders.addDialogs.approval.approvingAs')}
                 <span className="font-medium text-slate-900 dark:text-white">
                   {canApproveAsUser
-                    ? 'Yourself'
-                    : canApproveAsRoles[0]?.name || 'Unknown'}
+                    ? t('change-orders.addDialogs.approval.yourself')
+                    : canApproveAsRoles[0]?.name || t('change-orders.addDialogs.approval.unknown')}
                 </span>
               </p>
             </div>
@@ -158,12 +160,12 @@ export function ApprovalDialog({
 
           {/* Comments */}
           <div className="space-y-2">
-            <Label htmlFor="comments">Comments (optional)</Label>
+            <Label htmlFor="comments">{t('change-orders.addDialogs.approval.comments')}</Label>
             <textarea
               id="comments"
               value={comments}
               onChange={(e) => setComments(e.target.value)}
-              placeholder="Add any notes about your decision..."
+              placeholder={t('change-orders.addDialogs.approval.commentsPlaceholder')}
               className="w-full h-24 px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 resize-none"
             />
           </div>
@@ -178,7 +180,7 @@ export function ApprovalDialog({
             onClick={() => onOpenChange(false)}
             disabled={submitting}
           >
-            Cancel
+            {t('change-orders.addDialogs.approval.cancel')}
           </Button>
           <Button
             type="button"
@@ -191,7 +193,7 @@ export function ApprovalDialog({
             ) : (
               <>
                 <X className="h-4 w-4 mr-2" />
-                Reject
+                {t('change-orders.addDialogs.approval.reject')}
               </>
             )}
           </Button>
@@ -205,7 +207,7 @@ export function ApprovalDialog({
             ) : (
               <>
                 <Check className="h-4 w-4 mr-2" />
-                Approve
+                {t('change-orders.addDialogs.approval.approve')}
               </>
             )}
           </Button>

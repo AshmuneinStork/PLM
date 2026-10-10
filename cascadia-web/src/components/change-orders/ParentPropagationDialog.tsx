@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { AlertTriangle, ChevronRight, Loader2 } from 'lucide-react'
 import { formatRevision } from '@cascadia/commons/types/lifecycle'
@@ -52,6 +53,7 @@ export function ParentPropagationDialog({
   targetItem,
   onSuccess,
 }: ParentPropagationDialogProps) {
+  const { t } = useTranslation('entities')
   const { alert } = useAlertDialog()
   const { handleError, showWarning } = useErrorHandler()
   const [loading, setLoading] = useState(true)
@@ -79,7 +81,7 @@ export function ParentPropagationDialog({
 
       setAncestors(response.data.ancestors)
     } catch (error) {
-      handleError(error, { title: 'Failed to load parent items' })
+      handleError(error, { title: t('change-orders.addDialogs.parent.loadFailedTitle') })
     } finally {
       setLoading(false)
     }
@@ -177,16 +179,13 @@ export function ParentPropagationDialog({
           itemsToAdd.push({
             affectedItemId: ancestor.itemId,
             changeAction: action,
-            changeDescription: `Parent of ${targetItem.itemNumber}`,
+            changeDescription: t('change-orders.addDialogs.parent.parentOf', { number: targetItem.itemNumber }),
           })
         }
       }
 
       if (itemsToAdd.length === 0) {
-        showWarning(
-          'Nothing to add',
-          'None of the selected items are in a state this change order can act on.',
-        )
+        showWarning(t('change-orders.addDialogs.parent.nothingTitle'), t('change-orders.addDialogs.parent.nothingBody'))
         return
       }
 
@@ -198,13 +197,13 @@ export function ParentPropagationDialog({
       })
 
       alert({
-        title: 'Items Added',
-        description: `${itemsToAdd.length} item(s) have been added to the change order.`,
+        title: t('change-orders.addDialogs.parent.addedTitle'),
+        description: t('change-orders.addDialogs.parent.addedCountBody', { count: itemsToAdd.length }),
       })
 
       onSuccess()
     } catch (error) {
-      handleError(error, { title: 'Failed to add items to the change order' })
+      handleError(error, { title: t('change-orders.addDialogs.parent.failedTitle') })
     } finally {
       setSubmitting(false)
     }
@@ -229,7 +228,7 @@ export function ParentPropagationDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add Item with Parent Chain</DialogTitle>
+          <DialogTitle>{t('change-orders.addDialogs.parent.title')}</DialogTitle>
           <DialogDescription>
             {targetItem.itemNumber} has parent assemblies. Select which parents
             to include in this ECO.
@@ -245,7 +244,7 @@ export function ParentPropagationDialog({
             {/* Target item */}
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
               <div className="flex items-center gap-2">
-                <Badge variant="default">Target</Badge>
+                <Badge variant="default">{t('change-orders.addDialogs.parent.targetLabel')}</Badge>
                 <span className="font-semibold text-slate-900 dark:text-slate-100">
                   {targetItem.itemNumber}
                 </span>
@@ -255,7 +254,7 @@ export function ParentPropagationDialog({
               </div>
               <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                 Rev {formatRevision(targetItem.revision)} ({targetItem.state}) →{' '}
-                {describeTarget(targetItem.itemId) ?? 'no action available'}
+                {describeTarget(targetItem.itemId) ?? t('change-orders.addDialogs.parent.noAction')}
               </div>
             </div>
 
@@ -292,7 +291,7 @@ export function ParentPropagationDialog({
                       </div>
                     </div>
                     <Badge variant="warning" className="text-xs">
-                      Level {ancestor.depth}
+                      {t('change-orders.addDialogs.parent.level', { depth: ancestor.depth })}
                     </Badge>
                   </div>
                 ))}
@@ -303,7 +302,7 @@ export function ParentPropagationDialog({
             {otherAncestors.length > 0 && (
               <div className="space-y-2">
                 <div className="text-sm font-medium text-slate-500">
-                  Other parents (no new revision)
+                  {t('change-orders.addDialogs.parent.otherParents')}
                 </div>
                 {otherAncestors.map((ancestor) => (
                   <div
@@ -328,11 +327,11 @@ export function ParentPropagationDialog({
                       <div className="text-xs text-slate-600 dark:text-slate-400 ml-5">
                         Rev {formatRevision(ancestor.revision)} (
                         {ancestor.state}) —{' '}
-                        {describeTarget(ancestor.itemId) ?? 'no change needed'}
+                        {describeTarget(ancestor.itemId) ?? t('change-orders.addDialogs.parent.noChange')}
                       </div>
                     </div>
                     <Badge variant="secondary" className="text-xs">
-                      Level {ancestor.depth}
+                      {t('change-orders.addDialogs.parent.level', { depth: ancestor.depth })}
                     </Badge>
                   </div>
                 ))}
@@ -341,10 +340,10 @@ export function ParentPropagationDialog({
 
             {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Description (optional)</Label>
+              <Label htmlFor="description">{t('change-orders.addDialogs.parent.descriptionLabel')}</Label>
               <Textarea
                 id="description"
-                placeholder="Describe the change..."
+                placeholder={t('change-orders.addDialogs.parent.describePh')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
@@ -355,7 +354,7 @@ export function ParentPropagationDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('change-orders.addDialogs.parent.cancel')}
           </Button>
           <Button onClick={handleSubmit} disabled={loading || submitting}>
             {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
