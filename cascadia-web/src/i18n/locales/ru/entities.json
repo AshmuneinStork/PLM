@@ -1471,7 +1471,9 @@
       "edit": "Изменить",
       "del": "Удалить",
       "emptyMessage": "Элементы ПО не найдены",
-      "emptyDescription": "Создайте первый элемент ПО, чтобы начать"
+      "emptyDescription": "Создайте первый элемент ПО, чтобы начать",
+      "targetHardware": "Целевое оборудование",
+      "sourceMode": "Режим исходников"
     },
     "typeLabels": {
       "firmware": "Прошивка",
@@ -1507,6 +1509,87 @@
       "deleteBody": "Вы уверены, что хотите удалить {{itemNumber}}? Это действие нельзя отменить.",
       "deleteAction": "Удалить",
       "cancelAction": "Отмена"
+    },
+    "sourceModeLabels": {
+      "internal": "Внутренний (исходники в Cascadia)",
+      "external": "Внешний (зафиксированная ссылка на репозиторий)"
+    },
+    "header": {
+      "createTitle": "Создать элемент ПО",
+      "createSubtitle": "Элемент конфигурации за строкой прошивки или спецификации ПО",
+      "unnamed": "Без названия",
+      "cancel": "Отмена",
+      "saving": "Сохранение...",
+      "createSoftware": "Создать ПО",
+      "saveChanges": "Сохранить изменения",
+      "edit": "Изменить",
+      "revise": "Ревизия",
+      "delete": "Удалить",
+      "deleteTitle": "Удалить ПО",
+      "cannotEditTitle": "Невозможно изменить элемент",
+      "checkedOutByYou": "Заблокировано вами",
+      "checkedOutByOther": "Заблокировано: {{name}}",
+      "cannotEditHistorical": "Нельзя изменять исторические версии",
+      "mainProtected": "В этом проекте есть выпущенные элементы, поэтому main защищён. Переключитесь на ветку ECO или workspace.",
+      "editingUnavailable": "Редактирование недоступно в этом контексте",
+      "historicalReadOnly": "Исторические версии доступны только для чтения.",
+      "releasedReadOnly": "Выпущенные исходники только для чтения. Создайте ревизию для изменения.",
+      "branchLocked": "Эта ветка заблокирована, пока извещение на согласовании."
+    },
+    "tabs": {
+      "details": "Детали",
+      "source": "Исходники",
+      "history": "История"
+    },
+    "form": {
+      "itemNumber": "Номер",
+      "itemNumberPlaceholder": "Автоназначение (SW-...)",
+      "name": "Название",
+      "namePlaceholder": "например, прошивка мотора TDJ-25",
+      "design": "Проект",
+      "softwareType": "Тип ПО",
+      "sourceMode": "Режим исходников",
+      "repositoryUrl": "URL репозитория",
+      "repositoryUrlPlaceholder": "https://github.com/organization/repository",
+      "pinnedRef": "Зафиксированная ссылка",
+      "pinnedRefPlaceholder": "например, v2.3.0, release/2.3 или коммит",
+      "commitSha": "SHA коммита",
+      "commitShaPlaceholder": "Необязательно полный SHA 40 или 64 символа",
+      "externalHint": "Ссылка хранится вручную. Cascadia не проверяет её по репозиторию и не синхронизирует.",
+      "version": "Версия",
+      "versionPlaceholder": "например, 2.3.0",
+      "targetHardware": "Целевое оборудование",
+      "targetHardwarePlaceholder": "например, STM32F407, плата rev C",
+      "toolchain": "Тулчейн",
+      "toolchainPlaceholder": "например, arm-none-eabi-gcc 13.2, CMake",
+      "descriptionPlaceholder": "Что делает это ПО, scope и ограничения...",
+      "itemLabel": "элемент ПО"
+    },
+    "detail": {
+      "overviewTitle": "Обзор",
+      "softwareInfoTitle": "Информация о ПО",
+      "descriptionTitle": "Описание",
+      "sourceTitle": "Исходники",
+      "modeLabel": "Режим",
+      "sourceSnapshotLabel": "Снимок исходников",
+      "importedSnapshot": "Импортировано (см. вкладку «Исходники»)",
+      "noSnapshot": "Исходники пока не импортированы",
+      "draftLabel": "Черновик",
+      "draftValue": "Незафиксированные изменения (см. вкладку «Исходники»)",
+      "customAttributesTitle": "Пользовательские атрибуты",
+      "noAttributes": "Дополнительных атрибутов нет",
+      "metadataTitle": "Метаданные",
+      "revisionLabel": "Ревизия",
+      "createdLabel": "Создано",
+      "modifiedLabel": "Изменено"
+    },
+    "external": {
+      "repositoryLabel": "Репозиторий",
+      "noRepository": "Репозиторий не привязан",
+      "title": "Внешний источник",
+      "description": "Источник зафиксирован по ссылке. Cascadia не следит за репозиторием.",
+      "pinnedRef": "Зафиксированная ссылка",
+      "commitSha": "SHA коммита"
     }
   }
 }

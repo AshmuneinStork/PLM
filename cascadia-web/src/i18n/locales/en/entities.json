@@ -1419,7 +1419,9 @@
       "edit": "Edit",
       "del": "Delete",
       "emptyMessage": "No software items found",
-      "emptyDescription": "Create your first software item to get started"
+      "emptyDescription": "Create your first software item to get started",
+      "targetHardware": "Target Hardware",
+      "sourceMode": "Source Mode"
     },
     "typeLabels": {
       "firmware": "Firmware",
@@ -1453,6 +1455,87 @@
       "deleteBody": "Are you sure you want to delete {{itemNumber}}? This action cannot be undone.",
       "deleteAction": "Delete",
       "cancelAction": "Cancel"
+    },
+    "sourceModeLabels": {
+      "internal": "Internal (source lives in Cascadia)",
+      "external": "External (pinned repository ref)"
+    },
+    "header": {
+      "createTitle": "Create Software Item",
+      "createSubtitle": "The configuration item behind a firmware or software BOM line",
+      "unnamed": "Unnamed",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "createSoftware": "Create Software",
+      "saveChanges": "Save Changes",
+      "edit": "Edit",
+      "revise": "Revise",
+      "delete": "Delete",
+      "deleteTitle": "Delete Software",
+      "cannotEditTitle": "Cannot edit item",
+      "checkedOutByYou": "Checked out by you",
+      "checkedOutByOther": "Checked out by {{name}}",
+      "cannotEditHistorical": "Cannot edit historical versions",
+      "mainProtected": "This design has released items, so main is protected. Switch to an ECO or workspace branch to edit this item.",
+      "editingUnavailable": "Editing not available in this context",
+      "historicalReadOnly": "Historical versions are read-only.",
+      "releasedReadOnly": "Released source is read-only. Revise this item to edit it.",
+      "branchLocked": "This branch is locked while its change order is out for approval."
+    },
+    "tabs": {
+      "details": "Details",
+      "source": "Source",
+      "history": "History"
+    },
+    "form": {
+      "itemNumber": "Item Number",
+      "itemNumberPlaceholder": "Auto-assigned (SW-...)",
+      "name": "Name",
+      "namePlaceholder": "e.g., TDJ-25 Motor Firmware",
+      "design": "Design",
+      "softwareType": "Software Type",
+      "sourceMode": "Source Mode",
+      "repositoryUrl": "Repository URL",
+      "repositoryUrlPlaceholder": "https://github.com/organization/repository",
+      "pinnedRef": "Pinned Reference",
+      "pinnedRefPlaceholder": "e.g., v2.3.0, release/2.3, or a commit",
+      "commitSha": "Commit SHA",
+      "commitShaPlaceholder": "Optional full 40- or 64-character SHA",
+      "externalHint": "The reference is stored manually. Cascadia does not currently verify it against the repository or keep it synchronized.",
+      "version": "Version",
+      "versionPlaceholder": "e.g., 2.3.0",
+      "targetHardware": "Target Hardware",
+      "targetHardwarePlaceholder": "e.g., STM32F407, board rev C",
+      "toolchain": "Toolchain",
+      "toolchainPlaceholder": "e.g., arm-none-eabi-gcc 13.2, CMake",
+      "descriptionPlaceholder": "What this software does, its scope, and constraints...",
+      "itemLabel": "software item"
+    },
+    "detail": {
+      "overviewTitle": "Overview",
+      "softwareInfoTitle": "Software Information",
+      "descriptionTitle": "Description",
+      "sourceTitle": "Source",
+      "modeLabel": "Mode",
+      "sourceSnapshotLabel": "Source snapshot",
+      "importedSnapshot": "Imported (see Source tab)",
+      "noSnapshot": "No source imported yet",
+      "draftLabel": "Draft",
+      "draftValue": "Uncommitted changes (see Source tab)",
+      "customAttributesTitle": "Custom Attributes",
+      "noAttributes": "No custom attributes defined.",
+      "metadataTitle": "Metadata",
+      "revisionLabel": "Revision",
+      "createdLabel": "Created",
+      "modifiedLabel": "Modified"
+    },
+    "external": {
+      "repositoryLabel": "Repository",
+      "noRepository": "No repository URL recorded",
+      "title": "External source",
+      "description": "Development takes place outside Cascadia. This repository pin is maintained manually; Cascadia does not fetch, mirror, or synchronize the repository.",
+      "pinnedRef": "Pinned reference",
+      "commitSha": "Commit SHA"
     }
   }
 }
