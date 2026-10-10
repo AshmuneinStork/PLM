@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import {
   ArrowUpCircle,
@@ -15,6 +16,7 @@ import {
   Plus,
   Trash2,
 } from 'lucide-react'
+import type { TFunction } from 'i18next'
 import type { VersionContext } from '@/hooks/useVersionContext'
 import { useLifecyclePhases } from '@/hooks/useLifecyclePhases'
 import {
@@ -84,9 +86,13 @@ function formatFieldName(fieldName: string): string {
 }
 
 // Helper to format field values for display
-function formatValue(value: unknown): string {
-  if (value === null || value === undefined) return '(empty)'
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No'
+function formatValue(t: TFunction<'entities'>, value: unknown): string {
+  if (value === null || value === undefined)
+    return t('common.itemHistory.emptyValue')
+  if (typeof value === 'boolean')
+    return value
+      ? t('common.itemHistory.yesValue')
+      : t('common.itemHistory.noValue')
   if (typeof value === 'object') return JSON.stringify(value)
   return String(value)
 }
@@ -106,7 +112,13 @@ function formatRelationshipValue(value: unknown): string | null {
 }
 
 // Render a single relationship field change with a human-readable description
-function RelationshipChange({ change }: { change: FieldChange }) {
+function RelationshipChange({
+  change,
+  t,
+}: {
+  change: FieldChange
+  t: TFunction<'entities'>
+}) {
   const fieldName = change.fieldName
 
   // Determine the action type from the fieldName pattern
@@ -115,9 +127,9 @@ function RelationshipChange({ change }: { change: FieldChange }) {
     return (
       <div className="flex items-start gap-2 text-sm">
         <span className="text-green-600 dark:text-green-400">
-          + Added{' '}
+          {t('common.itemHistory.addedPrefix')}{' '}
           <span className="font-medium">
-            {label || formatValue(change.newValue)}
+            {label || formatValue(t, change.newValue)}
           </span>
         </span>
       </div>
@@ -129,9 +141,9 @@ function RelationshipChange({ change }: { change: FieldChange }) {
     return (
       <div className="flex items-start gap-2 text-sm">
         <span className="text-red-600 dark:text-red-400">
-          − Removed{' '}
+          {t('common.itemHistory.removedPrefix')}{' '}
           <span className="font-medium">
-            {label || formatValue(change.oldValue)}
+            {label || formatValue(t, change.oldValue)}
           </span>
         </span>
       </div>
@@ -182,11 +194,11 @@ function RelationshipChange({ change }: { change: FieldChange }) {
         {formatFieldName(change.fieldPath || change.fieldName)}:
       </span>
       <span className="text-red-600 dark:text-red-400 line-through">
-        {formatValue(change.oldValue)}
+        {formatValue(t, change.oldValue)}
       </span>
       <span className="text-slate-400 dark:text-slate-500">→</span>
       <span className="text-green-600 dark:text-green-400">
-        {formatValue(change.newValue)}
+        {formatValue(t, change.newValue)}
       </span>
     </div>
   )
@@ -196,9 +208,11 @@ function RelationshipChange({ change }: { change: FieldChange }) {
 function FieldChangesList({
   changes,
   itemId,
+  t,
 }: {
   changes: Array<FieldChange>
   itemId: string
+  t: TFunction<'entities'>
 }) {
   if (changes.length === 0) return null
 
@@ -213,11 +227,11 @@ function FieldChangesList({
   )
 
   const categoryLabels: Record<string, string> = {
-    core: 'Core Fields',
-    type: 'Type-Specific Fields',
-    attribute: 'Custom Attributes',
-    relationship: 'Relationships',
-    source: 'Source Files',
+    core: t('common.itemHistory.coreGroup'),
+    type: t('common.itemHistory.typeGroup'),
+    attribute: t('common.itemHistory.attributeGroup'),
+    relationship: t('common.itemHistory.relationshipGroup'),
+    source: t('common.itemHistory.sourceGroup'),
   }
 
   return (
@@ -232,7 +246,7 @@ function FieldChangesList({
               <SourceChangesList itemId={itemId} changes={categoryChanges} />
             ) : category === 'relationship' ? (
               categoryChanges.map((change, idx) => (
-                <RelationshipChange key={idx} change={change} />
+                <RelationshipChange key={idx} change={change} t={t} />
               ))
             ) : (
               categoryChanges.map((change, idx) => (
@@ -241,11 +255,11 @@ function FieldChangesList({
                     {formatFieldName(change.fieldPath || change.fieldName)}:
                   </span>
                   <span className="text-red-600 dark:text-red-400 line-through">
-                    {formatValue(change.oldValue)}
+                    {formatValue(t, change.oldValue)}
                   </span>
                   <span className="text-slate-400 dark:text-slate-500">→</span>
                   <span className="text-green-600 dark:text-green-400">
-                    {formatValue(change.newValue)}
+                    {formatValue(t, change.newValue)}
                   </span>
                 </div>
               ))
@@ -264,6 +278,7 @@ export function ItemHistoryTab({
   onViewHistoricalState,
   itemType,
 }: ItemHistoryTabProps) {
+  const { t } = useTranslation('entities')
   const { resolvePhase } = useLifecyclePhases(itemType)
   const [expandedCommits, setExpandedCommits] = useState<Set<string>>(new Set())
 
@@ -513,6 +528,7 @@ export function ItemHistoryTab({
                                   <FieldChangesList
                                     changes={entry.fieldChanges}
                                     itemId={itemId}
+                                    t={t}
                                   />
                                 )}
                               </>
