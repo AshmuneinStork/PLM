@@ -90,6 +90,13 @@ export function SoftwareTable({
     value,
   }))
 
+  const sourceModeFilterOptions = (['internal', 'external'] as const).map(
+    (value) => ({
+      label: t(`software.sourceModeLabels.${value}`),
+      value,
+    }),
+  )
+
   const columns: Array<DataGridColumn<Software>> = [
     {
       id: 'itemNumber',
@@ -156,7 +163,7 @@ export function SoftwareTable({
     },
     {
       id: 'targetHardware',
-      header: 'Target Hardware',
+      header: t('software.table.targetHardware'),
       accessorKey: 'targetHardware',
       enableFiltering: true,
       filterType: 'text',
@@ -165,20 +172,17 @@ export function SoftwareTable({
     },
     {
       id: 'sourceMode',
-      header: 'Source',
+      header: t('software.table.sourceMode'),
       accessorKey: 'sourceMode',
       enableFiltering: true,
       filterType: 'multiSelect',
-      filterOptions: [
-        { label: 'Internal', value: 'internal' },
-        { label: 'External', value: 'external' },
-      ],
+      filterOptions: sourceModeFilterOptions,
       cell: ({ getValue }) => {
         const value = getValue() as string | undefined
         if (!value) return '-'
         return (
           <Badge variant={value === 'internal' ? 'default' : 'secondary'}>
-            {value}
+            {t(`software.sourceModeLabels.${value}`)}
           </Badge>
         )
       },

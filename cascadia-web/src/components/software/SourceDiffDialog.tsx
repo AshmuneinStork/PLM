@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MergeView } from '@codemirror/merge'
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
@@ -105,6 +106,7 @@ export function SourceDiffDialog({
   target: SourceDiffTarget | null
   onClose: () => void
 }) {
+  const { t } = useTranslation('entities')
   const { handleError } = useErrorHandler()
   const [contents, setContents] = useState<{
     oldText: string
@@ -132,7 +134,7 @@ export function SourceDiffDialog({
       })
       .catch((error) => {
         if (!cancelled) {
-          handleError(error, { title: 'Failed to load diff' })
+          handleError(error, { title: t('software.diff.loadFailedTitle') })
           onClose()
         }
       })
@@ -149,16 +151,16 @@ export function SourceDiffDialog({
             {target?.path}
           </DialogTitle>
           <DialogDescription>
-            {target?.oldLabel ?? 'Before'} → {target?.newLabel ?? 'After'}
+            {target?.oldLabel ?? t('software.diff.before')} → {target?.newLabel ?? t('software.diff.after')}
           </DialogDescription>
         </DialogHeader>
         {!contents ? (
           <div className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-            Loading diff...
+            {t('software.diff.loading')}
           </div>
         ) : contents.binary ? (
           <div className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-            Binary file - line diff not available
+            {t('software.diff.binary')}
           </div>
         ) : (
           <SideBySideDiff

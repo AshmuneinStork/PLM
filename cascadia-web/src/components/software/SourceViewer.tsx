@@ -23,6 +23,7 @@ import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { basicSetup } from 'codemirror'
 import { oneDark } from '@codemirror/theme-one-dark'
+import { useTranslation } from 'react-i18next'
 import { languageFor } from './language'
 import { SourceDiffDialog } from './SourceDiffDialog'
 import type { Extension } from '@codemirror/state'
@@ -195,12 +196,14 @@ function TreeNodeRow({
   selectedPath,
   dirtyPaths,
   onSelect,
+  t,
 }: {
   node: TreeNode
   depth: number
   selectedPath: string | null
   dirtyPaths: Set<string>
   onSelect: (path: string) => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }) {
   const isDir = node.children.size > 0
   const [open, setOpen] = useState(depth < 2)
@@ -235,6 +238,7 @@ function TreeNodeRow({
               selectedPath={selectedPath}
               dirtyPaths={dirtyPaths}
               onSelect={onSelect}
+              t={t}
             />
           ))}
       </div>
@@ -260,7 +264,7 @@ function TreeNodeRow({
       {isDirty && (
         <span
           className="ml-auto h-2 w-2 shrink-0 rounded-full bg-amber-500"
-          title="Unsaved changes"
+          title={t('software.viewer.unsavedChanges')}
         />
       )}
     </button>
@@ -276,16 +280,18 @@ function VersionPicker({
   isLoading,
   isError,
   onPick,
+  t,
 }: {
   versions: Array<SoftwareVersion>
   isLoading: boolean
   isError: boolean
   onPick: (version: SoftwareVersion) => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }) {
   if (isLoading) {
     return (
       <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
-        Loading versions...
+        {t('software.viewer.versionPicker.loading')}
       </p>
     )
   }
@@ -293,7 +299,7 @@ function VersionPicker({
   if (isError) {
     return (
       <p className="py-6 text-center text-sm text-red-600 dark:text-red-400">
-        Could not load the other versions of this item.
+        {t('software.viewer.versionPicker.loadFailed')}
       </p>
     )
   }
@@ -301,7 +307,7 @@ function VersionPicker({
   if (versions.length === 0) {
     return (
       <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
-        No other versions of this item to compare against.
+        {t('software.viewer.versionPicker.empty')}
       </p>
     )
   }
@@ -318,7 +324,7 @@ function VersionPicker({
           <span className="font-mono">Rev {v.revision}</span>
           <span className="text-slate-500 dark:text-slate-400">
             {v.state}
-            {v.isCurrent ? ' · current' : ''}
+            {v.isCurrent ? ` · ${t('software.viewer.versionPicker.current')}` : ''}
           </span>
         </button>
       ))}
@@ -337,6 +343,7 @@ export function SourceViewer({
   readOnlyReason,
   onImported,
 }: SourceViewerProps) {
+  const { t } = useTranslation('entities')
   const { handleError, showSuccess } = useErrorHandler()
   const { confirm } = useAlertDialog()
   const invalidate = useInvalidateResources()
@@ -435,7 +442,7 @@ export function SourceViewer({
       await invalidate('software')
       return true
     } catch (error) {
-      handleError(error, { title: 'Failed to save draft' })
+      handleError(error, { title: t('software.viewer.toasts.savedDraftTitle') })
       return false
     } finally {
       setIsSavingDraft(false)
@@ -462,12 +469,13 @@ export function SourceViewer({
       },
       invalidates: ['software'],
       onSuccess: (_result, message) => {
-        showSuccess('Changes committed', message)
+        showSuccess(t('software.viewer.toasts.committedTitle'), message)
         setCommitDialogOpen(false)
         setCommitMessage('')
         onImported?.()
       },
-      onError: (error) => handleError(error, { title: 'Failed to commit' }),
+      onError: (error) =>
+      handleError(error, { title: t('software.viewer.toasts.commitFailedTitle') }),
     })
 
   const isCommitting = isSavingDraft || isCommitPending
@@ -491,16 +499,16 @@ export function SourceViewer({
     invalidates: ['software'],
     onSuccess: () => setDirtyFiles(new Map()),
     onError: (error) =>
-      handleError(error, { title: 'Failed to discard draft' }),
+      handleError(error, { title: t('software.viewer.toasts.discardFailedTitle') }),
   })
 
   const handleDiscard = useCallback(() => {
     confirm({
-      title: 'Discard draft',
+      title: t('software.viewer.toasts.discardTitle'),
       description:
-        'Throw away all uncommitted changes and return to the last committed tree?',
-      actionLabel: 'Discard',
-      cancelLabel: 'Keep editing',
+        t('software.viewer.toasts.discardBody'),
+      actionLabel: t('software.viewer.toasts.discardAction'),
+      cancelLabel: t('software.viewer.toasts.keepEditing'),
       variant: 'destructive',
       onConfirm: () => {
         // Drop the selection before the write: a file that exists only in the
@@ -533,7 +541,8 @@ export function SourceViewer({
       // and a read of anything else 404s.
       setSelectedPath(storedPath)
     },
-    onError: (error) => handleError(error, { title: 'Failed to create file' }),
+    onError: (error) =>
+      handleError(error, { title: t('software.viewer.toasts.createFailedTitle') }),
   })
 
   const handleCreateFile = useCallback(() => {
@@ -567,7 +576,8 @@ export function SourceViewer({
       // becomes 'src/b.c' there, and only that spelling reads back.
       setSelectedPath(storedPath)
     },
-    onError: (error) => handleError(error, { title: 'Failed to rename file' }),
+    onError: (error) =>
+      handleError(error, { title: t('software.viewer.toasts.renameFailedTitle') }),
   })
 
   const handleRename = useCallback(() => {
@@ -585,17 +595,18 @@ export function SourceViewer({
       )
     },
     invalidates: ['software'],
-    onError: (error) => handleError(error, { title: 'Failed to delete file' }),
+    onError: (error) =>
+      handleError(error, { title: t('software.viewer.toasts.deleteFailedTitle') }),
   })
 
   const handleDeleteFile = useCallback(() => {
     if (selectedPath === null) return
     const path = selectedPath
     confirm({
-      title: 'Delete file',
-      description: `Delete ${path} from the draft tree?`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('software.viewer.toasts.deleteTitle'),
+      description: t('software.viewer.toasts.deleteBody', { path }),
+      actionLabel: t('software.viewer.toasts.deleteAction'),
+      cancelLabel: t('software.viewer.toasts.cancelAction'),
       variant: 'destructive',
       onConfirm: () => {
         setDirtyFiles((prev) => {
@@ -624,14 +635,17 @@ export function SourceViewer({
           body: formData,
         })
         if (!response.ok) {
-          throw await apiErrorFromResponse(response, 'Import failed')
+          throw await apiErrorFromResponse(
+          response,
+          t('software.viewer.toasts.importFailedBody'),
+        )
         }
-        showSuccess('Source imported', successMessage)
+        showSuccess(t('software.viewer.toasts.importedTitle'), successMessage)
         setSelectedPath(null)
         await invalidate('software')
         onImported?.()
       } catch (error) {
-        handleError(error, { title: 'Failed to import source' })
+        handleError(error, { title: t('software.viewer.toasts.importFailedTitle') })
       } finally {
         setIsImporting(false)
       }
@@ -648,7 +662,7 @@ export function SourceViewer({
       formData.append('files', file, file.name)
       // A zip import replaces the whole tree - it IS the tree
       formData.append('replace', 'true')
-      await uploadFormData(formData, `Imported ${file.name}`)
+      await uploadFormData(formData, t('software.viewer.toasts.importedFile', { name: file.name }))
     },
     [uploadFormData],
   )
@@ -667,7 +681,7 @@ export function SourceViewer({
       e.target.value = ''
       await uploadFormData(
         formData,
-        `Imported ${files.length} file${files.length === 1 ? '' : 's'}`,
+        t('software.viewer.toasts.importedCount', { count: files.length }),
       )
     },
     [uploadFormData],
@@ -700,7 +714,7 @@ export function SourceViewer({
         onClick={() => zipInputRef.current?.click()}
       >
         <FileArchive className="mr-2 h-4 w-4" />
-        {isImporting ? 'Importing...' : 'Import zip'}
+        {isImporting ? t('software.viewer.importing') : t('software.viewer.importZip')}
       </Button>
       <Button
         variant="outline"
@@ -709,7 +723,7 @@ export function SourceViewer({
         onClick={() => filesInputRef.current?.click()}
       >
         <Upload className="mr-2 h-4 w-4" />
-        Add files
+        {t('software.viewer.addFiles')}
       </Button>
     </>
   )
@@ -729,7 +743,7 @@ export function SourceViewer({
         onClick={() => setNewFileDialogOpen(true)}
       >
         <FilePlus className="mr-2 h-4 w-4" />
-        New file
+        {t('software.viewer.newFile')}
       </Button>
       {(dirtyCount > 0 || hasDraft) && (
         <>
@@ -740,19 +754,19 @@ export function SourceViewer({
             onClick={() => void saveDraft()}
           >
             {isSavingDraft
-              ? 'Saving...'
+              ? t('software.viewer.saving')
               : dirtyCount > 0
-                ? `Save draft (${dirtyCount})`
-                : 'Draft saved'}
+                ? t('software.viewer.saveDraftCount', { count: dirtyCount })
+                : t('software.viewer.draftSaved')}
           </Button>
           <Button size="sm" onClick={() => setCommitDialogOpen(true)}>
             <GitCommitHorizontal className="mr-2 h-4 w-4" />
-            Commit
+            {t('software.viewer.commit')}
           </Button>
           {hasDraft && (
             <Button variant="outline" size="sm" onClick={handleDiscard}>
               <Undo2 className="mr-2 h-4 w-4" />
-              Discard
+              {t('software.viewer.discard')}
             </Button>
           )}
         </>
@@ -764,7 +778,7 @@ export function SourceViewer({
     return (
       <Card>
         <CardContent className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-          Loading source tree...
+          {t('software.viewer.loadingTree')}
         </CardContent>
       </Card>
     )
@@ -777,14 +791,14 @@ export function SourceViewer({
       <Card>
         <CardContent className="flex flex-col items-center gap-4 py-12">
           <p className="text-sm text-red-600 dark:text-red-400">
-            Could not load the source tree for this item.
+            {t('software.viewer.loadTreeFailed')}
           </p>
           <Button
             variant="outline"
             size="sm"
             onClick={() => void refetchTree()}
           >
-            Retry
+            {t('software.viewer.retry')}
           </Button>
         </CardContent>
       </Card>
@@ -799,8 +813,8 @@ export function SourceViewer({
         <CardContent className="flex flex-col items-center gap-4 py-12">
           <p className="text-sm text-slate-500 dark:text-slate-400">
             {canImport
-              ? 'No source tree yet. Import a zip archive or individual files to get started.'
-              : 'No source tree yet.'}
+              ? t('software.viewer.emptyWithImport')
+              : t('software.viewer.empty')}
           </p>
           <div className="flex gap-2">
             {importButtons}
@@ -817,12 +831,12 @@ export function SourceViewer({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            {tree.fileCount} {tree.fileCount === 1 ? 'file' : 'files'} ·{' '}
+            {t('software.viewer.file', { count: tree.fileCount })} ·{' '}
             {formatSize(tree.totalSize)}
           </p>
           {hasDraft && (
             <Badge variant="warning" className="text-xs">
-              Draft — uncommitted changes
+              {t('software.viewer.draftBadge')}
             </Badge>
           )}
         </div>
@@ -834,7 +848,7 @@ export function SourceViewer({
             onClick={() => setCompareOpen(true)}
           >
             <FileDiff className="mr-2 h-4 w-4" />
-            Compare
+            {t('software.viewer.compare')}
           </Button>
           {importButtons}
           {editButtons}
@@ -854,6 +868,7 @@ export function SourceViewer({
                   selectedPath={selectedPath}
                   dirtyPaths={new Set(dirtyFiles.keys())}
                   onSelect={setSelectedPath}
+                  t={t}
                 />
               ))}
           </CardContent>
@@ -864,7 +879,7 @@ export function SourceViewer({
           <CardContent className="p-0">
             {selectedPath === null ? (
               <div className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-                Select a file to view {canEdit ? 'or edit ' : ''}its contents
+                {canEdit ? t('software.viewer.selectFileEdit') : t('software.viewer.selectFile')}
               </div>
             ) : (
               <div>
@@ -906,16 +921,17 @@ export function SourceViewer({
                 </div>
                 {isLoadingFile ? (
                   <div className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-                    Loading file...
+                    {t('software.viewer.loadingFile')}
                   </div>
                 ) : fileFailed ? (
                   <div className="py-12 text-center text-sm text-red-600 dark:text-red-400">
-                    Could not load this file.
+                    {t('software.viewer.loadFileFailed')}
                   </div>
                 ) : fileContent?.isBinary ? (
                   <div className="py-12 text-center text-sm text-slate-500 dark:text-slate-400">
-                    Binary file ({formatSize(fileContent.size)}) - preview not
-                    available
+                    {t('software.viewer.binaryPreview', {
+                      size: formatSize(fileContent.size),
+                    })}
                   </div>
                 ) : fileContent ? (
                   <CodeEditor
@@ -937,12 +953,12 @@ export function SourceViewer({
       <Dialog open={commitDialogOpen} onOpenChange={setCommitDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Commit source changes</DialogTitle>
+            <DialogTitle>{t('software.viewer.commitTitle')}</DialogTitle>
           </DialogHeader>
           <Textarea
             value={commitMessage}
             onChange={(e) => setCommitMessage(e.target.value)}
-            placeholder="Describe the change (required)..."
+            placeholder={t('software.viewer.commitPlaceholder')}
             rows={3}
           />
           <DialogFooter>
@@ -951,13 +967,13 @@ export function SourceViewer({
               onClick={() => setCommitDialogOpen(false)}
               disabled={isCommitting}
             >
-              Cancel
+              {t('software.viewer.cancel')}
             </Button>
             <Button
               onClick={handleCommit}
               disabled={isCommitting || !commitMessage.trim()}
             >
-              {isCommitting ? 'Committing...' : 'Commit'}
+              {isCommitting ? t('software.viewer.committing') : t('software.viewer.commit')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -967,7 +983,7 @@ export function SourceViewer({
       <Dialog open={newFileDialogOpen} onOpenChange={setNewFileDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New file</DialogTitle>
+            <DialogTitle>{t('software.viewer.newFileTitle')}</DialogTitle>
           </DialogHeader>
           <Input
             value={newFilePath}
@@ -980,10 +996,10 @@ export function SourceViewer({
               variant="outline"
               onClick={() => setNewFileDialogOpen(false)}
             >
-              Cancel
+              {t('software.viewer.cancel')}
             </Button>
             <Button onClick={handleCreateFile} disabled={!newFilePath.trim()}>
-              Create
+              {t('software.viewer.create')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -993,7 +1009,7 @@ export function SourceViewer({
       <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Rename {selectedPath}</DialogTitle>
+            <DialogTitle>{t('software.viewer.renameTitle', { path: selectedPath })}</DialogTitle>
           </DialogHeader>
           <Input
             value={renameTo}
@@ -1005,10 +1021,10 @@ export function SourceViewer({
               variant="outline"
               onClick={() => setRenameDialogOpen(false)}
             >
-              Cancel
+              {t('software.viewer.cancel')}
             </Button>
             <Button onClick={handleRename} disabled={!renameTo.trim()}>
-              Rename
+              {t('software.viewer.rename')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1026,10 +1042,11 @@ export function SourceViewer({
       >
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Compare revisions</DialogTitle>
+            <DialogTitle>{t('software.viewer.compareTitle')}</DialogTitle>
           </DialogHeader>
           {!compareFrom ? (
             <VersionPicker
+              t={t}
               versions={versions}
               isLoading={isLoadingVersions}
               isError={versionsFailed}
@@ -1037,16 +1054,17 @@ export function SourceViewer({
             />
           ) : diffFailed ? (
             <p className="py-6 text-center text-sm text-red-600 dark:text-red-400">
-              Could not compare against Rev {compareFrom.revision}.
+              {t('software.viewer.compareFailed', { revision: compareFrom.revision })}
             </p>
           ) : !compareChanges ? (
             <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
-              Computing diff...
+              {t('software.viewer.computingDiff')}
             </p>
           ) : compareChanges.length === 0 ? (
             <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
-              No source differences between Rev {compareFrom.revision} and this
-              version.
+              {t('software.viewer.noDifferences', {
+                revision: compareFrom.revision,
+              })}
             </p>
           ) : (
             <div className="max-h-[50vh] space-y-1 overflow-auto">
@@ -1061,7 +1079,7 @@ export function SourceViewer({
                       oldHash: change.oldHash ?? null,
                       newHash: change.newHash ?? null,
                       oldLabel: `Rev ${compareFrom.revision}`,
-                      newLabel: 'This version',
+                      newLabel: t('software.viewer.thisVersion'),
                     })
                   }
                   className="flex w-full items-center gap-2 rounded px-3 py-1.5 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
