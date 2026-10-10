@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import type { Software } from '@cascadia/commons/items/types/software'
@@ -52,6 +53,7 @@ export const Route = createFileRoute('/software/$id')({
 })
 
 function SoftwareDetailPage() {
+  const { t } = useTranslation('entities')
   const router = useRouter()
   const navigate = useNavigate()
   const { showSuccess } = useErrorHandler()
@@ -74,8 +76,8 @@ function SoftwareDetailPage() {
     })
 
     showSuccess(
-      'Software updated',
-      `${updated.itemNumber} has been updated successfully`,
+      t('software.toasts.updatedTitle'),
+      t('software.toasts.updatedBody', { itemNumber: updated.itemNumber }),
     )
     await invalidate('software')
   }
@@ -87,7 +89,7 @@ function SoftwareDetailPage() {
       method: 'DELETE',
     })
 
-    showSuccess('Software deleted', `${software.itemNumber} has been deleted`)
+    showSuccess(t('software.toasts.deletedTitle'), t('software.toasts.deletedBody', { itemNumber: software.itemNumber }))
     await invalidate('software')
     navigate({ to: '/software' })
   }

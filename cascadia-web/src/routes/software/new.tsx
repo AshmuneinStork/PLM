@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { z } from 'zod'
@@ -24,6 +25,7 @@ export const Route = createFileRoute('/software/new')({
 })
 
 function NewSoftwarePage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { handleError, showSuccess } = useErrorHandler()
   const invalidate = useInvalidateResources()
@@ -48,15 +50,15 @@ function NewSoftwarePage() {
       )
 
       showSuccess(
-        'Software created',
-        `${software.name || 'Software item'} has been created successfully`,
+        t('software.toasts.createdTitle'),
+        t('software.toasts.createdBody', { name: software.name || t('software.list.title') }),
       )
 
       await invalidate('software')
 
       navigate({ to: '/software/$id', params: { id: result.data.item.id! } })
     } catch (error) {
-      handleError(error, { title: 'Failed to create software' })
+      handleError(error, { title: t('software.toasts.createFailedTitle') })
       throw error
     } finally {
       setIsSubmitting(false)

@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Edit, Eye, MoreVertical, Trash2 } from 'lucide-react'
 import type { Software } from '@cascadia/commons/items/types/software'
 import type {
@@ -73,6 +74,7 @@ export function SoftwareTable({
   pagination,
   onPaginationChange,
 }: SoftwareTableProps) {
+  const { t } = useTranslation('entities')
   // State filter options and badges come from the Software lifecycle's
   // configuration, not from a list in code
   const { data: lifecycle } = useLifecyclePhases('Software')
@@ -81,14 +83,21 @@ export function SoftwareTable({
     value: state.id,
   }))
 
+  const typeFilterOptions = (
+    ['firmware', 'application', 'library', 'configuration', 'fpga'] as const
+  ).map((value) => ({
+    label: t(`software.typeLabels.${value}`),
+    value,
+  }))
+
   const columns: Array<DataGridColumn<Software>> = [
     {
       id: 'itemNumber',
-      header: 'Item Number',
+      header: t('software.table.itemNumber'),
       accessorKey: 'itemNumber',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('software.table.searchPlaceholder'),
       cell: ({ row }) =>
         row.original.id ? (
           <Link
@@ -104,11 +113,11 @@ export function SoftwareTable({
     },
     {
       id: 'name',
-      header: 'Name',
+      header: t('software.table.name'),
       accessorKey: 'name',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('software.table.filterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
@@ -122,30 +131,24 @@ export function SoftwareTable({
     },
     {
       id: 'softwareType',
-      header: 'Type',
+      header: t('software.table.softwareType'),
       accessorKey: 'softwareType',
       enableFiltering: true,
       filterType: 'multiSelect',
-      filterOptions: [
-        { label: 'Firmware', value: 'firmware' },
-        { label: 'Application', value: 'application' },
-        { label: 'Library', value: 'library' },
-        { label: 'Configuration', value: 'configuration' },
-        { label: 'FPGA', value: 'fpga' },
-      ],
+      filterOptions: typeFilterOptions,
       cell: ({ getValue }) => {
         const value = getValue() as string | undefined
         if (!value) return '-'
-        return <span className="capitalize">{value}</span>
+        return <span>{t(`software.typeLabels.${value}`)}</span>
       },
     },
     {
       id: 'version',
-      header: 'Version',
+      header: t('software.table.version'),
       accessorKey: 'version',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('software.table.filterPlaceholder'),
       cell: ({ getValue }) => {
         const value = getValue() as string | undefined
         return value ? <span className="font-mono text-sm">{value}</span> : '-'
@@ -157,7 +160,7 @@ export function SoftwareTable({
       accessorKey: 'targetHardware',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('software.table.filterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
@@ -182,7 +185,7 @@ export function SoftwareTable({
     },
     {
       id: 'state',
-      header: 'State',
+      header: t('software.table.state'),
       accessorKey: 'state',
       enableFiltering: true,
       filterType: 'multiSelect',
@@ -205,7 +208,7 @@ export function SoftwareTable({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t('software.table.openMenu')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -213,14 +216,14 @@ export function SoftwareTable({
             <DropdownMenuItem asChild>
               <Link to="/software/$id" params={{ id: sw.id }}>
                 <Eye className="mr-2 h-4 w-4" />
-                View details
+                {t('software.table.viewDetails')}
               </Link>
             </DropdownMenuItem>
           )}
           {onEdit && (
             <DropdownMenuItem onClick={() => onEdit(sw)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('software.table.edit')}
             </DropdownMenuItem>
           )}
           {onDelete && (
@@ -231,7 +234,7 @@ export function SoftwareTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('software.table.del')}
               </DropdownMenuItem>
             </>
           )}
@@ -251,7 +254,7 @@ export function SoftwareTable({
           {onEdit && (
             <ContextMenuItem onClick={() => onEdit(sw)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('software.table.edit')}
             </ContextMenuItem>
           )}
           {onDelete && (
@@ -262,14 +265,14 @@ export function SoftwareTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('software.table.del')}
               </ContextMenuItem>
             </>
           )}
         </>
       )
     },
-    [onEdit, onDelete],
+    [onEdit, onDelete, t],
   )
 
   const getRowUrl = useCallback((row: Software) => {
@@ -289,8 +292,8 @@ export function SoftwareTable({
       defaultSorting={defaultSorting}
       defaultColumnFilters={defaultColumnFilters}
       defaultGlobalFilter={defaultGlobalFilter}
-      emptyMessage="No software items found"
-      emptyDescription="Create your first software item to get started"
+      emptyMessage={t('software.table.emptyMessage')}
+      emptyDescription={t('software.table.emptyDescription')}
       exportFilename="software"
       serverSidePagination={serverSidePagination}
       totalRows={totalRows}

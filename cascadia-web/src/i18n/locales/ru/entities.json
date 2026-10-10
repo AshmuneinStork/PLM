@@ -1453,5 +1453,60 @@
       "pressBrakeTitle": "Возможности листогиба",
       "surfaceGrinderTitle": "Возможности плоскошлифовального станка"
     }
+  },
+  "software": {
+    "table": {
+      "itemNumber": "Номер",
+      "name": "Название",
+      "version": "Версия",
+      "softwareType": "Тип",
+      "state": "Статус",
+      "searchPlaceholder": "Поиск...",
+      "filterPlaceholder": "Фильтр...",
+      "filterVersionPlaceholder": "Фильтр по версии...",
+      "filterStatePlaceholder": "Фильтр по статусу...",
+      "allTypes": "Все типы",
+      "openMenu": "Открыть меню",
+      "viewDetails": "Подробности",
+      "edit": "Изменить",
+      "del": "Удалить",
+      "emptyMessage": "Элементы ПО не найдены",
+      "emptyDescription": "Создайте первый элемент ПО, чтобы начать"
+    },
+    "typeLabels": {
+      "firmware": "Прошивка",
+      "application": "Приложение",
+      "library": "Библиотека",
+      "configuration": "Конфигурация",
+      "fpga": "ПЛИС",
+      "other": "Другое"
+    },
+    "list": {
+      "title": "ПО",
+      "subtitle": "Прошивки и элементы конфигурации ПО с версионированным исходным кодом",
+      "createAction": "Создать ПО",
+      "totalLabel": "Всего",
+      "cardTitle": "Всё ПО",
+      "cardCount_one": "{{count}} элемент в системе",
+      "cardCount_few": "{{count}} элемента в системе",
+      "cardCount_many": "{{count}} элементов в системе",
+      "cardCount_other": "{{count}} элементов в системе"
+    },
+    "toasts": {
+      "createdTitle": "ПО создано",
+      "createdBody": "{{name}} успешно создано",
+      "updatedTitle": "ПО обновлено",
+      "updatedBody": "{{itemNumber}} успешно обновлено",
+      "deletedTitle": "ПО удалено",
+      "deletedBody": "{{itemNumber}} удалено",
+      "deleteFailedTitle": "Не удалось удалить ПО",
+      "createFailedTitle": "Не удалось создать ПО"
+    },
+    "dialogs": {
+      "deleteTitle": "Удалить ПО",
+      "deleteBody": "Вы уверены, что хотите удалить {{itemNumber}}? Это действие нельзя отменить.",
+      "deleteAction": "Удалить",
+      "cancelAction": "Отмена"
+    }
   }
 }

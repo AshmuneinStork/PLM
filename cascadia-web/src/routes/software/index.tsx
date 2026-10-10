@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { z } from 'zod'
 import type { Software } from '@cascadia/commons/items/types/software'
@@ -68,6 +69,7 @@ export const Route = createFileRoute('/software/')({
 })
 
 function SoftwareListPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
   const { handleError, showSuccess } = useErrorHandler()
@@ -91,10 +93,10 @@ function SoftwareListPage() {
     if (!sw.id) return
 
     confirm({
-      title: 'Delete Software',
-      description: `Are you sure you want to delete ${sw.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('software.dialogs.deleteTitle'),
+      description: t('software.dialogs.deleteBody', { itemNumber: sw.itemNumber }),
+      actionLabel: t('software.dialogs.deleteAction'),
+      cancelLabel: t('software.dialogs.cancelAction'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -102,10 +104,10 @@ function SoftwareListPage() {
             method: 'DELETE',
           })
 
-          showSuccess('Software deleted', `${sw.itemNumber} has been deleted`)
+          showSuccess(t('software.toasts.deletedTitle'), t('software.toasts.deletedBody', { itemNumber: sw.itemNumber }))
           await invalidate('software')
         } catch (error) {
-          handleError(error, { title: 'Failed to delete software' })
+          handleError(error, { title: t('software.toasts.deleteFailedTitle') })
         }
       },
     })
@@ -117,16 +119,16 @@ function SoftwareListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-            Software
+            {t('software.list.title')}
           </h1>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Firmware and software configuration items with versioned source
+            {t('software.list.subtitle')}
           </p>
         </div>
         <Link to="/software/new">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            Create Software
+            {t('software.list.createAction')}
           </Button>
         </Link>
       </div>
@@ -136,15 +138,15 @@ function SoftwareListPage() {
         itemType="Software"
         filters={SOFTWARE_FILTERS}
         total={total}
-        totalLabel="Total"
+        totalLabel={t('software.list.totalLabel')}
       />
 
       {/* Software Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Software</CardTitle>
+          <CardTitle>{t('software.list.cardTitle')}</CardTitle>
           <CardDescription>
-            {total} {total === 1 ? 'item' : 'items'} in the system
+            {t('software.list.cardCount', { count: total })}
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -1401,5 +1401,58 @@
       "pressBrakeTitle": "Press Brake Capabilities",
       "surfaceGrinderTitle": "Surface Grinder Capabilities"
     }
+  },
+  "software": {
+    "table": {
+      "itemNumber": "Item Number",
+      "name": "Name",
+      "version": "Version",
+      "softwareType": "Type",
+      "state": "State",
+      "searchPlaceholder": "Search...",
+      "filterPlaceholder": "Filter...",
+      "filterVersionPlaceholder": "Filter version...",
+      "filterStatePlaceholder": "Filter state...",
+      "allTypes": "All types",
+      "openMenu": "Open menu",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "del": "Delete",
+      "emptyMessage": "No software items found",
+      "emptyDescription": "Create your first software item to get started"
+    },
+    "typeLabels": {
+      "firmware": "Firmware",
+      "application": "Application",
+      "library": "Library",
+      "configuration": "Configuration",
+      "fpga": "FPGA",
+      "other": "Other"
+    },
+    "list": {
+      "title": "Software",
+      "subtitle": "Firmware and software configuration items with versioned source",
+      "createAction": "Create Software",
+      "totalLabel": "Total",
+      "cardTitle": "All Software",
+      "cardCount_one": "{{count}} item in the system",
+      "cardCount_other": "{{count}} items in the system"
+    },
+    "toasts": {
+      "createdTitle": "Software created",
+      "createdBody": "{{name}} has been created successfully",
+      "updatedTitle": "Software updated",
+      "updatedBody": "{{itemNumber}} has been updated successfully",
+      "deletedTitle": "Software deleted",
+      "deletedBody": "{{itemNumber}} has been deleted",
+      "deleteFailedTitle": "Failed to delete software",
+      "createFailedTitle": "Failed to create software"
+    },
+    "dialogs": {
+      "deleteTitle": "Delete Software",
+      "deleteBody": "Are you sure you want to delete {{itemNumber}}? This action cannot be undone.",
+      "deleteAction": "Delete",
+      "cancelAction": "Cancel"
+    }
   }
 }
