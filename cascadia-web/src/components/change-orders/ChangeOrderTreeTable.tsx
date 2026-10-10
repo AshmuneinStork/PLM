@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useTranslation } from 'react-i18next'
 import { Check, ExternalLink, Minus, Plus } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { formatRevision } from '@cascadia/commons/types/lifecycle'
@@ -49,6 +50,7 @@ interface ChangeOrderTreeTableProps {
 function getChangeActionDisplay(
   action: string | null | undefined,
   isInEco: boolean | undefined,
+  t: (key: string) => string,
 ) {
   if (!isInEco) {
     return { variant: 'outline' as const, label: '—', icon: null }
@@ -58,31 +60,31 @@ function getChangeActionDisplay(
     case 'release':
       return {
         variant: 'success' as const,
-        label: 'Release',
+        label: t('change-orders.panels.actions.release'),
         icon: <Check className="h-3 w-3" />,
       }
     case 'revise':
       return {
         variant: 'default' as const,
-        label: 'Revise',
+        label: t('change-orders.panels.actions.revise'),
         icon: <Check className="h-3 w-3" />,
       }
     case 'obsolete':
       return {
         variant: 'destructive' as const,
-        label: 'Obsolete',
+        label: t('change-orders.panels.actions.obsolete'),
         icon: <Minus className="h-3 w-3" />,
       }
     case 'promote':
       return {
         variant: 'warning' as const,
-        label: 'Promote',
+        label: t('change-orders.panels.actions.promote'),
         icon: <Check className="h-3 w-3" />,
       }
     default:
       return {
         variant: 'success' as const,
-        label: 'In change order',
+        label: t('change-orders.panels.actions.inChangeOrder'),
         icon: <Check className="h-3 w-3" />,
       }
   }
@@ -107,6 +109,7 @@ export function ChangeOrderTreeTable({
   columnFilters,
   onColumnFilterChange,
 }: ChangeOrderTreeTableProps) {
+  const { t } = useTranslation('entities')
   // Lifecycles of the item types in this tree, for the final-state check on
   // the add-to-ECO action. Parts dominate; other types resolve through the
   // same per-type cache on demand.
@@ -121,10 +124,10 @@ export function ChangeOrderTreeTable({
   const columns: Array<ColumnDefinition> = [
     {
       id: 'item',
-      label: 'Item',
+      label: t('change-orders.panels.treeTable.colItem'),
       width: 'flex-[2] min-w-[200px]',
       filterType: 'text',
-      filterPlaceholder: 'Filter by item number...',
+      filterPlaceholder: t('change-orders.panels.treeTable.filterItem'),
       renderCell: (node) => (
         <>
           <span className="font-medium text-slate-900 dark:text-white truncate">
@@ -134,7 +137,7 @@ export function ChangeOrderTreeTable({
             <Badge
               variant="outline"
               className="text-xs text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-600 flex-shrink-0"
-              title={`From ${node.designName || node.designCode}`}
+              title={t('change-orders.panels.treeTable.externalTitle', { name: node.designName || node.designCode })}
             >
               {node.designCode}
             </Badge>
@@ -149,10 +152,10 @@ export function ChangeOrderTreeTable({
     },
     {
       id: 'name',
-      label: 'Name',
+      label: t('change-orders.panels.treeTable.colName'),
       width: 'flex-[2] min-w-[150px]',
       filterType: 'text',
-      filterPlaceholder: 'Filter by name...',
+      filterPlaceholder: t('change-orders.panels.treeTable.filterName'),
       renderCell: (node) => (
         <span className="truncate text-slate-600 dark:text-slate-400">
           {node.name}
@@ -161,11 +164,11 @@ export function ChangeOrderTreeTable({
     },
     {
       id: 'rev',
-      label: 'Rev',
+      label: t('change-orders.panels.treeTable.colRev'),
       width: 'w-16 flex-shrink-0',
       align: 'center',
       filterType: 'text',
-      filterPlaceholder: 'Filter by rev...',
+      filterPlaceholder: t('change-orders.panels.treeTable.filterRev'),
       renderCell: (node) => (
         <span className="text-xs text-slate-500">
           {formatRevision(node.revision)}
@@ -174,7 +177,7 @@ export function ChangeOrderTreeTable({
     },
     {
       id: 'state',
-      label: 'State',
+      label: t('change-orders.panels.treeTable.colState'),
       width: 'w-24 flex-shrink-0',
       align: 'center',
       // The tree spans item types, each with its own lifecycle: a free text
@@ -190,21 +193,22 @@ export function ChangeOrderTreeTable({
     },
     {
       id: 'action',
-      label: 'Action',
+      label: t('change-orders.panels.treeTable.colAction'),
       width: 'w-28 flex-shrink-0',
       align: 'center',
       filterType: 'multiSelect',
       filterOptions: [
-        { label: 'Release', value: 'release' },
-        { label: 'Revise', value: 'revise' },
-        { label: 'Obsolete', value: 'obsolete' },
-        { label: 'In change order', value: '__in_eco__' },
-        { label: 'Not in change order', value: '__not_in_eco__' },
+        { label: t('change-orders.panels.actions.release'), value: 'release' },
+        { label: t('change-orders.panels.actions.revise'), value: 'revise' },
+        { label: t('change-orders.panels.actions.obsolete'), value: 'obsolete' },
+        { label: t('change-orders.panels.actions.inChangeOrder'), value: '__in_eco__' },
+        { label: t('change-orders.panels.actions.notInChangeOrder'), value: '__not_in_eco__' },
       ],
       renderCell: (node) => {
         const actionDisplay = getChangeActionDisplay(
           node.changeAction,
           node.isInEco,
+          t,
         )
         if (node.isInEco) {
           return (
@@ -243,20 +247,20 @@ export function ChangeOrderTreeTable({
             }
           >
             <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
-            View
+            {t('change-orders.panels.treeTable.viewAction')}
           </ContextMenuItem>
         )}
         {(showAddChild || showAddToChangeOrder) && <ContextMenuSeparator />}
         {showAddChild && (
           <ContextMenuItem onClick={() => onAddChild(node)}>
             <Plus className="mr-1.5 h-3.5 w-3.5" />
-            Add Child
+            {t('change-orders.panels.treeTable.addChild')}
           </ContextMenuItem>
         )}
         {showAddToChangeOrder && (
           <ContextMenuItem onClick={() => onAddToChangeOrder(node)}>
             <Plus className="mr-1.5 h-3.5 w-3.5" />
-            Add to ECO
+            {t('change-orders.panels.treeTable.addToEco')}
           </ContextMenuItem>
         )}
       </>

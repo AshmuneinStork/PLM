@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -32,6 +33,7 @@ interface ChangeOrderSummaryDashboardProps {
 export function ChangeOrderSummaryDashboard({
   changeOrderId,
 }: ChangeOrderSummaryDashboardProps) {
+  const { t } = useTranslation('entities')
   const invalidate = useInvalidateResources()
   const {
     data: summary,
@@ -56,7 +58,7 @@ export function ChangeOrderSummaryDashboard({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Change Order Summary</CardTitle>
+          {/* i18n */}<CardTitle>{t('change-orders.panels.summary.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -79,15 +81,15 @@ export function ChangeOrderSummaryDashboard({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Change Order Summary</CardTitle>
+          {/* i18n */}<CardTitle>{t('change-orders.panels.summary.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 text-slate-500">
             <AlertCircle className="h-5 w-5" />
             <span>
               {isError
-                ? 'Unable to load change order summary'
-                : 'No summary available'}
+                ? t('change-orders.panels.summary.loadFailed')
+                : t('change-orders.panels.summary.noData')}
             </span>
           </div>
         </CardContent>
@@ -103,7 +105,7 @@ export function ChangeOrderSummaryDashboard({
           <CardHeader className="pb-3">
             <CardDescription className="flex items-center gap-2">
               <Box className="h-4 w-4" />
-              Designs Affected
+              {t('change-orders.panels.summary.designsAffected')}
             </CardDescription>
             <CardTitle className="text-3xl">{summary.designs.length}</CardTitle>
           </CardHeader>
@@ -112,7 +114,7 @@ export function ChangeOrderSummaryDashboard({
           <CardHeader className="pb-3">
             <CardDescription className="flex items-center gap-2">
               <Package className="h-4 w-4" />
-              Total Items
+              {t('change-orders.panels.summary.totalItems')}
             </CardDescription>
             <CardTitle className="text-3xl">
               {summary.totalItemsAffected}
@@ -127,7 +129,7 @@ export function ChangeOrderSummaryDashboard({
               ) : (
                 <AlertCircle className="h-4 w-4 text-yellow-500" />
               )}
-              Status
+              {t('change-orders.panels.summary.statusLabel')}
             </CardDescription>
             <CardTitle className="text-xl">
               {summary.changeOrder.state}
@@ -142,7 +144,7 @@ export function ChangeOrderSummaryDashboard({
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2 text-yellow-600 dark:text-yellow-400">
               <AlertCircle className="h-5 w-5" />
-              Validation Issues
+              {t('change-orders.panels.summary.validationTitle')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -161,9 +163,9 @@ export function ChangeOrderSummaryDashboard({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <div>
-            <CardTitle>Affected Designs</CardTitle>
+            <CardTitle>{t('change-orders.panels.summary.affectedDesigns')}</CardTitle>
             <CardDescription>
-              Designs and branches associated with this change order
+              {t('change-orders.panels.summary.affectedDesignsHint')}
             </CardDescription>
           </div>
           {isEditable && (
@@ -173,7 +175,7 @@ export function ChangeOrderSummaryDashboard({
               onClick={() => setAddDesignDialogOpen(true)}
             >
               <Plus className="h-4 w-4 mr-1" />
-              Add Design
+              {t('change-orders.panels.summary.addDesign')}
             </Button>
           )}
         </CardHeader>
@@ -209,11 +211,10 @@ export function ChangeOrderSummaryDashboard({
                       </div>
                     )}
                     <div className="text-sm text-slate-500">
-                      {design.itemsAffected}{' '}
-                      {design.itemsAffected === 1 ? 'item' : 'items'}
+                      {t('change-orders.panels.summary.itemCount', { count: design.itemsAffected })}
                     </div>
                     {design.hasCheckedOutItems && (
-                      <Badge variant="warning">checked out</Badge>
+                      <Badge variant="warning">{t('change-orders.panels.summary.checkedOut')}</Badge>
                     )}
                   </div>
                 </div>
@@ -222,9 +223,9 @@ export function ChangeOrderSummaryDashboard({
           ) : (
             <div className="text-center py-8 text-slate-500 dark:text-slate-400">
               <Package className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p className="font-medium">No designs affected yet</p>
+              <p className="font-medium">{t('change-orders.panels.summary.emptyTitle')}</p>
               <p className="text-sm mt-1">
-                Checkout items to this ECO to see them here
+                {t('change-orders.panels.summary.emptyHint')}
               </p>
             </div>
           )}

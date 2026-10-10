@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Handle, Position } from '@xyflow/react'
 import { formatRevision } from '@cascadia/commons/types/lifecycle'
 import { Badge } from '@/components/ui/Badge'
@@ -40,6 +41,7 @@ const actionColors: Record<
 
 export const ChangeOrderGraphItemNode = memo(
   ({ data }: ChangeOrderGraphItemNodeProps) => {
+    const { t } = useTranslation('entities')
     const {
       itemId,
       itemNumber,
@@ -112,7 +114,7 @@ export const ChangeOrderGraphItemNode = memo(
           )}
 
           <div className="text-xs font-semibold text-orange-600 dark:text-orange-400">
-            Change Order
+            {t('change-orders.panels.graphNode.ecoLabel')}
           </div>
         </div>
       )
@@ -217,7 +219,7 @@ export const ChangeOrderGraphItemNode = memo(
             variant={actionColors[changeAction] ?? 'secondary'}
             className="text-[10px] mt-1"
           >
-            {changeAction}
+            {t(`change-orders.panels.actions.${changeAction}`, { defaultValue: changeAction })}
           </Badge>
         )}
 

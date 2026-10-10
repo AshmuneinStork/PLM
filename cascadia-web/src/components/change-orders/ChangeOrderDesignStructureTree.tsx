@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ChevronDown,
   ChevronRight,
@@ -105,6 +106,7 @@ export function ChangeOrderDesignStructureTree({
   onBatchAddToChangeOrder: onBatchAddToChangeOrder,
   onItemsAdded,
 }: ChangeOrderDesignStructureTreeProps) {
+  const { t } = useTranslation('entities')
   const invalidate = useInvalidateResources()
 
   const {
@@ -125,7 +127,7 @@ export function ChangeOrderDesignStructureTree({
     [orphans, designId],
   )
   const changeOrderBranch = structure?.ecoBranch ?? null
-  const error = structureError ? 'Failed to load design structure.' : null
+  const error = structureError ? t('change-orders.panels.designTree.loadFailed') : null
 
   const fetchStructure = () => invalidate('change-orders')
 
@@ -442,7 +444,7 @@ export function ChangeOrderDesignStructureTree({
         </button>
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">
-            {designName || designCode || 'Untitled Design'}
+            {designName || designCode || t('change-orders.panels.designTree.untitled')}
           </h3>
           {designCode && designName && designCode !== designName && (
             <span className="text-sm text-slate-500 dark:text-slate-400">
@@ -452,7 +454,7 @@ export function ChangeOrderDesignStructureTree({
         </div>
         {changeOrderBranch && (
           <Badge variant="outline" className="text-xs">
-            {changeOrderBranch.itemsAffected} items affected
+            {t('change-orders.panels.designTree.itemsAffected', { count: changeOrderBranch.itemsAffected })}
           </Badge>
         )}
       </div>
@@ -479,11 +481,11 @@ export function ChangeOrderDesignStructureTree({
                   {showSelection && selection.selectedCount > 0 && (
                     <>
                       <Badge variant="default" className="text-xs">
-                        {selection.selectedCount} selected
+                        {t('change-orders.panels.designTree.selectedCount', { count: selection.selectedCount })}
                       </Badge>
                       <Button size="sm" onClick={handleBatchAdd}>
                         <Plus className="h-3.5 w-3.5 mr-1" />
-                        Add Selected to ECO
+                        {t('change-orders.panels.designTree.addSelected')}
                       </Button>
                       <Button
                         variant="ghost"
@@ -491,7 +493,7 @@ export function ChangeOrderDesignStructureTree({
                         onClick={selection.clearSelection}
                       >
                         <X className="h-3.5 w-3.5 mr-1" />
-                        Clear
+                        {t('change-orders.panels.designTree.clearAction')}
                       </Button>
                     </>
                   )}
@@ -499,10 +501,7 @@ export function ChangeOrderDesignStructureTree({
                     <>
                       <Badge variant="outline" className="text-xs gap-1">
                         <Filter className="h-3 w-3" />
-                        {activeFilterCount}{' '}
-                        {activeFilterCount === 1 ? 'filter' : 'filters'} active
-                        ({filteredResultCount}{' '}
-                        {filteredResultCount === 1 ? 'result' : 'results'})
+                        {t('change-orders.panels.designTree.filterActive', { count: activeFilterCount, results: filteredResultCount, resultWord: t(`change-orders.panels.designTree.result_${filteredResultCount === 1 ? 'one' : 'other'}`) })}
                       </Badge>
                       <Button
                         variant="ghost"
@@ -511,7 +510,7 @@ export function ChangeOrderDesignStructureTree({
                         className="h-7 px-2 text-xs text-slate-500"
                       >
                         <X className="h-3 w-3 mr-1" />
-                        Clear Filters
+                        {t('change-orders.panels.designTree.clearFilters')}
                       </Button>
                     </>
                   )}
@@ -527,7 +526,7 @@ export function ChangeOrderDesignStructureTree({
                         onClick={() => setAddFromDesignOpen(true)}
                       >
                         <Plus className="h-3.5 w-3.5 mr-1" />
-                        Add Parts
+                        {t('change-orders.panels.designTree.addParts')}
                       </Button>
                     )}
                     <Button
@@ -536,13 +535,13 @@ export function ChangeOrderDesignStructureTree({
                       onClick={showAffectedItems}
                     >
                       <Eye className="h-3.5 w-3.5 mr-1" />
-                      Show Affected
+                      {t('change-orders.panels.designTree.showAffected')}
                     </Button>
                     <Button variant="outline" size="sm" onClick={expandAll}>
-                      Expand All
+                      {t('change-orders.panels.designTree.expandAll')}
                     </Button>
                     <Button variant="outline" size="sm" onClick={collapseAll}>
-                      Collapse All
+                      {t('change-orders.panels.designTree.collapseAll')}
                     </Button>
                   </div>
                 )}
@@ -577,20 +576,20 @@ export function ChangeOrderDesignStructureTree({
               ) : hasActiveFilters ? (
                 filteredOrphanNodes.length === 0 ? (
                   <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-                    <p className="mb-2">No items match the current filters.</p>
+                    <p className="mb-2">{t('change-orders.panels.designTree.noMatch')}</p>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={clearAllFilters}
                     >
                       <X className="h-3.5 w-3.5 mr-1" />
-                      Clear Filters
+                      {t('change-orders.panels.designTree.clearFilters')}
                     </Button>
                   </div>
                 ) : null
               ) : (
                 <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-                  No BOM structure found in this design.
+                  {t('change-orders.panels.designTree.noBom')}
                 </div>
               )}
 
@@ -601,7 +600,7 @@ export function ChangeOrderDesignStructureTree({
               {filteredOrphanNodes.length > 0 && (
                 <div className="mt-4">
                   <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    Other Items (not in the BOM tree)
+                    {t('change-orders.panels.designTree.otherItems')}
                   </h4>
                   <ChangeOrderTreeTable
                     nodes={filteredOrphanNodes}
@@ -637,7 +636,7 @@ export function ChangeOrderDesignStructureTree({
         open={addFromDesignOpen}
         onOpenChange={setAddFromDesignOpen}
         designId={designId}
-        designName={designName || designCode || 'Untitled Design'}
+        designName={designName || designCode || t('change-orders.panels.designTree.untitled')}
         changeOrderId={changeOrderId}
         designType={designType}
         branchId={branchId}

@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import '@xyflow/react/dist/style.css'
 import { AlertCircle, GitBranch, Loader2 } from 'lucide-react'
@@ -97,6 +98,7 @@ function layoutChangeOrderGraph(
 function ChangeOrderHistoryGraphViewInner({
   changeOrderId,
 }: ChangeOrderHistoryGraphViewProps) {
+  const { t } = useTranslation('entities')
   const { theme } = useTheme()
   // Null until the user picks: the server draws the first affected design, and
   // the switcher below reflects that back rather than a second render setting
@@ -114,7 +116,7 @@ function ChangeOrderHistoryGraphViewInner({
     ),
   )
   const error = isError
-    ? 'Failed to load the change order history graph. Please try again.'
+    ? t('change-orders.panels.history.loadFailed')
     : null
 
   const selectedDesignId =
@@ -188,7 +190,7 @@ function ChangeOrderHistoryGraphViewInner({
           <div className="flex items-center gap-3">
             <AlertCircle className="h-5 w-5 text-amber-500" />
             <p className="text-amber-700 dark:text-amber-300">
-              {error || 'No history data available'}
+              {error || t('change-orders.panels.history.noData')}
             </p>
           </div>
         </CardContent>
@@ -203,11 +205,10 @@ function ChangeOrderHistoryGraphViewInner({
           <div className="text-center space-y-3">
             <GitBranch className="h-12 w-12 mx-auto text-slate-400" />
             <h3 className="text-lg font-medium text-slate-900 dark:text-white">
-              No ECO Branches
+              {t('change-orders.panels.history.emptyTitle')}
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
-              This ECO has not been submitted yet. ECO branches are created when
-              the ECO is submitted for review.
+              {t('change-orders.panels.history.emptyBody')}
             </p>
           </div>
         </CardContent>
@@ -223,24 +224,24 @@ function ChangeOrderHistoryGraphViewInner({
     <div className="flex items-center gap-4 text-xs">
       <div className="flex items-center gap-1.5">
         <div className="w-3 h-3 rounded-full bg-green-500" />
-        <span className="text-slate-600 dark:text-slate-400">main</span>
+        <span className="text-slate-600 dark:text-slate-400">{t('change-orders.panels.history.legendMain')}</span>
       </div>
       <div className="flex items-center gap-1.5">
         <div className="w-3 h-3 rounded-full bg-orange-500" />
         <span className="text-slate-600 dark:text-slate-400">
-          {selectedDesign?.branchName || 'Change-order branch'}
+          {selectedDesign?.branchName || t('change-orders.panels.history.branchFallback')}
         </span>
       </div>
       <div className="flex items-center gap-1.5">
         <div className="w-6 h-0.5 bg-slate-400" />
-        <span className="text-slate-600 dark:text-slate-400">parent</span>
+        <span className="text-slate-600 dark:text-slate-400">{t('change-orders.panels.history.legendParent')}</span>
       </div>
       <div className="flex items-center gap-1.5">
         <div
           className="w-6 h-0.5 bg-orange-500"
           style={{ borderStyle: 'dashed' }}
         />
-        <span className="text-slate-600 dark:text-slate-400">merge</span>
+        <span className="text-slate-600 dark:text-slate-400">{t('change-orders.panels.history.legendMerge')}</span>
       </div>
     </div>
   )
@@ -251,10 +252,9 @@ function ChangeOrderHistoryGraphViewInner({
       {graphData.affectedDesigns.length > 1 && (
         <Card>
           <CardHeader>
-            <CardTitle>Design Selection</CardTitle>
+            <CardTitle>{t('change-orders.panels.history.designSelection')}</CardTitle>
             <CardDescription>
-              This ECO affects multiple designs. Select a design to view its
-              branch history.
+              {t('change-orders.panels.history.designSelectionHint')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -280,8 +280,8 @@ function ChangeOrderHistoryGraphViewInner({
 
       {/* Graph */}
       <FullscreenGraphWrapper
-        title={`Branch History: ${selectedDesign?.designName || ''}`}
-        subtitle={`${nodes.length} commit${nodes.length !== 1 ? 's' : ''}`}
+        title={t('change-orders.panels.history.historyTitle', { name: selectedDesign?.designName || '' })}
+        subtitle={t('change-orders.panels.history.commitCount', { count: nodes.length })}
         inlineHeight="600px"
         footer={legend}
       >
