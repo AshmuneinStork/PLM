@@ -85,6 +85,28 @@
     "title": "Ошибка",
     "unexpected": "Произошла непредвиденная ошибка"
   },
+  "validation": {
+    "required": "Поле обязательно для заполнения",
+    "tooShort": "Минимум {{minimum}} символов",
+    "tooShortItems": "Выберите не менее {{minimum}}",
+    "tooLong": "Максимум {{maximum}} символов",
+    "tooSmallNumber": "Должно быть больше {{minimum}}",
+    "tooSmallNumberInclusive": "Должно быть не меньше {{minimum}}",
+    "invalidEmail": "Введите корректный адрес электронной почты",
+    "invalidUuid": "Некорректный выбор",
+    "invalidUrl": "Введите корректный URL",
+    "invalidCode": "Используйте заглавные буквы, цифры и дефисы",
+    "invalidOption": "Выберите одно из: {{values}}",
+    "invalidType": "Некорректное значение",
+    "invalidNumber": "Введите число",
+    "invalidInteger": "Введите целое число",
+    "positiveInteger": "Введите положительное целое число",
+    "invalid": "Некорректное значение",
+    "programRequired": "Выберите программу, если изделие не выбрано",
+    "repoUrlHttp": "URL репозитория должен начинаться с http:// или https://",
+    "repoUrlInvalid": "URL репозитория должен быть корректным URL",
+    "shaInvalid": "SHA коммита должен содержать 40 или 64 шестнадцатеричных символа"
+  },
   "events": {
     "parkedTitle_one": "{{count}} потребитель событий припаркован",
     "parkedTitle_few": "{{count}} потребителя событий припарковано",

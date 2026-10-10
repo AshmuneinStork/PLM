@@ -85,6 +85,28 @@
     "title": "Error",
     "unexpected": "An unexpected error occurred"
   },
+  "validation": {
+    "required": "This field is required",
+    "tooShort": "Must be at least {{minimum}} characters",
+    "tooShortItems": "Select at least {{minimum}}",
+    "tooLong": "Must be at most {{maximum}} characters",
+    "tooSmallNumber": "Must be greater than {{minimum}}",
+    "tooSmallNumberInclusive": "Must be at least {{minimum}}",
+    "invalidEmail": "Enter a valid email address",
+    "invalidUuid": "Invalid selection",
+    "invalidUrl": "Enter a valid URL",
+    "invalidCode": "Use uppercase letters, digits and hyphens",
+    "invalidOption": "Choose one of: {{values}}",
+    "invalidType": "Invalid value",
+    "invalidNumber": "Enter a number",
+    "invalidInteger": "Enter a whole number",
+    "positiveInteger": "Enter a positive whole number",
+    "invalid": "Invalid value",
+    "programRequired": "Choose a program when no part is selected",
+    "repoUrlHttp": "Repository URL must use http:// or https://",
+    "repoUrlInvalid": "Repository URL must be a valid URL",
+    "shaInvalid": "Commit SHA must contain 40 or 64 hexadecimal characters"
+  },
   "events": {
     "parkedTitle_one": "An event consumer is parked",
     "parkedTitle_other": "{{count}} event consumers are parked",
