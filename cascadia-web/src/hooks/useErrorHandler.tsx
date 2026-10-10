@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ErrorCode } from '@cascadia/commons/errors/codes'
 import { getErrorStrategy } from '@cascadia/commons/errors/severity'
 import { useToast } from './useToast'
@@ -56,6 +57,7 @@ interface ErrorHandlerOptions {
  * ```
  */
 export function useErrorHandler() {
+  const { t } = useTranslation('common')
   const { addToast } = useToast()
   const { alert } = useAlertDialog()
 
@@ -69,7 +71,7 @@ export function useErrorHandler() {
               ErrorCode.INTERNAL_ERROR,
               error instanceof Error
                 ? error.message
-                : 'An unexpected error occurred',
+                : t('errors.unexpected', { defaultValue: 'An unexpected error occurred' }),
               500,
             )
 
@@ -101,7 +103,7 @@ export function useErrorHandler() {
 
         case 'toast':
           addToast({
-            title: options.title ?? 'Error',
+            title: options.title ?? t('errors.title', { defaultValue: 'Error' }),
             description: describeError(apiError),
             variant: 'destructive',
           })
@@ -109,7 +111,7 @@ export function useErrorHandler() {
 
         case 'dialog':
           alert({
-            title: options.title ?? 'Error',
+            title: options.title ?? t('errors.title', { defaultValue: 'Error' }),
             description: describeError(apiError),
             variant: 'destructive',
           })
@@ -124,7 +126,7 @@ export function useErrorHandler() {
 
       return apiError
     },
-    [addToast, alert],
+    [addToast, alert, t],
   )
 
   /**

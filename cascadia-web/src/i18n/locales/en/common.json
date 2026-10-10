@@ -80,5 +80,14 @@
         "description": "That's the basics! Start by exploring the Parts library or creating your first Design. You can restart this tour anytime from the help button in the header."
       }
     }
+  },
+  "errors": {
+    "title": "Error",
+    "unexpected": "An unexpected error occurred"
+  },
+  "events": {
+    "parkedTitle_one": "An event consumer is parked",
+    "parkedTitle_other": "{{count}} event consumers are parked",
+    "parkedBody": "{{ids}} — stopped retrying after repeated failures. Nothing behind the cursor is being handled, and the log cannot be pruned past it."
   }
 }

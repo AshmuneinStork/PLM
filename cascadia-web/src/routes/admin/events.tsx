@@ -5,6 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { Radio, RefreshCw } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { EventConsumerStatus } from '@/query'
 import { Button } from '@/components/ui'
 import { ConsumerErrorDialog } from '@/components/events/ConsumerErrorDialog'
@@ -26,6 +27,7 @@ export const Route = createFileRoute('/admin/events')({
 })
 
 function EventsPage() {
+  const { t } = useTranslation('common')
   const { addToast } = useToast()
   const { confirm } = useAlertDialog()
   const { handleError } = useErrorHandler()
@@ -95,15 +97,21 @@ function EventsPage() {
     for (const id of fresh) announced.current.add(id)
 
     addToast({
-      title:
-        fresh.length === 1
-          ? 'An event consumer is parked'
-          : `${fresh.length} event consumers are parked`,
-      description: `${fresh.join(', ')} — stopped retrying after repeated failures. Nothing behind the cursor is being handled, and the log cannot be pruned past it.`,
+      title: t('events.parkedTitle', {
+        count: fresh.length,
+        defaultValue:
+          fresh.length === 1
+            ? 'An event consumer is parked'
+            : `${fresh.length} event consumers are parked`,
+      }),
+      description: t('events.parkedBody', {
+        ids: fresh.join(', '),
+        defaultValue: `${fresh.join(', ')} — stopped retrying after repeated failures. Nothing behind the cursor is being handled, and the log cannot be pruned past it.`,
+      }),
       variant: 'warning',
       duration: 10000,
     })
-  }, [parkedKey, addToast])
+  }, [parkedKey, addToast, t])
 
   const confirmForget = (consumer: EventConsumerStatus) => {
     confirm({
