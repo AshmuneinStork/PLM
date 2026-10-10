@@ -395,6 +395,27 @@
       "details": "Детали",
       "relationships": "Связи",
       "history": "История"
+    },
+    "detail": {
+      "overviewTitle": "Обзор",
+      "overviewHint": "Общая информация о требовании",
+      "classificationTitle": "Детали требования",
+      "classificationHint": "Информация о классификации и приоритете",
+      "namePlaceholder": "Название требования",
+      "revisionLabel": "Ревизия",
+      "sourcePlaceholder": "Источник требования",
+      "typePlaceholder": "Выберите тип...",
+      "methodPlaceholder": "Выберите метод...",
+      "verificationTitle": "Верификация",
+      "verificationHint": "Как будет проверяться требование",
+      "metadataTitle": "Метаданные",
+      "createdLabel": "Создано",
+      "lastModifiedLabel": "Изменено",
+      "masterIdLabel": "Master ID",
+      "requirementIdLabel": "ID требования",
+      "relationshipsHint": "Сначала сохраните требование, чтобы управлять связями",
+      "itemNumberPlaceholder": "REQ-001",
+      "categoryPlaceholder": "Категория"
     }
   },
   "documents": {

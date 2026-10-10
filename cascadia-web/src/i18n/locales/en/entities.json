@@ -383,6 +383,27 @@
       "details": "Details",
       "relationships": "Relationships",
       "history": "History"
+    },
+    "detail": {
+      "overviewTitle": "Overview",
+      "overviewHint": "General information about this requirement",
+      "classificationTitle": "Requirement Details",
+      "classificationHint": "Classification and priority information",
+      "namePlaceholder": "Requirement name",
+      "revisionLabel": "Revision",
+      "sourcePlaceholder": "Requirement source",
+      "typePlaceholder": "Select type...",
+      "methodPlaceholder": "Select method...",
+      "verificationTitle": "Verification",
+      "verificationHint": "How this requirement will be verified",
+      "metadataTitle": "Metadata",
+      "createdLabel": "Created",
+      "lastModifiedLabel": "Last Modified",
+      "masterIdLabel": "Master ID",
+      "requirementIdLabel": "Requirement ID",
+      "relationshipsHint": "Save the requirement first to manage relationships",
+      "itemNumberPlaceholder": "REQ-001",
+      "categoryPlaceholder": "Category"
     }
   },
   "documents": {

@@ -61,37 +61,32 @@ import { useReleasedFamily } from '@/hooks/useReleasedFamily'
 import { FreeTransitionControl } from '@/components/items/FreeTransitionControl'
 import { ItemCreateDesignSection } from '@/components/items/ItemCreateDesignSection'
 
-const TYPE_OPTIONS = [
-  { value: 'Functional', label: 'Functional' },
-  { value: 'Non-Functional', label: 'Non-Functional' },
-  { value: 'Performance', label: 'Performance' },
-  { value: 'Security', label: 'Security' },
-  { value: 'Usability', label: 'Usability' },
-  { value: 'Business', label: 'Business' },
-]
+const TYPE_VALUES = [
+  'Functional',
+  'Non-Functional',
+  'Performance',
+  'Security',
+  'Usability',
+  'Business',
+] as const
 
-const PRIORITY_OPTIONS = [
-  { value: 'MustHave', label: 'Must Have' },
-  { value: 'ShouldHave', label: 'Should Have' },
-  { value: 'CouldHave', label: 'Could Have' },
-  { value: 'WontHave', label: "Won't Have" },
-]
+const PRIORITY_VALUES = ['MustHave', 'ShouldHave', 'CouldHave', 'WontHave'] as const
 
-const VERIFICATION_METHOD_OPTIONS = [
-  { value: 'Analysis', label: 'Analysis' },
-  { value: 'Inspection', label: 'Inspection' },
-  { value: 'Demonstration', label: 'Demonstration' },
-  { value: 'Test', label: 'Test' },
-  { value: 'Documentation', label: 'Documentation' },
-]
+const VERIFICATION_METHOD_VALUES = [
+  'Analysis',
+  'Inspection',
+  'Demonstration',
+  'Test',
+  'Documentation',
+] as const
 
-const VERIFICATION_STATUS_OPTIONS = [
-  { value: 'NotStarted', label: 'Not Started' },
-  { value: 'InProgress', label: 'In Progress' },
-  { value: 'Passed', label: 'Passed' },
-  { value: 'Failed', label: 'Failed' },
-  { value: 'Waived', label: 'Waived' },
-]
+const VERIFICATION_STATUS_VALUES = [
+  'NotStarted',
+  'InProgress',
+  'Passed',
+  'Failed',
+  'Waived',
+] as const
 
 const priorityVariant = (priority: string) => {
   const variants: Record<
@@ -184,6 +179,22 @@ export function RequirementDetail({
   onTabChange,
 }: RequirementDetailProps) {
   const { t } = useTranslation('entities')
+  const typeOptions = TYPE_VALUES.map((value) => ({
+    value,
+    label: t(`requirements.typeLabels.${value}` as const),
+  }))
+  const priorityOptions = PRIORITY_VALUES.map((value) => ({
+    value,
+    label: t(`requirements.priorityLabels.${value}` as const),
+  }))
+  const verificationMethodOptions = VERIFICATION_METHOD_VALUES.map((value) => ({
+    value,
+    label: t(`requirements.verificationMethodLabels.${value}` as const),
+  }))
+  const verificationStatusOptions = VERIFICATION_STATUS_VALUES.map((value) => ({
+    value,
+    label: t(`requirements.verificationStatusLabels.${value}` as const),
+  }))
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
   const { handleError } = useErrorHandler()
@@ -545,7 +556,7 @@ export function RequirementDetail({
                     {needsCheckout ? (
                       <>
                         <GitBranch className="h-4 w-4 mr-2" />
-                        Revise
+                        {t('requirements.header.revise')}
                       </>
                     ) : (
                       <>
@@ -601,15 +612,15 @@ export function RequirementDetail({
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>{t('requirements.detail.overviewTitle')}</CardTitle>
                   <CardDescription>
-                    General information about this requirement
+                    {t('requirements.detail.overviewHint')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ViewEditText
-                      label="Item Number"
+                      label={t('requirements.table.itemNumber')}
                       value={
                         isEditing
                           ? requirement.itemNumber
@@ -617,29 +628,29 @@ export function RequirementDetail({
                       }
                       onChange={(v) => updateField('itemNumber', v)}
                       isEditing={isEditing && isCreateMode}
-                      placeholder="REQ-001"
+                      placeholder={t('requirements.detail.itemNumberPlaceholder')}
                       required
                       data-testid="requirement-item-number"
                     />
                     <ViewEditText
-                      label="Revision"
+                      label={t('requirements.detail.revisionLabel')}
                       value={currentRequirement.revision}
                       onChange={() => {}}
                       isEditing={false}
                     />
                     <ViewEditText
-                      label="Name"
+                      label={t('requirements.form.name')}
                       value={
                         isEditing ? requirement.name : currentRequirement.name
                       }
                       onChange={(v) => updateField('name', v)}
                       isEditing={isEditing}
-                      placeholder="Requirement name"
+                      placeholder={t('requirements.detail.namePlaceholder')}
                       required
                       data-testid="requirement-name"
                     />
                     <ViewEditTextarea
-                      label="Description"
+                      label={t('requirements.form.description')}
                       value={
                         isEditing
                           ? requirement.description
@@ -672,25 +683,25 @@ export function RequirementDetail({
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Requirement Details</CardTitle>
+                  <CardTitle>{t('requirements.detail.classificationTitle')}</CardTitle>
                   <CardDescription>
-                    Classification and priority information
+                    {t('requirements.detail.classificationHint')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ViewEditSelect
-                      label="Type"
+                      label={t('requirements.form.type')}
                       value={
                         isEditing ? requirement.type : currentRequirement.type
                       }
                       onChange={(v) => updateField('type', v)}
                       isEditing={isEditing}
-                      options={TYPE_OPTIONS}
-                      placeholder="Select type..."
+                      options={typeOptions}
+                      placeholder={t('requirements.detail.typePlaceholder')}
                     />
                     <ViewEditBadge
-                      label="Priority"
+                      label={t('requirements.form.priority')}
                       value={
                         isEditing
                           ? requirement.priority
@@ -698,11 +709,11 @@ export function RequirementDetail({
                       }
                       onChange={(v) => updateField('priority', v)}
                       isEditing={isEditing}
-                      options={PRIORITY_OPTIONS}
+                      options={priorityOptions}
                       variant={priorityVariant}
                     />
                     <ViewEditText
-                      label="Source"
+                      label={t('requirements.form.source')}
                       value={
                         isEditing
                           ? requirement.source
@@ -710,10 +721,10 @@ export function RequirementDetail({
                       }
                       onChange={(v) => updateField('source', v)}
                       isEditing={isEditing}
-                      placeholder="Requirement source"
+                      placeholder={t('requirements.detail.sourcePlaceholder')}
                     />
                     <ViewEditText
-                      label="Category"
+                      label={t('requirements.form.category')}
                       value={
                         isEditing
                           ? requirement.category
@@ -721,11 +732,11 @@ export function RequirementDetail({
                       }
                       onChange={(v) => updateField('category', v)}
                       isEditing={isEditing}
-                      placeholder="Category"
+                      placeholder={t('requirements.detail.categoryPlaceholder')}
                       className="md:col-span-2"
                     />
                     <ViewEditTextarea
-                      label="Acceptance Criteria"
+                      label={t('requirements.form.acceptanceCriteria')}
                       value={
                         isEditing
                           ? requirement.acceptanceCriteria
@@ -743,15 +754,15 @@ export function RequirementDetail({
               {/* Verification Card */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Verification</CardTitle>
+                  <CardTitle>{t('requirements.detail.verificationTitle')}</CardTitle>
                   <CardDescription>
-                    How this requirement will be verified
+                    {t('requirements.detail.verificationHint')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ViewEditSelect
-                      label="Verification Method"
+                      label={t('requirements.form.verificationMethod')}
                       value={
                         isEditing
                           ? requirement.verificationMethod
@@ -759,11 +770,11 @@ export function RequirementDetail({
                       }
                       onChange={(v) => updateField('verificationMethod', v)}
                       isEditing={isEditing}
-                      options={VERIFICATION_METHOD_OPTIONS}
-                      placeholder="Select method..."
+                      options={verificationMethodOptions}
+                      placeholder={t('requirements.detail.methodPlaceholder')}
                     />
                     <ViewEditBadge
-                      label="Verification Status"
+                      label={t('requirements.form.verificationStatus')}
                       value={
                         isEditing
                           ? requirement.verificationStatus
@@ -771,7 +782,7 @@ export function RequirementDetail({
                       }
                       onChange={(v) => updateField('verificationStatus', v)}
                       isEditing={isEditing}
-                      options={VERIFICATION_STATUS_OPTIONS}
+                      options={verificationStatusOptions}
                       variant={verificationStatusVariant}
                     />
                   </dl>
@@ -794,13 +805,13 @@ export function RequirementDetail({
                 <Card>
                   <CardHeader>
                     <CollapsibleTrigger className="hover:opacity-70">
-                      <CardTitle>Metadata</CardTitle>
+                      <CardTitle>{t('requirements.detail.metadataTitle')}</CardTitle>
                     </CollapsibleTrigger>
                   </CardHeader>
                   <CollapsibleContent>
                     <CardContent className="space-y-3">
                       <ViewEditStatic
-                        label="Created"
+                        label={t('requirements.detail.createdLabel')}
                         value={
                           currentRequirement.createdAt
                             ? new Date(
@@ -810,7 +821,7 @@ export function RequirementDetail({
                         }
                       />
                       <ViewEditStatic
-                        label="Last Modified"
+                        label={t('requirements.detail.lastModifiedLabel')}
                         value={
                           currentRequirement.modifiedAt
                             ? new Date(
@@ -822,12 +833,12 @@ export function RequirementDetail({
                       {!isCreateMode && (
                         <>
                           <ViewEditStatic
-                            label="Master ID"
+                            label={t('requirements.detail.masterIdLabel')}
                             value={currentRequirement.masterId}
                             mono
                           />
                           <ViewEditStatic
-                            label="Requirement ID"
+                            label={t('requirements.detail.requirementIdLabel')}
                             value={currentRequirement.id}
                             mono
                           />
@@ -860,7 +871,7 @@ export function RequirementDetail({
             <Card>
               <CardContent className="py-12 text-center">
                 <p className="text-slate-500">
-                  Save the requirement first to manage relationships
+                  {t('requirements.detail.relationshipsHint')}
                 </p>
               </CardContent>
             </Card>
