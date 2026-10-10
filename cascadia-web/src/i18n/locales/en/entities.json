@@ -356,6 +356,33 @@
       "Passed": "Passed",
       "Failed": "Failed",
       "Waived": "Waived"
+    },
+    "header": {
+      "createTitle": "Create New Requirement",
+      "newFallback": "New Requirement",
+      "createSubtitle": "Enter the details for the new requirement",
+      "revisionLine": "Revision {{revision}} • {{name}}",
+      "unnamed": "Unnamed",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "createAction": "Create Requirement",
+      "saveChanges": "Save Changes",
+      "impactAnalysis": "Impact Analysis",
+      "revise": "Revise",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cannotEditTitle": "Cannot edit item",
+      "deleteTitle": "Delete Requirement",
+      "checkedOutByYou": "Checked out by you",
+      "checkedOutByOther": "Checked out by {{name}}",
+      "cannotEditHistorical": "Cannot edit historical versions",
+      "mainProtected": "This design has released items, so main is protected. Switch to an ECO or workspace branch to edit this item.",
+      "editingUnavailable": "Editing not available in this context"
+    },
+    "tabs": {
+      "details": "Details",
+      "relationships": "Relationships",
+      "history": "History"
     }
   },
   "documents": {

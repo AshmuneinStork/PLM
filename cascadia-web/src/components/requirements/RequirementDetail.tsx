@@ -3,6 +3,7 @@
 
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import {
   ArrowLeft,
@@ -182,6 +183,7 @@ export function RequirementDetail({
   activeTab = 'details',
   onTabChange,
 }: RequirementDetailProps) {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
   const { handleError } = useErrorHandler()
@@ -288,7 +290,7 @@ export function RequirementDetail({
       try {
         await editLock.acquire()
       } catch (error) {
-        handleError(error, { title: 'Cannot edit item' })
+        handleError(error, { title: t('requirements.header.cannotEditTitle') })
         return
       }
     }
@@ -353,10 +355,10 @@ export function RequirementDetail({
   const handleDelete = () => {
     if (!onDelete || !currentRequirement.id) return
     confirm({
-      title: 'Delete Requirement',
+      title: t('requirements.header.deleteTitle'),
       description: `Are you sure you want to delete ${currentRequirement.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      actionLabel: t('requirements.header.delete'),
+      cancelLabel: t('requirements.header.cancel'),
       variant: 'destructive',
       onConfirm: onDelete,
     })
@@ -370,19 +372,19 @@ export function RequirementDetail({
     // button opens the CheckoutDialog and revises onto a branch. What is left
     // is the context itself.
     if (editLock.lockedByOther) {
-      return `Checked out by ${editLock.lockHolderLabel}`
+      return t('requirements.header.checkedOutByOther', { name: editLock.lockHolderLabel })
     }
     if (needsCheckout) {
       return undefined
     }
     if (!isEditable) {
       if (context.type === 'tag' || context.type === 'commit') {
-        return 'Cannot edit historical versions'
+        return t('requirements.header.cannotEditHistorical')
       }
       if (context.type === 'main' && editLock.isMainProtected) {
-        return 'This design has released items, so main is protected. Switch to an ECO or workspace branch to edit this item.'
+        return t('requirements.header.mainProtected')
       }
-      return 'Editing not available in this context'
+      return t('requirements.header.editingUnavailable')
     }
     return undefined
   }
@@ -412,8 +414,8 @@ export function RequirementDetail({
             <div className="flex items-center gap-3">
               <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
                 {isCreateMode
-                  ? 'Create New Requirement'
-                  : currentRequirement.itemNumber}
+                  ? t('requirements.header.createTitle')
+                  : currentRequirement.itemNumber || t('requirements.header.newFallback')}
               </h1>
               {!isCreateMode && isLoadingVersion && (
                 <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
@@ -449,15 +451,15 @@ export function RequirementDetail({
                 >
                   <Lock className="h-3 w-3 mr-1" />
                   {editLock.heldByMe
-                    ? 'Checked out by you'
-                    : `Checked out by ${editLock.lockHolderLabel}`}
+                    ? t('requirements.header.checkedOutByYou')
+                    : t('requirements.header.checkedOutByOther', { name: editLock.lockHolderLabel })}
                 </Badge>
               )}
             </div>
             <p className="text-slate-600 dark:text-slate-400 mt-1">
               {isCreateMode
-                ? 'Enter the details for the new requirement'
-                : `Revision ${currentRequirement.revision} • ${currentRequirement.name || 'Unnamed'}`}
+                ? t('requirements.header.createSubtitle')
+                : t('requirements.header.revisionLine', { revision: currentRequirement.revision, name: currentRequirement.name || t('requirements.header.unnamed') })}
             </p>
           </div>
         </div>
@@ -472,7 +474,7 @@ export function RequirementDetail({
                   disabled={isSubmitting}
                 >
                   <X className="h-4 w-4 mr-2" />
-                  Cancel
+                  {t('requirements.header.cancel')}
                 </Button>
                 <Button
                   onClick={handleSave}
@@ -484,10 +486,10 @@ export function RequirementDetail({
                 >
                   <Save className="h-4 w-4 mr-2" />
                   {isSubmitting
-                    ? 'Saving...'
+                    ? t('requirements.header.saving')
                     : isCreateMode
-                      ? 'Create Requirement'
-                      : 'Save Changes'}
+                      ? t('requirements.header.createAction')
+                      : t('requirements.header.saveChanges')}
                 </Button>
               </>
             ) : (
@@ -498,7 +500,7 @@ export function RequirementDetail({
                     onClick={() => setIsImpactDialogOpen(true)}
                   >
                     <Search className="h-4 w-4 mr-2" />
-                    Impact Analysis
+                    {t('requirements.header.impactAnalysis')}
                   </Button>
                 )}
                 {/* Edit button with tooltip when disabled */}
@@ -517,12 +519,12 @@ export function RequirementDetail({
                           {needsCheckout ? (
                             <>
                               <GitBranch className="h-4 w-4 mr-2" />
-                              Revise
+                              {t('requirements.header.revise')}
                             </>
                           ) : (
                             <>
                               <Edit className="h-4 w-4 mr-2" />
-                              Edit
+                              {t('requirements.header.edit')}
                             </>
                           )}
                         </Button>
@@ -548,7 +550,7 @@ export function RequirementDetail({
                     ) : (
                       <>
                         <Edit className="h-4 w-4 mr-2" />
-                        Edit
+                        {t('requirements.header.edit')}
                       </>
                     )}
                   </Button>
@@ -560,7 +562,7 @@ export function RequirementDetail({
                     disabled={!isEditable}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    {t('requirements.header.delete')}
                   </Button>
                 )}
               </>
@@ -584,9 +586,9 @@ export function RequirementDetail({
         <TabsList
           className={`grid w-full ${isCreateMode ? 'grid-cols-2' : 'grid-cols-3'}`}
         >
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="relationships">Relationships</TabsTrigger>
-          {!isCreateMode && <TabsTrigger value="history">History</TabsTrigger>}
+          <TabsTrigger value="details">{t('requirements.tabs.details')}</TabsTrigger>
+          <TabsTrigger value="relationships">{t('requirements.tabs.relationships')}</TabsTrigger>
+          {!isCreateMode && <TabsTrigger value="history">{t('requirements.tabs.history')}</TabsTrigger>}
         </TabsList>
 
         <TabsContent

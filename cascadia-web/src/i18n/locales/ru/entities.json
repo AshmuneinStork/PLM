@@ -368,6 +368,33 @@
       "saving": "Сохранение...",
       "createRequirement": "Создать требование",
       "updateRequirement": "Обновить требование"
+    },
+    "header": {
+      "createTitle": "Новое требование",
+      "newFallback": "Новое требование",
+      "createSubtitle": "Введите данные нового требования",
+      "revisionLine": "Ревизия {{revision}} • {{name}}",
+      "unnamed": "Без названия",
+      "cancel": "Отмена",
+      "saving": "Сохранение...",
+      "createAction": "Создать требование",
+      "saveChanges": "Сохранить изменения",
+      "impactAnalysis": "Анализ влияния",
+      "revise": "Ревизия",
+      "edit": "Изменить",
+      "delete": "Удалить",
+      "cannotEditTitle": "Невозможно изменить изделие",
+      "deleteTitle": "Удалить требование",
+      "checkedOutByYou": "Заблокировано вами",
+      "checkedOutByOther": "Заблокировал: {{name}}",
+      "cannotEditHistorical": "Исторические версии изменять нельзя",
+      "mainProtected": "В проекте есть выпущенные изделия, ветка main защищена. Перейдите в ветку ECO или workspace для изменения.",
+      "editingUnavailable": "Редактирование в этом контексте недоступно"
+    },
+    "tabs": {
+      "details": "Детали",
+      "relationships": "Связи",
+      "history": "История"
     }
   },
   "documents": {
