@@ -4,6 +4,7 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
   Edit,
@@ -59,18 +60,15 @@ import { ItemCreateDesignSection } from '@/components/items/ItemCreateDesignSect
 import { itemAtContextQuery } from '@/query/options/items'
 import { branchDetailQuery, designStatusQuery } from '@/query'
 
-const SOFTWARE_TYPE_OPTIONS = [
-  { value: 'firmware', label: 'Firmware' },
-  { value: 'application', label: 'Application' },
-  { value: 'library', label: 'Library' },
-  { value: 'configuration', label: 'Configuration' },
-  { value: 'fpga', label: 'FPGA' },
-]
+const SOFTWARE_TYPE_VALUES = [
+  'firmware',
+  'application',
+  'library',
+  'configuration',
+  'fpga',
+] as const
 
-const SOURCE_MODE_OPTIONS = [
-  { value: 'internal', label: 'Internal (source lives in Cascadia)' },
-  { value: 'external', label: 'External (pinned repository ref)' },
-]
+const SOURCE_MODE_VALUES = ['internal', 'external'] as const
 
 const createEmptySoftware = (defaultDesignId?: string): Software => ({
   id: undefined,
@@ -109,12 +107,13 @@ function ExternalRepositoryField({
   url?: string | null
   className?: string
 }) {
+  const { t } = useTranslation('entities')
   const isLink = !!url && /^https?:\/\//i.test(url)
 
   return (
     <div className={className}>
       <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">
-        Repository
+        {t('software.external.repositoryLabel')}
       </dt>
       <dd className="mt-1 break-all text-sm">
         {isLink ? (
@@ -129,7 +128,7 @@ function ExternalRepositoryField({
           </a>
         ) : (
           <span className="text-slate-500 dark:text-slate-400">
-            No repository URL recorded
+            {t('software.external.noRepository')}
           </span>
         )}
       </dd>
@@ -138,16 +137,15 @@ function ExternalRepositoryField({
 }
 
 function ExternalSourcePanel({ software }: { software: Software }) {
+  const { t } = useTranslation('entities')
   return (
     <Card>
       <CardHeader>
-        <CardTitle>External source</CardTitle>
+        <CardTitle>{t('software.external.title')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
         <p className="text-sm text-slate-600 dark:text-slate-400">
-          Development takes place outside Cascadia. This repository pin is
-          maintained manually; Cascadia does not fetch, mirror, or synchronize
-          the repository.
+          {t('software.external.description')}
         </p>
         <dl className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <ExternalRepositoryField
@@ -155,11 +153,11 @@ function ExternalSourcePanel({ software }: { software: Software }) {
             className="md:col-span-2"
           />
           <ViewEditStatic
-            label="Pinned reference"
+            label={t('software.external.pinnedRef')}
             value={software.externalRef}
           />
           <ViewEditStatic
-            label="Commit SHA"
+            label={t('software.external.commitSha')}
             value={software.externalCommitSha}
           />
         </dl>
@@ -192,8 +190,18 @@ export function SoftwareDetail({
   onTabChange,
 }: SoftwareDetailProps) {
   const navigate = useNavigate()
+  const { t } = useTranslation('entities')
   const { confirm } = useAlertDialog()
   const { handleError } = useErrorHandler()
+
+  const softwareTypeOptions = SOFTWARE_TYPE_VALUES.map((value) => ({
+    value,
+    label: t(`software.typeLabels.${value}`),
+  }))
+  const sourceModeOptions = SOURCE_MODE_VALUES.map((value) => ({
+    value,
+    label: t(`software.sourceModeLabels.${value}`),
+  }))
 
   const isCreateMode = !initialSoftware?.id
 
@@ -304,7 +312,7 @@ export function SoftwareDetail({
       try {
         await editLock.acquire()
       } catch (error) {
-        handleError(error, { title: 'Cannot edit item' })
+        handleError(error, { title: t('software.header.cannotEditTitle') })
         return
       }
     }
@@ -376,10 +384,10 @@ export function SoftwareDetail({
   const handleDelete = () => {
     if (!onDelete || !current.id) return
     confirm({
-      title: 'Delete Software',
-      description: `Are you sure you want to delete ${current.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('software.header.deleteTitle'),
+      description: t('software.dialogs.deleteBody', { itemNumber: current.itemNumber }),
+      actionLabel: t('software.dialogs.deleteAction'),
+      cancelLabel: t('software.dialogs.cancelAction'),
       variant: 'destructive',
       onConfirm: onDelete,
     })
@@ -393,19 +401,21 @@ export function SoftwareDetail({
     // button opens the CheckoutDialog and revises onto a branch. What is left
     // is the context itself.
     if (editLock.lockedByOther) {
-      return `Checked out by ${editLock.lockHolderLabel}`
+      return t('software.header.checkedOutByOther', {
+        name: editLock.lockHolderLabel,
+      })
     }
     if (needsCheckout) {
       return undefined
     }
     if (!isEditable) {
       if (context.type === 'tag' || context.type === 'commit') {
-        return 'Cannot edit historical versions'
+        return t('software.header.cannotEditHistorical')
       }
       if (context.type === 'main' && editLock.isMainProtected) {
-        return 'This design has released items, so main is protected. Switch to an ECO or workspace branch to edit this item.'
+        return t('software.header.mainProtected')
       }
-      return 'Editing not available in this context'
+      return t('software.header.editingUnavailable')
     }
     return undefined
   }
@@ -423,10 +433,12 @@ export function SoftwareDetail({
    */
   const getSourceReadOnlyReason = (): string | undefined => {
     if (editLock.lockedByOther) {
-      return `Checked out by ${editLock.lockHolderLabel}`
+      return t('software.header.checkedOutByOther', {
+        name: editLock.lockHolderLabel,
+      })
     }
     if (context.type === 'tag' || context.type === 'commit') {
-      return 'Historical versions are read-only.'
+      return t('software.header.historicalReadOnly')
     }
     // Released on main only — the Revise button beside this tab is the way
     // out, and it is the same `needsCheckout` the Edit button branches on.
@@ -434,13 +446,13 @@ export function SoftwareDetail({
     // reroutes through `saveChanges` and mints the working copy, so gating
     // on the state alone (as this did) refused an edit the server accepts.
     if (needsCheckout) {
-      return 'Released source is read-only. Revise this item to edit it.'
+      return t('software.header.releasedReadOnly')
     }
     if (context.type === 'main' && editLock.isMainProtected) {
-      return 'This design has released items, so main is protected. Switch to an ECO or workspace branch to edit this item.'
+      return t('software.header.mainProtected')
     }
     if (editContext?.isBranchLocked) {
-      return 'This branch is locked while its change order is out for approval.'
+      return t('software.header.branchLocked')
     }
     return undefined
   }
@@ -480,7 +492,9 @@ export function SoftwareDetail({
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-                {isCreateMode ? 'Create Software Item' : current.itemNumber}
+                {isCreateMode
+                  ? t('software.header.createTitle')
+                  : current.itemNumber}
               </h1>
               {!isCreateMode && isLoadingVersion && (
                 <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
@@ -488,8 +502,8 @@ export function SoftwareDetail({
             </div>
             <p className="text-slate-600 dark:text-slate-400 mt-1">
               {isCreateMode
-                ? 'The configuration item behind a firmware or software BOM line'
-                : current.name || 'Unnamed'}
+                ? t('software.header.createSubtitle')
+                : current.name || t('software.header.unnamed')}
             </p>
           </div>
         </div>
@@ -503,7 +517,7 @@ export function SoftwareDetail({
                 disabled={isSubmitting}
               >
                 <X className="h-4 w-4 mr-2" />
-                Cancel
+                {t('software.header.cancel')}
               </Button>
               <Button
                 onClick={handleSave}
@@ -514,10 +528,10 @@ export function SoftwareDetail({
               >
                 <Save className="h-4 w-4 mr-2" />
                 {isSubmitting
-                  ? 'Saving...'
+                  ? t('software.header.saving')
                   : isCreateMode
-                    ? 'Create Software'
-                    : 'Save Changes'}
+                    ? t('software.header.createSoftware')
+                    : t('software.header.saveChanges')}
               </Button>
             </>
           ) : (
@@ -538,12 +552,12 @@ export function SoftwareDetail({
                         {needsCheckout ? (
                           <>
                             <GitBranch className="h-4 w-4 mr-2" />
-                            Revise
+                            {t('software.header.revise')}
                           </>
                         ) : (
                           <>
                             <Edit className="h-4 w-4 mr-2" />
-                            Edit
+                            {t('software.header.edit')}
                           </>
                         )}
                       </Button>
@@ -564,12 +578,12 @@ export function SoftwareDetail({
                   {needsCheckout ? (
                     <>
                       <GitBranch className="h-4 w-4 mr-2" />
-                      Revise
+                      {t('software.header.revise')}
                     </>
                   ) : (
                     <>
                       <Edit className="h-4 w-4 mr-2" />
-                      Edit
+                      {t('software.header.edit')}
                     </>
                   )}
                 </Button>
@@ -581,7 +595,7 @@ export function SoftwareDetail({
                   disabled={!isEditable}
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
+                  {t('software.header.delete')}
                 </Button>
               )}
             </>
@@ -617,8 +631,10 @@ export function SoftwareDetail({
             >
               <Lock className="h-3 w-3 mr-1" />
               {editLock.heldByMe
-                ? 'Checked out by you'
-                : `Checked out by ${editLock.lockHolderLabel}`}
+                ? t('software.header.checkedOutByYou')
+                : t('software.header.checkedOutByOther', {
+                    name: editLock.lockHolderLabel,
+                  })}
             </Badge>
           )}
         </div>
@@ -641,9 +657,13 @@ export function SoftwareDetail({
             isCreateMode ? 'grid w-full grid-cols-1' : 'grid w-full grid-cols-3'
           }
         >
-          <TabsTrigger value="details">Details</TabsTrigger>
-          {!isCreateMode && <TabsTrigger value="source">Source</TabsTrigger>}
-          {!isCreateMode && <TabsTrigger value="history">History</TabsTrigger>}
+          <TabsTrigger value="details">{t('software.tabs.details')}</TabsTrigger>
+          {!isCreateMode && (
+            <TabsTrigger value="source">{t('software.tabs.source')}</TabsTrigger>
+          )}
+          {!isCreateMode && (
+            <TabsTrigger value="history">{t('software.tabs.history')}</TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="details" className="mt-6">
@@ -651,25 +671,25 @@ export function SoftwareDetail({
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>{t('software.detail.overviewTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ViewEditText
-                      label="Item Number"
+                      label={t('software.form.itemNumber')}
                       value={
                         isEditing ? software.itemNumber : current.itemNumber
                       }
                       onChange={(v) => updateField('itemNumber', v)}
                       isEditing={isEditing && isCreateMode}
-                      placeholder="Auto-assigned (SW-...)"
+                      placeholder={t('software.form.itemNumberPlaceholder')}
                     />
                     <ViewEditText
-                      label="Name"
+                      label={t('software.form.name')}
                       value={isEditing ? software.name : current.name}
                       onChange={(v) => updateField('name', v)}
                       isEditing={isEditing}
-                      placeholder="e.g., TDJ-25 Motor Firmware"
+                      placeholder={t('software.form.namePlaceholder')}
                       required
                     />
                     {isCreateMode ? (
@@ -685,11 +705,11 @@ export function SoftwareDetail({
                         isCreateMode={isCreateMode}
                         selectedBranchId={selectedBranchId}
                         onBranchChange={setSelectedBranchId}
-                        itemLabel="software item"
+                        itemLabel={t('software.form.itemLabel')}
                       />
                     ) : (
                       <ViewEditStatic
-                        label="Design"
+                        label={t('software.form.design')}
                         value={
                           designs.find((d) => d.id === current.designId)
                             ?.name ?? current.designId
@@ -702,71 +722,69 @@ export function SoftwareDetail({
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Software Information</CardTitle>
+                  <CardTitle>{t('software.detail.softwareInfoTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <ViewEditSelect
-                      label="Software Type"
+                      label={t('software.form.softwareType')}
                       value={
                         isEditing ? software.softwareType : current.softwareType
                       }
                       onChange={(v) => updateField('softwareType', v)}
                       isEditing={isEditing}
-                      options={SOFTWARE_TYPE_OPTIONS}
+                      options={softwareTypeOptions}
                     />
                     <ViewEditSelect
-                      label="Source Mode"
+                      label={t('software.form.sourceMode')}
                       value={
                         isEditing ? software.sourceMode : current.sourceMode
                       }
                       onChange={updateSourceMode}
                       isEditing={isEditing && isCreateMode}
-                      options={SOURCE_MODE_OPTIONS}
+                      options={sourceModeOptions}
                     />
                     {isEditing && software.sourceMode === 'external' && (
                       <>
                         <ViewEditText
-                          label="Repository URL"
+                          label={t('software.form.repositoryUrl')}
                           value={software.externalRepositoryUrl}
                           onChange={(v) =>
                             updateField('externalRepositoryUrl', v)
                           }
                           isEditing
                           inputType="url"
-                          placeholder="https://github.com/organization/repository"
+                          placeholder={t('software.form.repositoryUrlPlaceholder')}
                           className="md:col-span-2"
                         />
                         <ViewEditText
-                          label="Pinned Reference"
+                          label={t('software.form.pinnedRef')}
                           value={software.externalRef}
                           onChange={(v) => updateField('externalRef', v)}
                           isEditing
-                          placeholder="e.g., v2.3.0, release/2.3, or a commit"
+                          placeholder={t('software.form.pinnedRefPlaceholder')}
                         />
                         <ViewEditText
-                          label="Commit SHA"
+                          label={t('software.form.commitSha')}
                           value={software.externalCommitSha}
                           onChange={(v) => updateField('externalCommitSha', v)}
                           isEditing
-                          placeholder="Optional full 40- or 64-character SHA"
+                          placeholder={t('software.form.commitShaPlaceholder')}
                         />
                         <div className="md:col-span-2 text-sm text-slate-500 dark:text-slate-400">
-                          The reference is stored manually. Cascadia does not
-                          currently verify it against the repository or keep it
-                          synchronized.
+                          {t('software.form.externalHint')}
                         </div>
                       </>
                     )}
                     <ViewEditText
-                      label="Version"
+                      label={t('software.form.version')}
                       value={isEditing ? software.version : current.version}
                       onChange={(v) => updateField('version', v)}
                       isEditing={isEditing}
-                      placeholder="e.g., 2.3.0"
+                      placeholder={t('software.form.versionPlaceholder')}
                     />
                     <ViewEditText
-                      label="Target Hardware"
+                      label={t('software.form.targetHardware')}
                       value={
                         isEditing
                           ? software.targetHardware
@@ -774,14 +792,14 @@ export function SoftwareDetail({
                       }
                       onChange={(v) => updateField('targetHardware', v)}
                       isEditing={isEditing}
-                      placeholder="e.g., STM32F407, board rev C"
+                      placeholder={t('software.form.targetHardwarePlaceholder')}
                     />
                     <ViewEditText
-                      label="Toolchain"
+                      label={t('software.form.toolchain')}
                       value={isEditing ? software.toolchain : current.toolchain}
                       onChange={(v) => updateField('toolchain', v)}
                       isEditing={isEditing}
-                      placeholder="e.g., arm-none-eabi-gcc 13.2, CMake"
+                      placeholder={t('software.form.toolchainPlaceholder')}
                     />
                   </dl>
                 </CardContent>
@@ -789,7 +807,7 @@ export function SoftwareDetail({
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Description</CardTitle>
+                  <CardTitle>{t('software.detail.descriptionTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ViewEditTextarea
@@ -799,7 +817,7 @@ export function SoftwareDetail({
                     }
                     onChange={(v) => updateField('description', v)}
                     isEditing={isEditing}
-                    placeholder="What this software does, its scope, and constraints..."
+                    placeholder={t('software.form.descriptionPlaceholder')}
                   />
                 </CardContent>
               </Card>
@@ -809,11 +827,11 @@ export function SoftwareDetail({
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Source</CardTitle>
+                  <CardTitle>{t('software.detail.sourceTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <ViewEditStatic
-                    label="Mode"
+                    label={t('software.detail.modeLabel')}
                     value={current.sourceMode ?? 'internal'}
                   />
                   {(current.sourceMode ?? 'internal') === 'external' ? (
@@ -822,12 +840,12 @@ export function SoftwareDetail({
                         url={current.externalRepositoryUrl}
                       />
                       <ViewEditStatic
-                        label="Pinned reference"
+                        label={t('software.external.pinnedRef')}
                         value={current.externalRef}
                       />
                       {current.externalCommitSha && (
                         <ViewEditStatic
-                          label="Commit SHA"
+                          label={t('software.external.commitSha')}
                           value={current.externalCommitSha}
                         />
                       )}
@@ -835,17 +853,17 @@ export function SoftwareDetail({
                   ) : (
                     <>
                       <ViewEditStatic
-                        label="Source snapshot"
+                        label={t('software.detail.sourceSnapshotLabel')}
                         value={
                           current.manifestId
-                            ? 'Imported (see Source tab)'
-                            : 'No source imported yet'
+                            ? t('software.detail.importedSnapshot')
+                            : t('software.detail.noSnapshot')
                         }
                       />
                       {current.draftManifestId && (
                         <ViewEditStatic
-                          label="Draft"
-                          value="Uncommitted changes (see Source tab)"
+                          label={t('software.detail.draftLabel')}
+                          value={t('software.detail.draftValue')}
                         />
                       )}
                     </>
@@ -875,7 +893,9 @@ export function SoftwareDetail({
                   >
                     <CardHeader className="pb-3">
                       <CollapsibleTrigger className="hover:opacity-70">
-                        <CardTitle>Custom Attributes</CardTitle>
+                        <CardTitle>
+                          {t('software.detail.customAttributesTitle')}
+                        </CardTitle>
                       </CollapsibleTrigger>
                     </CardHeader>
                     <CollapsibleContent>
@@ -897,7 +917,7 @@ export function SoftwareDetail({
                           </dl>
                         ) : (
                           <p className="text-sm text-slate-500 dark:text-slate-400">
-                            No custom attributes defined.
+                            {t('software.detail.noAttributes')}
                           </p>
                         )}
                       </CardContent>
@@ -911,21 +931,21 @@ export function SoftwareDetail({
                   <Card>
                     <CardHeader>
                       <CollapsibleTrigger className="hover:opacity-70">
-                        <CardTitle>Metadata</CardTitle>
+                        <CardTitle>{t('software.detail.metadataTitle')}</CardTitle>
                       </CollapsibleTrigger>
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-3">
                         <ViewEditStatic
-                          label="Revision"
+                          label={t('software.detail.revisionLabel')}
                           value={current.revision}
                         />
                         <ViewEditStatic
-                          label="Created"
+                          label={t('software.detail.createdLabel')}
                           value={formatDate(current.createdAt)}
                         />
                         <ViewEditStatic
-                          label="Modified"
+                          label={t('software.detail.modifiedLabel')}
                           value={formatDate(current.modifiedAt)}
                         />
                       </CardContent>

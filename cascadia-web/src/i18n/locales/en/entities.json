@@ -1536,6 +1536,22 @@
       "description": "Development takes place outside Cascadia. This repository pin is maintained manually; Cascadia does not fetch, mirror, or synchronize the repository.",
       "pinnedRef": "Pinned reference",
       "commitSha": "Commit SHA"
+    },
+    "artifact": {
+      "title": "Build Artifact",
+      "attachedFallback": "Attached artifact",
+      "empty": "No build artifact attached.",
+      "download": "Download",
+      "detach": "Detach",
+      "uploading": "Uploading...",
+      "replace": "Replace artifact",
+      "upload": "Upload artifact",
+      "attachedTitle": "Build artifact attached",
+      "detachedTitle": "Build artifact detached",
+      "detachedBody": "The vault file was kept",
+      "uploadFailedTitle": "Failed to upload build artifact",
+      "uploadFailedBody": "Upload failed",
+      "detachFailedTitle": "Failed to detach build artifact"
     }
   }
 }

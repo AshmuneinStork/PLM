@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Download, Package, Trash2, Upload } from 'lucide-react'
 import type { Software } from '@cascadia/commons/items/types/software'
 import type { FileMetadata } from '@/query'
@@ -25,6 +26,7 @@ import { fileMetadataQuery, useInvalidateResources } from '@/query'
  * on release alongside the source it was built from.
  */
 export function BuildArtifactCard({ software }: { software: Software }) {
+  const { t } = useTranslation('entities')
   const { handleError, showSuccess } = useErrorHandler()
   const invalidate = useInvalidateResources()
   const inputRef = useRef<HTMLInputElement>(null)
@@ -76,13 +78,13 @@ export function BuildArtifactCard({ software }: { software: Software }) {
         { method: 'POST', body: formData },
       )
       if (!response.ok) {
-        throw await apiErrorFromResponse(response, 'Upload failed')
+        throw await apiErrorFromResponse(response, t('software.artifact.uploadFailedBody'))
       }
       const result = (await response.json()) as {
         data: { files: Array<FileMetadata> }
       }
       const uploaded = result.data.files[0]
-      if (!uploaded) throw new Error('Upload returned no file')
+      if (!uploaded) throw new Error(t('software.artifact.uploadFailedBody'))
 
       await apiFetch(`/api/v1/software/${software.id}`, {
         method: 'PUT',
@@ -91,10 +93,10 @@ export function BuildArtifactCard({ software }: { software: Software }) {
 
       setArtifactFileId(uploaded.id)
       setArtifactName(file.name)
-      showSuccess('Build artifact attached', file.name)
+      showSuccess(t('software.artifact.attachedTitle'), file.name)
       await invalidate('files', 'software')
     } catch (error) {
-      handleError(error, { title: 'Failed to upload build artifact' })
+      handleError(error, { title: t('software.artifact.uploadFailedTitle') })
     } finally {
       setIsUploading(false)
     }
@@ -109,10 +111,10 @@ export function BuildArtifactCard({ software }: { software: Software }) {
       })
       setArtifactFileId(null)
       setArtifactName(null)
-      showSuccess('Build artifact detached', 'The vault file was kept')
+      showSuccess(t('software.artifact.detachedTitle'), t('software.artifact.detachedBody'))
       await invalidate('software')
     } catch (error) {
-      handleError(error, { title: 'Failed to detach build artifact' })
+      handleError(error, { title: t('software.artifact.detachFailedTitle') })
     }
   }
 
@@ -121,7 +123,7 @@ export function BuildArtifactCard({ software }: { software: Software }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Package className="h-4 w-4" />
-          Build Artifact
+          {t('software.artifact.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -134,11 +136,11 @@ export function BuildArtifactCard({ software }: { software: Software }) {
         {artifactFileId ? (
           <div className="flex items-center justify-between gap-2">
             <span className="truncate text-sm text-slate-700 dark:text-slate-300">
-              {displayedArtifactName ?? 'Attached artifact'}
+              {displayedArtifactName ?? t('software.artifact.attachedFallback')}
             </span>
             <div className="flex shrink-0 gap-1">
               <a href={`/api/v1/files/${artifactFileId}/download`} download>
-                <Button variant="ghost" size="sm" title="Download">
+                <Button variant="ghost" size="sm" title={t('software.artifact.download')}>
                   <Download className="h-4 w-4" />
                 </Button>
               </a>
@@ -146,7 +148,7 @@ export function BuildArtifactCard({ software }: { software: Software }) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  title="Detach"
+                  title={t('software.artifact.detach')}
                   onClick={handleRemove}
                 >
                   <Trash2 className="h-4 w-4 text-red-500" />
@@ -156,7 +158,7 @@ export function BuildArtifactCard({ software }: { software: Software }) {
           </div>
         ) : (
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            No build artifact attached.
+            {t('software.artifact.empty')}
           </p>
         )}
         {!isReleased && (
@@ -168,10 +170,10 @@ export function BuildArtifactCard({ software }: { software: Software }) {
           >
             <Upload className="mr-2 h-4 w-4" />
             {isUploading
-              ? 'Uploading...'
+              ? t('software.artifact.uploading')
               : artifactFileId
-                ? 'Replace artifact'
-                : 'Upload artifact'}
+                ? t('software.artifact.replace')
+                : t('software.artifact.upload')}
           </Button>
         )}
       </CardContent>
