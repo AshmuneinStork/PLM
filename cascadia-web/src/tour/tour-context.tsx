@@ -9,9 +9,10 @@ import {
   useRef,
   useState,
 } from 'react'
+import { useTranslation } from 'react-i18next'
 import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
-import { tourSteps } from './tour-steps'
+import { getTourSteps } from './tour-steps'
 import type { Driver } from 'driver.js'
 import type { ReactNode } from 'react'
 
@@ -28,6 +29,7 @@ interface TourContextValue {
 const TourContext = createContext<TourContextValue | null>(null)
 
 export function TourProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation('common')
   const [hasCompletedTour, setHasCompletedTour] = useState(true) // Default to true to prevent flash
   const [isTourActive, setIsTourActive] = useState(false)
   const driverRef = useRef<Driver | null>(null)
@@ -45,19 +47,20 @@ export function TourProvider({ children }: { children: ReactNode }) {
 
   const startTourInternal = useCallback(() => {
     // Create a new driver instance each time
+    const steps = getTourSteps(t)
     const driverInstance = driver({
       showProgress: true,
       showButtons: ['next', 'previous', 'close'],
-      steps: tourSteps,
+      steps,
       popoverClass: 'cascadia-tour-popover',
       overlayColor: 'rgba(0, 0, 0, 0.75)',
       stagePadding: 8,
       stageRadius: 8,
       animate: true,
       allowClose: true,
-      doneBtnText: 'Get Started',
-      nextBtnText: 'Next',
-      prevBtnText: 'Previous',
+      doneBtnText: t('tour.buttons.done'),
+      nextBtnText: t('tour.buttons.next'),
+      prevBtnText: t('tour.buttons.previous'),
       onDestroyStarted: () => {
         // Mark tour as completed when user finishes or closes
         localStorage.setItem(TOUR_STORAGE_KEY, 'true')
@@ -74,7 +77,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
     driverRef.current = driverInstance
     setIsTourActive(true)
     driverInstance.drive()
-  }, [])
+  }, [t])
 
   const startTour = useCallback(() => {
     // If already active, don't start again

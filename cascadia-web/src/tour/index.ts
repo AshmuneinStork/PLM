@@ -2,4 +2,4 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 export { TourProvider, useTour } from './tour-context'
-export { tourSteps } from './tour-steps'
+export { getTourSteps } from './tour-steps'
