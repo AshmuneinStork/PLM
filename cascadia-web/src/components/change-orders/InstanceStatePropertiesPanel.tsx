@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2, Plus, Trash2, User, Users, X } from 'lucide-react'
 import type {
@@ -56,6 +57,7 @@ export function InstanceStatePropertiesPanel({
   readOnly = false,
   changeOrderId,
 }: InstanceStatePropertiesPanelProps) {
+  const { t } = useTranslation('entities')
   const handleChange = (updates: Partial<InstanceState>) => {
     onUpdate({ ...state, ...updates })
   }
@@ -65,10 +67,10 @@ export function InstanceStatePropertiesPanel({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CardTitle className="text-base">State Properties</CardTitle>
+            <CardTitle className="text-base">{t('change-orders.panels.stateProps.title')}</CardTitle>
             {isCurrent && (
               <Badge variant="default" className="text-xs">
-                Current
+                {t('change-orders.panels.stateProps.current')}
               </Badge>
             )}
           </div>
@@ -87,7 +89,7 @@ export function InstanceStatePropertiesPanel({
         {/* State ID (readonly) */}
         <div className="space-y-1.5">
           <Label htmlFor="stateId" className="text-xs">
-            State ID
+            {t('change-orders.panels.stateProps.stateId')}
           </Label>
           <Input
             id="stateId"
@@ -100,21 +102,21 @@ export function InstanceStatePropertiesPanel({
         {/* State Name */}
         <div className="space-y-1.5">
           <Label htmlFor="stateName" className="text-xs">
-            Name
+            {t('change-orders.panels.stateProps.name')}
           </Label>
           <Input
             id="stateName"
             value={state.name}
             onChange={(e) => handleChange({ name: e.target.value })}
             className="h-8 text-sm"
-            placeholder="e.g., Eng Review, Quality Review"
+            placeholder={t('change-orders.panels.stateProps.namePlaceholder')}
             disabled={readOnly || state.isInitial || state.isFinal}
           />
         </div>
 
         {/* Color */}
         <div className="space-y-1.5">
-          <Label className="text-xs">Color</Label>
+          <Label className="text-xs">{t('change-orders.panels.stateProps.color')}</Label>
           <Select
             value={state.color || 'gray'}
             onValueChange={(value) => handleChange({ color: value })}
@@ -139,14 +141,14 @@ export function InstanceStatePropertiesPanel({
         {/* Instructions */}
         <div className="space-y-1.5">
           <Label htmlFor="stateInstructions" className="text-xs">
-            Instructions
+            {t('change-orders.panels.stateProps.instructions')}
           </Label>
           <textarea
             id="stateInstructions"
             value={state.instructions || ''}
             onChange={(e) => handleChange({ instructions: e.target.value })}
             className="w-full h-20 px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 resize-none disabled:opacity-50"
-            placeholder="Instructions for reviewers at this step..."
+            placeholder={t('change-orders.panels.stateProps.instructionsPlaceholder')}
             disabled={readOnly}
           />
         </div>
@@ -154,7 +156,7 @@ export function InstanceStatePropertiesPanel({
         {/* Final state toggle (only for non-initial states) */}
         {!state.isInitial && !readOnly && (
           <div className="space-y-2">
-            <Label className="text-xs">State Type</Label>
+            <Label className="text-xs">{t('change-orders.panels.stateProps.stateType')}</Label>
             <div className="flex flex-col gap-2">
               <label className="flex items-center gap-2">
                 <input
@@ -170,16 +172,16 @@ export function InstanceStatePropertiesPanel({
                   disabled={isCurrent}
                 />
                 <span className="text-sm text-slate-700 dark:text-slate-300">
-                  Final State
+                  {t('change-orders.panels.stateProps.finalState')}
                 </span>
                 <span className="text-xs text-slate-500">
-                  (completes workflow)
+                  {t('change-orders.panels.stateProps.finalHint')}
                 </span>
               </label>
             </div>
             {state.isFinal && (
               <div className="space-y-1.5">
-                <Label className="text-xs">On Completion</Label>
+                <Label className="text-xs">{t('change-orders.panels.stateProps.onCompletion')}</Label>
                 <Select
                   value={state.finalKind ?? ''}
                   onValueChange={(value) =>
@@ -189,21 +191,21 @@ export function InstanceStatePropertiesPanel({
                   }
                 >
                   <SelectTrigger className="h-8 text-sm">
-                    <SelectValue placeholder="Choose release or cancel…" />
+                    <SelectValue placeholder={t('change-orders.panels.stateProps.finalKindPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="release">
-                      Release — merge branches, assign revisions
+                      {t('change-orders.panels.stateProps.releaseAction')}
                     </SelectItem>
                     <SelectItem value="cancel">
-                      Cancel — archive branches without merging
+                      {t('change-orders.panels.stateProps.cancelAction')}
                     </SelectItem>
                   </SelectContent>
                 </Select>
                 {!state.finalKind && (
                   <p className="text-xs text-amber-600 dark:text-amber-500">
-                    Required: choose what completing the workflow in this state
-                    does. It is never inferred from the state name.
+                    {t('change-orders.panels.stateProps.onCompletionHintPart1')}
+                    {t('change-orders.panels.stateProps.onCompletionHintPart2')}
                   </p>
                 )}
               </div>
@@ -224,7 +226,7 @@ export function InstanceStatePropertiesPanel({
         {isCurrent && (
           <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-md">
             <p className="text-xs text-blue-700 dark:text-blue-300">
-              This is the current state. It cannot be removed.
+              {t('change-orders.panels.stateProps.currentStateNote')}
             </p>
           </div>
         )}
@@ -242,6 +244,7 @@ function InstanceStateApproversSection({
   stateId: string
   readOnly: boolean
 }) {
+  const { t } = useTranslation('entities')
   const [saving, setSaving] = useState(false)
   const [showAddForm, setShowAddForm] = useState(false)
   const [newApproverType, setNewApproverType] = useState<'user' | 'role'>(
@@ -315,7 +318,7 @@ function InstanceStateApproversSection({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label className="text-xs font-semibold">Approvers</Label>
+        <Label className="text-xs font-semibold">{t('change-orders.panels.stateProps.approvers')}</Label>
         {!readOnly && (
           <Button
             type="button"
@@ -326,23 +329,23 @@ function InstanceStateApproversSection({
             disabled={saving}
           >
             <Plus className="h-3 w-3 mr-1" />
-            Add
+            {t('change-orders.panels.stateProps.add')}
           </Button>
         )}
       </div>
       <p className="text-xs text-slate-500">
-        Each required approver must approve before the workflow can leave this
+        {t('change-orders.panels.stateProps.approversHintPart1')}
         state.
       </p>
 
       {loading ? (
         <div className="flex items-center gap-2 text-xs text-slate-500">
           <Loader2 className="h-3 w-3 animate-spin" />
-          Loading approvers...
+          {t('change-orders.panels.stateProps.loadingApprovers')}
         </div>
       ) : approvers.length === 0 && !showAddForm ? (
         <p className="text-xs text-slate-500 italic">
-          No approvers configured for this state
+          {t('change-orders.panels.stateProps.noApprovers')}
         </p>
       ) : (
         <div className="space-y-1">
@@ -389,15 +392,15 @@ function InstanceStateApproversSection({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="user">User</SelectItem>
-              <SelectItem value="role">Role</SelectItem>
+              <SelectItem value="user">{t('change-orders.panels.stateProps.user')}</SelectItem>
+              <SelectItem value="role">{t('change-orders.panels.stateProps.role')}</SelectItem>
             </SelectContent>
           </Select>
           <Select value={newApproverId} onValueChange={setNewApproverId}>
             <SelectTrigger className="h-7 text-xs">
               <SelectValue
                 placeholder={
-                  newApproverType === 'user' ? 'Select user' : 'Select role'
+                  newApproverType === 'user' ? t('change-orders.panels.stateProps.selectUser') : t('change-orders.panels.stateProps.selectRole')
                 }
               />
             </SelectTrigger>
@@ -427,7 +430,7 @@ function InstanceStateApproversSection({
             ) : (
               <Plus className="h-3 w-3 mr-1" />
             )}
-            Add Approver
+            {t('change-orders.panels.stateProps.addApprover')}
           </Button>
         </div>
       )}

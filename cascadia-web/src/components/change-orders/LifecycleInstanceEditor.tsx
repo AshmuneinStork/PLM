@@ -15,6 +15,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import dagre from 'dagre'
+import { useTranslation } from 'react-i18next'
 import { LayoutGrid, Loader2, Plus, Save } from 'lucide-react'
 import { InstanceStatePropertiesPanel } from './InstanceStatePropertiesPanel'
 import { InstanceTransitionPropertiesPanel } from './InstanceTransitionPropertiesPanel'
@@ -105,6 +106,7 @@ function WorkflowInstanceEditorInner({
   onStructureChange,
 }: LifecycleInstanceEditorProps) {
   const { theme } = useTheme()
+  const { t } = useTranslation('entities')
   // Convert states/transitions to React Flow nodes/edges
   const initialNodes = useMemo((): Array<StateNodeType> => {
     return states.map((state) => ({
@@ -454,7 +456,7 @@ function WorkflowInstanceEditorInner({
                 onClick={addState}
               >
                 <Plus className="h-4 w-4 mr-1" />
-                Add State
+                {t('change-orders.panels.lifecycleEditor.addState')}
               </Button>
               <Button
                 type="button"
@@ -463,7 +465,7 @@ function WorkflowInstanceEditorInner({
                 onClick={autoLayout}
               >
                 <LayoutGrid className="h-4 w-4 mr-1" />
-                Auto Layout
+                {t('change-orders.panels.lifecycleEditor.autoLayout')}
               </Button>
             </>
           )}
@@ -484,7 +486,7 @@ function WorkflowInstanceEditorInner({
               ) : (
                 <Save className="h-4 w-4 mr-1" />
               )}
-              Save Changes
+              {t('change-orders.panels.lifecycleEditor.saveChanges')}
             </Button>
           )}
           {error && (

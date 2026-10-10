@@ -5,6 +5,12 @@
 - Wave 2 B1a done (0661ffd): parts list/table/routes EN/RU (PartTable, index/new/$id.tsx, entities.json 58 базовых ключей).
 - Wave 2 B1b done: PartForm + shared (DesignSelector, BranchSelector, DesignPhaseIndicator, AttributesEditor, ItemNumberField/format.ts) EN/RU, entities.json 134 базовых ключа, гейты зелёные.
 - Далее: коммит B1b → B1c (PartDetail 1031 строка + Sidebar).
+- [B1c done] B1c1 (f709eab) header, B1c2 (2fc3620) body tabs/sections + ManufacturingCard, B1c3 (44fb27a) Sidebar (attributes.title reuse + sidebar.files/metadata/created/lastModified/masterId/partId) — паритет 100%, все гейты зелёные.
+- [B2a done] documents (6a458e3): DocumentTable + DocumentForm + DocumentDetail + 3 routes, entities.documents 102 ключа EN/RU (table/form/list/toasts/dialogs/header/detail), все гейты зелёные. Остаток-аудит: только itemType/itemNumber литералы (как пилот).
+- [B2b done] change-orders core (b8f2cd1): ChangeOrderTable + ChangeOrderForm + ChangeOrderDetail + 3 routes, entities.change-orders 130 ключей EN/RU (table/form/dialogs/header/tabs/detail/list/toasts), хардкодов 0, все гейты зелёные. Диагностика: поисковый индекс устаревал vs диск — истина через node fs.readFileSync.
+- [B2c-1 done] change-orders add-dialogs (840c3ea): AddToChangeOrderDialog + AddPartChoice + AddPartToStructureDialog + AddAffectedItemDialog, entities.change-orders.addDialogs 39 ключей EN/RU, паритет 100%, все гейты зелёные.
+- [B2c-2a done] change-orders panels set 1 (5 файлов): ApprovalStatusPanel + ConflictsList + InstanceStatePropertiesPanel + InstanceTransitionPropertiesPanel + LifecycleInstanceEditor, entities.change-orders.panels 107 ключей EN/RU (approval 20 / conflicts 42 / stateProps 29 / transitionProps 13 / lifecycleEditor 3, включая finalKindPlaceholder), паритет 100%, typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0. Фиксы: бейдж existingVote через approved/rejected, SelectValue плейсхолдер через ключ, RU-опечатки (двойные О, пропуски П/Е/О).
+- Next: B2c-2b = change-orders тяжёлые панели (7 файлов: AffectedItems/Impact/DesignStructureTree/SummaryDashboard/HistoryGraph/TreeTable/GraphItemNode), B3-B5 = requirements/software/tests/tools, Wave 3 = tour/toasts, затем vitest/build/Docker/PR.
 
 ## Активные решения
 - Библиотека: react-i18next + i18next + i18next-browser-languagedetector.

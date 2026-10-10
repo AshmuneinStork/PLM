@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useTranslation } from 'react-i18next'
 import { Trash2, X } from 'lucide-react'
 import type { InstanceTransition } from '@cascadia/commons/lifecycles/types'
 import {
@@ -28,6 +29,7 @@ export function InstanceTransitionPropertiesPanel({
   onClose,
   readOnly = false,
 }: InstanceTransitionPropertiesPanelProps) {
+  const { t } = useTranslation('entities')
   const handleChange = (updates: Partial<InstanceTransition>) => {
     onUpdate({ ...transition, ...updates })
   }
@@ -36,7 +38,7 @@ export function InstanceTransitionPropertiesPanel({
     <Card className="w-80 shadow-lg">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">Transition Properties</CardTitle>
+          <CardTitle className="text-base">{t('change-orders.panels.transitionProps.title')}</CardTitle>
           <Button
             type="button"
             variant="ghost"
@@ -52,14 +54,14 @@ export function InstanceTransitionPropertiesPanel({
         {/* Transition Name */}
         <div className="space-y-1.5">
           <Label htmlFor="transitionName" className="text-xs">
-            Name
+            {t('change-orders.panels.transitionProps.name')}
           </Label>
           <Input
             id="transitionName"
             value={transition.name}
             onChange={(e) => handleChange({ name: e.target.value })}
             className="h-8 text-sm"
-            placeholder="e.g., Submit for Review"
+            placeholder={t('change-orders.panels.transitionProps.namePlaceholder')}
             disabled={readOnly}
           />
         </div>
@@ -67,25 +69,22 @@ export function InstanceTransitionPropertiesPanel({
         {/* Description */}
         <div className="space-y-1.5">
           <Label htmlFor="transitionDescription" className="text-xs">
-            Description
+            {t('change-orders.panels.transitionProps.description')}
           </Label>
           <textarea
             id="transitionDescription"
             value={transition.description || ''}
             onChange={(e) => handleChange({ description: e.target.value })}
             className="w-full h-16 px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 resize-none disabled:opacity-50"
-            placeholder="What happens when this transition is taken?"
+            placeholder={t('change-orders.panels.transitionProps.descriptionPlaceholder')}
             disabled={readOnly}
           />
         </div>
 
-        {/* Minimum approvals (WI-4.2) — enforced by the server: the
-            transition is blocked until this many distinct users have an
-            active approved vote at the source state. Composes with any
-            named approvers configured on the source state. */}
+        {/* Minimum approvals (WI-4.2) - enforced by the server */}
         <div className="space-y-1.5">
           <Label htmlFor="requiredApprovals" className="text-xs">
-            Minimum approvals to leave source state
+            {t('change-orders.panels.transitionProps.minApprovals')}
           </Label>
           <Input
             id="requiredApprovals"
@@ -106,18 +105,18 @@ export function InstanceTransitionPropertiesPanel({
             disabled={readOnly}
           />
           <p className="text-xs text-slate-500">
-            0 disables the count gate. Named approvers on the source state are
-            checked in addition, and each must approve before the workflow can
-            move on.
+            {t('change-orders.panels.transitionProps.minApprovalsHintPart1')}
+            {t('change-orders.panels.transitionProps.minApprovalsHintPart2')}
+            {t('change-orders.panels.transitionProps.minApprovalsHintPart3')}
           </p>
         </div>
 
         {/* Info about instance-level limitations */}
         <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-md">
           <p className="text-xs text-slate-600 dark:text-slate-400">
-            Ad-hoc transitions cannot carry guards or actions. Approvals are
-            enforced through the minimum above and the approvers configured on
-            the source state.
+            {t('change-orders.panels.transitionProps.adhocNotePart1')}
+            {t('change-orders.panels.transitionProps.adhocNotePart2')}
+            {t('change-orders.panels.transitionProps.adhocNotePart3')}
           </p>
         </div>
 
@@ -131,7 +130,7 @@ export function InstanceTransitionPropertiesPanel({
             className="w-full"
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Delete Transition
+            {t('change-orders.panels.transitionProps.deleteTransition')}
           </Button>
         )}
       </CardContent>

@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import {
   AlertCircle,
@@ -66,9 +67,9 @@ function formatFieldName(fieldName: string): string {
 }
 
 // Helper to format values for display
-function formatValue(value: unknown): string {
-  if (value === null || value === undefined) return '(empty)'
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No'
+function formatValue(value: unknown, t: (key: string) => string): string {
+  if (value === null || value === undefined) return t('change-orders.panels.conflicts.emptyValue')
+  if (typeof value === 'boolean') return value ? t('change-orders.panels.conflicts.yes') : t('change-orders.panels.conflicts.no')
   if (typeof value === 'object') return JSON.stringify(value)
   return String(value)
 }
@@ -94,8 +95,10 @@ function getConflictIcon(conflictType: string, severity: string) {
 // Field conflicts display component
 function FieldConflictsTable({
   conflicts,
+  t,
 }: {
   conflicts: Array<FieldConflict>
+  t: (key: string, options?: Record<string, unknown>) => string
 }) {
   if (conflicts.length === 0) return null
 
@@ -104,10 +107,10 @@ function FieldConflictsTable({
       <table className="w-full text-sm">
         <thead className="bg-slate-100 dark:bg-slate-800">
           <tr>
-            <th className="px-3 py-2 text-left font-medium">Field</th>
-            <th className="px-3 py-2 text-left font-medium">Base</th>
-            <th className="px-3 py-2 text-left font-medium">Ours</th>
-            <th className="px-3 py-2 text-left font-medium">Theirs</th>
+            <th className="px-3 py-2 text-left font-medium">{t('change-orders.panels.conflicts.field')}</th>
+            <th className="px-3 py-2 text-left font-medium">{t('change-orders.panels.conflicts.base')}</th>
+            <th className="px-3 py-2 text-left font-medium">{t('change-orders.panels.conflicts.ours')}</th>
+            <th className="px-3 py-2 text-left font-medium">{t('change-orders.panels.conflicts.theirs')}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
@@ -117,13 +120,13 @@ function FieldConflictsTable({
                 {formatFieldName(fc.fieldPath || fc.fieldName)}
               </td>
               <td className="px-3 py-2 text-slate-500 dark:text-slate-400">
-                {formatValue(fc.baseValue)}
+                {formatValue(fc.baseValue, t)}
               </td>
               <td className="px-3 py-2 text-blue-600 dark:text-blue-400">
-                {formatValue(fc.ourValue)}
+                {formatValue(fc.ourValue, t)}
               </td>
               <td className="px-3 py-2 text-orange-600 dark:text-orange-400">
-                {formatValue(fc.theirValue)}
+                {formatValue(fc.theirValue, t)}
               </td>
             </tr>
           ))}
@@ -138,10 +141,12 @@ function ConflictCard({
   conflict,
   ecoId: changeOrderId,
   onResolve,
+  t,
 }: {
   conflict: EnrichedItemConflict
   ecoId: string
   onResolve?: () => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }) {
   // Determine if reviewed and valid upfront for initial collapse state
   const isReviewedAndValid = conflict.isReviewed && !conflict.needsReReview
@@ -255,7 +260,7 @@ function ConflictCard({
             </Badge>
             {conflict.severity === 'error' && (
               <Badge variant="outline" className="border-red-500 text-red-500">
-                Blocking
+                {t('change-orders.panels.conflicts.blocking')}
               </Badge>
             )}
             {/* Review status badges */}
@@ -265,7 +270,7 @@ function ConflictCard({
                 className="border-green-500 text-green-600 dark:text-green-400"
               >
                 <CheckCircle2 className="h-3 w-3 mr-1" />
-                Reviewed
+                {t('change-orders.panels.conflicts.reviewed')}
               </Badge>
             )}
             {conflict.needsReReview && (
@@ -274,7 +279,7 @@ function ConflictCard({
                 className="border-orange-500 text-orange-600 dark:text-orange-400"
               >
                 <RotateCcw className="h-3 w-3 mr-1" />
-                Needs Re-Review
+                {t('change-orders.panels.conflicts.needsReReview')}
               </Badge>
             )}
           </div>
@@ -291,16 +296,20 @@ function ConflictCard({
           {conflict.isReviewed && conflict.review && (
             <div className="text-xs text-slate-500 dark:text-slate-400 mb-3 space-y-1">
               <p>
-                Reviewed by {conflict.review.reviewerName || 'Unknown'} on{' '}
-                {new Date(conflict.review.reviewedAt).toLocaleDateString()}
+                {t('change-orders.panels.conflicts.reviewedBy', {
+                  name: conflict.review.reviewerName || t('change-orders.panels.conflicts.unknownReviewer'),
+                  date: new Date(conflict.review.reviewedAt).toLocaleDateString(),
+                })}
                 {conflict.review.notes && (
                   <span className="italic"> - "{conflict.review.notes}"</span>
                 )}
               </p>
               {conflict.reviewHistory?.slice(1).map((review) => (
                 <p key={review.id} className="opacity-75">
-                  Previously reviewed by {review.reviewerName || 'Unknown'} on{' '}
-                  {new Date(review.reviewedAt).toLocaleDateString()}
+                  {t('change-orders.panels.conflicts.previouslyReviewedBy', {
+                    name: review.reviewerName || t('change-orders.panels.conflicts.unknownReviewer'),
+                    date: new Date(review.reviewedAt).toLocaleDateString(),
+                  })}
                   {review.notes && (
                     <span className="italic"> - "{review.notes}"</span>
                   )}
@@ -313,25 +322,25 @@ function ConflictCard({
           <div className="grid grid-cols-3 gap-4 text-sm mb-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3">
             {conflict.baseRevision && (
               <div>
-                <p className="text-slate-500 text-xs uppercase">Base</p>
-                <p className="font-medium">Rev {conflict.baseRevision}</p>
+                <p className="text-slate-500 text-xs uppercase">{t('change-orders.panels.conflicts.base')}</p>
+                <p className="font-medium">{t('change-orders.panels.conflicts.rev', { rev: conflict.baseRevision })}</p>
               </div>
             )}
             <div>
               <p className="text-slate-500 text-xs uppercase">
-                Ours ({conflict.ourBranchName})
+                {t('change-orders.panels.conflicts.oursBranch', { branch: conflict.ourBranchName })}
               </p>
               <p className="font-medium text-blue-600 dark:text-blue-400">
-                Rev {conflict.ourRevision}
+                {t('change-orders.panels.conflicts.rev', { rev: conflict.ourRevision })}
               </p>
             </div>
             {conflict.theirRevision && (
               <div>
                 <p className="text-slate-500 text-xs uppercase">
-                  Theirs ({conflict.theirBranchName})
+                  {t('change-orders.panels.conflicts.theirsBranch', { branch: conflict.theirBranchName })}
                 </p>
                 <p className="font-medium text-orange-600 dark:text-orange-400">
-                  Rev {conflict.theirRevision}
+                  {t('change-orders.panels.conflicts.rev', { rev: conflict.theirRevision })}
                 </p>
               </div>
             )}
@@ -352,12 +361,11 @@ function ConflictCard({
                 ) : (
                   <ChevronDown className="h-4 w-4" />
                 )}
-                {conflict.fieldConflicts.length} field conflict
-                {conflict.fieldConflicts.length !== 1 ? 's' : ''}
+                {t('change-orders.panels.conflicts.fieldConflictCount', { count: conflict.fieldConflicts.length })}
               </button>
 
               {fieldExpanded && (
-                <FieldConflictsTable conflicts={conflict.fieldConflicts} />
+                <FieldConflictsTable t={t} conflicts={conflict.fieldConflicts} />
               )}
             </>
           )}
@@ -373,7 +381,9 @@ function ConflictCard({
                   disabled={resolving}
                 >
                   <GitMerge className="h-4 w-4 mr-1" />
-                  {resolving ? 'Pulling...' : 'Pull latest changes from Main'}
+                  {resolving
+                    ? t('change-orders.panels.conflicts.pulling')
+                    : t('change-orders.panels.conflicts.pullLatest')}
                 </Button>
               )}
             {conflict.theirEcoNumber && conflict.theirEcoId && (
@@ -383,7 +393,7 @@ function ConflictCard({
               >
                 <Button size="sm" variant="outline">
                   <ExternalLink className="h-4 w-4 mr-1" />
-                  View {conflict.theirEcoNumber}
+                  {t('change-orders.panels.conflicts.viewEco', { eco: conflict.theirEcoNumber })}
                 </Button>
               </Link>
             )}
@@ -396,7 +406,9 @@ function ConflictCard({
                 disabled={markingReviewed}
               >
                 <Eye className="h-4 w-4 mr-1" />
-                {markingReviewed ? 'Marking...' : 'Mark as Reviewed'}
+                {markingReviewed
+                  ? t('change-orders.panels.conflicts.marking')
+                  : t('change-orders.panels.conflicts.markReviewed')}
               </Button>
             )}
             {/* Unmark reviewed button */}
@@ -409,7 +421,9 @@ function ConflictCard({
                 className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
               >
                 <X className="h-4 w-4 mr-1" />
-                {markingReviewed ? 'Removing...' : 'Remove Review'}
+                {markingReviewed
+                  ? t('change-orders.panels.conflicts.removing')
+                  : t('change-orders.panels.conflicts.removeReview')}
               </Button>
             )}
           </div>
@@ -445,6 +459,7 @@ export function ConflictsList({
   ecoNumber: changeOrderNumber,
   onResolve,
 }: ConflictsListProps) {
+  const { t } = useTranslation('entities')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isResolving, setIsResolving] = useState(false)
 
@@ -457,7 +472,7 @@ export function ConflictsList({
   } = useQuery(
     changeOrderConflictsQuery<EnrichedConflictDetectionResult>(changeOrderId),
   )
-  const error = isError ? 'Failed to check for conflicts' : null
+  const error = isError ? t('change-orders.panels.conflicts.loadError') : null
 
   const handleResolve = async () => {
     await invalidate('change-orders')
@@ -503,7 +518,7 @@ export function ConflictsList({
     return (
       <div className="flex items-center justify-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
-        <span className="ml-3 text-slate-500">Checking for conflicts...</span>
+        <span className="ml-3 text-slate-500">{t('change-orders.panels.conflicts.loading')}</span>
       </div>
     )
   }
@@ -522,7 +537,7 @@ export function ConflictsList({
             className="mt-3"
             onClick={() => void checkConflicts()}
           >
-            Retry
+            {t('change-orders.panels.conflicts.retry')}
           </Button>
         </CardContent>
       </Card>
@@ -536,9 +551,9 @@ export function ConflictsList({
           <div className="flex items-center gap-3 text-green-600 dark:text-green-400">
             <Info className="h-6 w-6" />
             <div>
-              <p className="font-medium">No conflicts detected</p>
+              <p className="font-medium">{t('change-orders.panels.conflicts.noneTitle')}</p>
               <p className="text-sm text-green-600/80 dark:text-green-400/80">
-                This ECO is ready to be released.
+                {t('change-orders.panels.conflicts.noneBody')}
               </p>
             </div>
           </div>
@@ -566,23 +581,21 @@ export function ConflictsList({
             )}
             <div className="flex-1">
               <p className="font-medium">
-                {result.summary.total} conflict
-                {result.summary.total !== 1 ? 's' : ''} detected
+                {t('change-orders.panels.conflicts.conflictsDetected', { count: result.summary.total })}
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 {result.summary.errors > 0 &&
-                  `${result.summary.errors} blocking`}
+                  t('change-orders.panels.conflicts.blockingCount', { count: result.summary.errors })}
                 {result.summary.errors > 0 &&
                   result.summary.warnings > 0 &&
                   ', '}
                 {result.summary.warnings > 0 && (
                   <>
-                    {result.summary.warnings} warning
-                    {result.summary.warnings !== 1 ? 's' : ''}
+                    {t('change-orders.panels.conflicts.warningCount', { count: result.summary.warnings })}
                     {result.summary.reviewedWarnings > 0 && (
                       <span className="text-green-600 dark:text-green-400">
                         {' '}
-                        ({result.summary.reviewedWarnings} reviewed)
+                        {t('change-orders.panels.conflicts.reviewedSuffix', { count: result.summary.reviewedWarnings })}
                       </span>
                     )}
                   </>
@@ -595,7 +608,7 @@ export function ConflictsList({
                 size="sm"
                 onClick={() => setDialogOpen(true)}
               >
-                Resolve before releasing
+                {t('change-orders.panels.conflicts.resolveBeforeRelease')}
               </Button>
             )}
           </div>
@@ -607,6 +620,7 @@ export function ConflictsList({
         {result.conflicts.map((conflict, index) => (
           <ConflictCard
             key={index}
+            t={t}
             conflict={conflict}
             ecoId={changeOrderId}
             onResolve={handleResolve}
@@ -621,7 +635,7 @@ export function ConflictsList({
           size="sm"
           onClick={() => void checkConflicts()}
         >
-          Refresh
+          {t('change-orders.panels.conflicts.refresh')}
         </Button>
       </div>
 

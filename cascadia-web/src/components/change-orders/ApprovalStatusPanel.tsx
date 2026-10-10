@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import {
   Check,
@@ -43,6 +44,7 @@ export function ApprovalStatusPanel({
   changeOrderId,
   changeOrderNumber,
 }: ApprovalStatusPanelProps) {
+  const { t } = useTranslation('entities')
   const invalidate = useInvalidateResources()
   const { data, isLoading } = useQuery(changeOrderApprovalsQuery(changeOrderId))
   // `null` means untouched, so the current state stays open by default.
@@ -82,7 +84,7 @@ export function ApprovalStatusPanel({
         <CardContent className="py-8">
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
-            <span className="text-slate-500">Loading approvals...</span>
+            <span className="text-slate-500">{t('change-orders.panels.approval.loading')}</span>
           </div>
         </CardContent>
       </Card>
@@ -94,7 +96,7 @@ export function ApprovalStatusPanel({
       <Card>
         <CardContent className="py-8">
           <p className="text-center text-slate-500 dark:text-slate-400">
-            No approval information available
+            {t('change-orders.panels.approval.noData')}
           </p>
         </CardContent>
       </Card>
@@ -113,15 +115,15 @@ export function ApprovalStatusPanel({
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Approvals</CardTitle>
+          <CardTitle>{t('change-orders.panels.approval.title')}</CardTitle>
           <CardDescription>
-            Review and submit approvals for each workflow state
+            {t('change-orders.panels.approval.description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {states.length === 0 ? (
             <p className="text-sm text-slate-500 dark:text-slate-400 italic">
-              No approval requirements configured for this workflow
+              {t('change-orders.panels.approval.noRequirements')}
             </p>
           ) : (
             states.map((state, index) => {
@@ -136,6 +138,7 @@ export function ApprovalStatusPanel({
               return (
                 <StateApprovalSection
                   key={state.stateId}
+                  t={t}
                   state={state}
                   isCurrentState={isCurrentState}
                   isCompleted={isCompleted}
@@ -173,6 +176,7 @@ export function ApprovalStatusPanel({
 }
 
 interface StateApprovalSectionProps {
+  t: (key: string, options?: Record<string, unknown>) => string
   state: ApprovalStatus
   isCurrentState: boolean
   isCompleted: boolean
@@ -185,6 +189,7 @@ interface StateApprovalSectionProps {
 }
 
 function StateApprovalSection({
+  t,
   state,
   isCurrentState,
   isCompleted,
@@ -219,24 +224,24 @@ function StateApprovalSection({
               </span>
               {isCurrentState && (
                 <Badge variant="default" className="text-xs">
-                  Current
+                  {t('change-orders.panels.approval.current')}
                 </Badge>
               )}
               {isCompleted && (
                 <Badge variant="success" className="text-xs">
-                  Completed
+                  {t('change-orders.panels.approval.completed')}
                 </Badge>
               )}
               {isUpcoming && (
                 <Badge variant="secondary" className="text-xs">
-                  Upcoming
+                  {t('change-orders.panels.approval.upcoming')}
                 </Badge>
               )}
             </div>
             <div className="flex items-center gap-2">
               {hasApprovers && (
                 <span className="text-sm text-slate-500 dark:text-slate-400">
-                  {state.approvedCount}/{state.requiredCount} required
+                  {t('change-orders.panels.approval.requiredCount', { approved: state.approvedCount, required: state.requiredCount })}
                 </span>
               )}
               {state.isComplete && hasApprovers && (
@@ -250,7 +255,7 @@ function StateApprovalSection({
           <div className="px-4 pb-4 pt-1 space-y-3">
             {!hasApprovers ? (
               <p className="text-sm text-slate-500 dark:text-slate-400 italic">
-                No approvers configured for this state
+                {t('change-orders.panels.approval.noApprovers')}
               </p>
             ) : (
               <>
@@ -258,10 +263,10 @@ function StateApprovalSection({
                 {state.requiredApprovers.length > 0 && (
                   <div className="space-y-2">
                     <h4 className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-                      Required Approvals
+                      {t('change-orders.panels.approval.requiredApprovals')}
                     </h4>
                     {state.requiredApprovers.map((approver, idx) => (
-                      <ApproverRow key={idx} approver={approver} />
+                      <ApproverRow key={idx} t={t} approver={approver} />
                     ))}
                   </div>
                 )}
@@ -270,10 +275,10 @@ function StateApprovalSection({
                 {state.optionalApprovers.length > 0 && (
                   <div className="space-y-2">
                     <h4 className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-                      Optional Approvals
+                      {t('change-orders.panels.approval.optionalApprovals')}
                     </h4>
                     {state.optionalApprovers.map((approver, idx) => (
-                      <ApproverRow key={idx} approver={approver} />
+                      <ApproverRow key={idx} t={t} approver={approver} />
                     ))}
                   </div>
                 )}
@@ -283,7 +288,7 @@ function StateApprovalSection({
                   <div className="pt-2 border-t border-slate-300 dark:border-slate-700">
                     <Button size="sm" onClick={onApprove}>
                       <Check className="h-4 w-4 mr-2" />
-                      Submit Approval
+                      {t('change-orders.panels.approval.submit')}
                     </Button>
                   </div>
                 )}
@@ -292,7 +297,7 @@ function StateApprovalSection({
                 {isCurrentState && canApprove?.alreadyVoted && (
                   <div className="pt-2 border-t border-slate-300 dark:border-slate-700">
                     <p className="text-sm text-slate-500 dark:text-slate-400">
-                      You have already voted:{' '}
+                      {t('change-orders.panels.approval.alreadyVoted')}{' '}
                       <Badge
                         variant={
                           canApprove.existingVote === 'approved'
@@ -300,7 +305,9 @@ function StateApprovalSection({
                             : 'destructive'
                         }
                       >
-                        {canApprove.existingVote}
+                        {canApprove.existingVote === 'approved'
+                          ? t('change-orders.panels.approval.approved')
+                          : t('change-orders.panels.approval.rejected')}
                       </Badge>
                     </p>
                   </div>
@@ -315,6 +322,7 @@ function StateApprovalSection({
 }
 
 interface ApproverRowProps {
+  t: (key: string, options?: Record<string, unknown>) => string
   approver: {
     approverType: 'user' | 'role'
     approverId: string
@@ -327,7 +335,7 @@ interface ApproverRowProps {
   }
 }
 
-function ApproverRow({ approver }: ApproverRowProps) {
+function ApproverRow({ t, approver }: ApproverRowProps) {
   const hasVoted = approver.vote !== null && approver.vote !== undefined
 
   return (
@@ -367,10 +375,11 @@ function ApproverRow({ approver }: ApproverRowProps) {
 
         {hasVoted && approver.votedBy && (
           <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            {approver.vote === 'approved' ? 'Approved' : 'Rejected'} by{' '}
-            {approver.votedBy.name}
+            {approver.vote === 'approved'
+              ? t('change-orders.panels.approval.approvedBy', { name: approver.votedBy.name })
+              : t('change-orders.panels.approval.rejectedBy', { name: approver.votedBy.name })}
             {approver.votedAt && (
-              <> on {new Date(approver.votedAt).toLocaleDateString()}</>
+              <> {t('change-orders.panels.approval.onDate', { date: new Date(approver.votedAt).toLocaleDateString() })}</>
             )}
           </div>
         )}
@@ -381,7 +390,7 @@ function ApproverRow({ approver }: ApproverRowProps) {
           </p>
         )}
 
-        {!hasVoted && <span className="text-xs text-slate-400">Pending</span>}
+        {!hasVoted && <span className="text-xs text-slate-400">{t('change-orders.panels.approval.pending')}</span>}
       </div>
     </div>
   )
