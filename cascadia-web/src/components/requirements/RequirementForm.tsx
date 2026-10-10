@@ -4,6 +4,7 @@
 import { useForm, useStore } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Info } from 'lucide-react'
 import { requirementSchema } from '@cascadia/commons/items/types/requirement'
 import type { Requirement } from '@cascadia/commons/items/types/requirement'
@@ -47,6 +48,7 @@ export function RequirementForm({
   onCancel,
   isSubmitting,
 }: RequirementFormProps) {
+  const { t } = useTranslation('entities')
   // Track selected design's protection status
   const [selectedBranchId, setSelectedBranchId] = useState<string | undefined>()
   const [attributes, setAttributes] = useState<Record<string, unknown>>(
@@ -134,10 +136,10 @@ export function RequirementForm({
         <form.Field name="designId">
           {(field) => (
             <FormField
-              label="Design"
+              label={t('requirements.form.design')}
               required
               error={field.state.meta.errors[0]}
-              helpText="The design this requirement belongs to"
+              helpText={t('requirements.form.designHelp')}
               className="md:col-span-2"
             >
               <div className="flex items-center gap-4">
@@ -162,14 +164,14 @@ export function RequirementForm({
         {/* Branch Selection - Only shown in post-release phase for new items */}
         {needsBranchSelection && currentDesignId && (
           <FormField
-            label="Target Branch"
+            label={t('requirements.form.targetBranch')}
             required
             error={
               !selectedBranchId
-                ? 'Please select a branch to create this requirement on'
+                ? t('requirements.form.branchRequiredError')
                 : undefined
             }
-            helpText="Select a change-order or workspace branch for the new requirement"
+            helpText={t('requirements.form.branchRequiredHelp')}
             className="md:col-span-2"
           >
             <BranchSelector
@@ -177,14 +179,11 @@ export function RequirementForm({
               value={selectedBranchId}
               onChange={setSelectedBranchId}
               showMainOption={false}
-              placeholder="Select branch..."
+              placeholder={t('requirements.form.branchProtected')}
             />
             <div className="flex items-start gap-2 mt-2 p-3 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-sm rounded-md">
               <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
-              <span>
-                This design is under change control. New requirements must be
-                created on an ECO or workspace branch.
-              </span>
+              <span>{t('requirements.form.branchChangeControlNotice')}</span>
             </div>
           </FormField>
         )}
@@ -208,7 +207,7 @@ export function RequirementForm({
         <form.Field name="name">
           {(field) => (
             <FormField
-              label="Name"
+              label={t('requirements.form.name')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -217,7 +216,7 @@ export function RequirementForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="User Authentication"
+                placeholder={t('requirements.form.namePlaceholder')}
                 error={!!field.state.meta.errors.length}
                 data-testid="requirement-name"
               />
@@ -229,7 +228,7 @@ export function RequirementForm({
         <form.Field name="description">
           {(field) => (
             <FormField
-              label="Description"
+              label={t('requirements.form.description')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -238,7 +237,7 @@ export function RequirementForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Detailed description of the requirement..."
+                placeholder={t('requirements.form.descriptionPlaceholder')}
                 rows={4}
                 error={!!field.state.meta.errors.length}
               />
@@ -249,7 +248,7 @@ export function RequirementForm({
         {/* Type */}
         <form.Field name="type">
           {(field) => (
-            <FormField label="Type" error={field.state.meta.errors[0]}>
+            <FormField label={t('requirements.form.type')} error={field.state.meta.errors[0]}>
               <Select
                 value={field.state.value}
                 onValueChange={(value) =>
@@ -257,15 +256,15 @@ export function RequirementForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t('requirements.form.selectType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Functional">Functional</SelectItem>
-                  <SelectItem value="Non-Functional">Non-Functional</SelectItem>
-                  <SelectItem value="Performance">Performance</SelectItem>
-                  <SelectItem value="Security">Security</SelectItem>
-                  <SelectItem value="Usability">Usability</SelectItem>
-                  <SelectItem value="Business">Business</SelectItem>
+                  <SelectItem value="Functional">{t('requirements.typeLabels.Functional')}</SelectItem>
+                  <SelectItem value="Non-Functional">{t('requirements.typeLabels.Non-Functional')}</SelectItem>
+                  <SelectItem value="Performance">{t('requirements.typeLabels.Performance')}</SelectItem>
+                  <SelectItem value="Security">{t('requirements.typeLabels.Security')}</SelectItem>
+                  <SelectItem value="Usability">{t('requirements.typeLabels.Usability')}</SelectItem>
+                  <SelectItem value="Business">{t('requirements.typeLabels.Business')}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -275,7 +274,7 @@ export function RequirementForm({
         {/* Priority */}
         <form.Field name="priority">
           {(field) => (
-            <FormField label="Priority" error={field.state.meta.errors[0]}>
+            <FormField label={t('requirements.form.priority')} error={field.state.meta.errors[0]}>
               <Select
                 value={field.state.value}
                 onValueChange={(value) =>
@@ -283,13 +282,13 @@ export function RequirementForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
+                  <SelectValue placeholder={t('requirements.form.selectPriority')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="MustHave">Must Have</SelectItem>
-                  <SelectItem value="ShouldHave">Should Have</SelectItem>
-                  <SelectItem value="CouldHave">Could Have</SelectItem>
-                  <SelectItem value="WontHave">Won't Have</SelectItem>
+                  <SelectItem value="MustHave">{t('requirements.priorityLabels.MustHave')}</SelectItem>
+                  <SelectItem value="ShouldHave">{t('requirements.priorityLabels.ShouldHave')}</SelectItem>
+                  <SelectItem value="CouldHave">{t('requirements.priorityLabels.CouldHave')}</SelectItem>
+                  <SelectItem value="WontHave">{t('requirements.priorityLabels.WontHave')}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -300,16 +299,16 @@ export function RequirementForm({
         <form.Field name="source">
           {(field) => (
             <FormField
-              label="Source"
+              label={t('requirements.form.source')}
               error={field.state.meta.errors[0]}
-              helpText="Who requested this requirement"
+              helpText={t('requirements.form.sourceHelp')}
             >
               <Input
                 name={field.name}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Customer, Stakeholder, etc."
+                placeholder={t('requirements.form.sourcePlaceholder')}
                 error={!!field.state.meta.errors.length}
               />
             </FormField>
@@ -320,7 +319,7 @@ export function RequirementForm({
         <form.Field name="category">
           {(field) => (
             <FormField
-              label="Category"
+              label={t('requirements.form.category')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -329,7 +328,7 @@ export function RequirementForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="e.g., Authentication, Reporting, Performance"
+                placeholder={t('requirements.form.categoryPlaceholder')}
                 error={!!field.state.meta.errors.length}
               />
             </FormField>
@@ -340,7 +339,7 @@ export function RequirementForm({
         <form.Field name="acceptanceCriteria">
           {(field) => (
             <FormField
-              label="Acceptance Criteria"
+              label={t('requirements.form.acceptanceCriteria')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -349,7 +348,7 @@ export function RequirementForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Define the acceptance criteria for this requirement..."
+                placeholder={t('requirements.form.acceptanceCriteriaPlaceholder')}
                 rows={4}
                 error={!!field.state.meta.errors.length}
               />
@@ -361,9 +360,9 @@ export function RequirementForm({
         <form.Field name="verificationMethod">
           {(field) => (
             <FormField
-              label="Verification Method"
+              label={t('requirements.form.verificationMethod')}
               error={field.state.meta.errors[0]}
-              helpText="How this requirement will be verified"
+              helpText={t('requirements.form.verificationMethodHelp')}
             >
               <Select
                 value={field.state.value}
@@ -372,14 +371,14 @@ export function RequirementForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select method" />
+                  <SelectValue placeholder={t('requirements.form.verificationMethodPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Analysis">Analysis</SelectItem>
-                  <SelectItem value="Inspection">Inspection</SelectItem>
-                  <SelectItem value="Demonstration">Demonstration</SelectItem>
-                  <SelectItem value="Test">Test</SelectItem>
-                  <SelectItem value="Documentation">Documentation</SelectItem>
+                  <SelectItem value="Analysis">{t('requirements.verificationMethodLabels.Analysis')}</SelectItem>
+                  <SelectItem value="Inspection">{t('requirements.verificationMethodLabels.Inspection')}</SelectItem>
+                  <SelectItem value="Demonstration">{t('requirements.verificationMethodLabels.Demonstration')}</SelectItem>
+                  <SelectItem value="Test">{t('requirements.verificationMethodLabels.Test')}</SelectItem>
+                  <SelectItem value="Documentation">{t('requirements.verificationMethodLabels.Documentation')}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -390,9 +389,9 @@ export function RequirementForm({
         <form.Field name="verificationStatus">
           {(field) => (
             <FormField
-              label="Verification Status"
+              label={t('requirements.form.verificationStatus')}
               error={field.state.meta.errors[0]}
-              helpText="Current verification status"
+              helpText={t('requirements.form.verificationStatusHelp')}
             >
               <Select
                 value={field.state.value}
@@ -401,14 +400,14 @@ export function RequirementForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder={t('requirements.form.verificationStatusPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NotStarted">Not Started</SelectItem>
-                  <SelectItem value="InProgress">In Progress</SelectItem>
-                  <SelectItem value="Passed">Passed</SelectItem>
-                  <SelectItem value="Failed">Failed</SelectItem>
-                  <SelectItem value="Waived">Waived</SelectItem>
+                  <SelectItem value="NotStarted">{t('requirements.verificationStatusLabels.NotStarted')}</SelectItem>
+                  <SelectItem value="InProgress">{t('requirements.verificationStatusLabels.InProgress')}</SelectItem>
+                  <SelectItem value="Passed">{t('requirements.verificationStatusLabels.Passed')}</SelectItem>
+                  <SelectItem value="Failed">{t('requirements.verificationStatusLabels.Failed')}</SelectItem>
+                  <SelectItem value="Waived">{t('requirements.verificationStatusLabels.Waived')}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -441,10 +440,10 @@ export function RequirementForm({
           data-testid="requirement-submit"
         >
           {isSubmitting
-            ? 'Saving...'
+            ? t('requirements.form.saving')
             : requirement?.id
-              ? 'Update Requirement'
-              : 'Create Requirement'}
+              ? t('requirements.form.updateRequirement')
+              : t('requirements.form.createRequirement')}
         </Button>
       </div>
     </form>
