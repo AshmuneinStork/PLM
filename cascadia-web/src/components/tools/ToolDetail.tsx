@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Edit, Save, Trash2, X } from 'lucide-react'
 import {
   TOOL_SUBTYPES,
@@ -51,12 +52,8 @@ import { useAlertDialog } from '@/hooks/useAlertDialog'
 import { StateBadge } from '@/components/items/StateBadge'
 import { FreeTransitionControl } from '@/components/items/FreeTransitionControl'
 
-// Tool state options match lifecycle: Draft -> Active -> Maintenance -> Retired
-const TOOL_TYPE_OPTIONS = [
-  { value: 'manufacturing', label: 'Manufacturing' },
-  { value: 'quality', label: 'Quality' },
-  { value: 'utility', label: 'Utility' },
-]
+// Tool type options match lifecycle: manufacturing | quality | utility
+const TOOL_TYPE_VALUES = ['manufacturing', 'quality', 'utility'] as const
 
 function subtypeLabel(subtype?: string): string {
   if (!subtype) return '-'
@@ -114,6 +111,11 @@ export function ToolDetail({
   activeTab = 'details',
   onTabChange,
 }: ToolDetailProps) {
+  const { t } = useTranslation('entities')
+  const typeOptions = TOOL_TYPE_VALUES.map((value) => ({
+    value,
+    label: t(`tools.typeLabels.${value}`),
+  }))
   const { confirm } = useAlertDialog()
 
   const isCreateMode = !initialTool?.id
@@ -207,10 +209,12 @@ export function ToolDetail({
   const handleDelete = () => {
     if (!onDelete || !currentTool.id) return
     confirm({
-      title: 'Delete Tool',
-      description: `Are you sure you want to delete ${currentTool.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('tools.header.deleteTitle'),
+      description: t('tools.dialogs.deleteBody', {
+        itemNumber: currentTool.itemNumber,
+      }),
+      actionLabel: t('tools.header.delete'),
+      cancelLabel: t('tools.header.cancel'),
       variant: 'destructive',
       onConfirm: onDelete,
     })
@@ -251,12 +255,14 @@ export function ToolDetail({
             </Link>
             <div>
               <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-                {isCreateMode ? 'Create New Tool' : currentTool.itemNumber}
+                {isCreateMode
+                  ? t('tools.header.createTitle')
+                  : currentTool.itemNumber}
               </h1>
               <p className="text-slate-600 dark:text-slate-400 mt-1">
                 {isCreateMode
-                  ? 'Enter the details for the new tool'
-                  : currentTool.name || 'Unnamed'}
+                  ? t('tools.header.createSubtitle')
+                  : currentTool.name || t('tools.header.unnamed')}
               </p>
             </div>
           </div>
@@ -270,27 +276,27 @@ export function ToolDetail({
                   disabled={isSubmitting}
                 >
                   <X className="h-4 w-4 mr-2" />
-                  Cancel
+                  {t('tools.header.cancel')}
                 </Button>
                 <Button onClick={handleSave} disabled={isSubmitting}>
                   <Save className="h-4 w-4 mr-2" />
                   {isSubmitting
-                    ? 'Saving...'
+                    ? t('tools.header.saving')
                     : isCreateMode
-                      ? 'Create Tool'
-                      : 'Save Changes'}
+                      ? t('tools.header.createTool')
+                      : t('tools.header.saveChanges')}
                 </Button>
               </>
             ) : (
               <>
                 <Button variant="outline" onClick={handleEdit}>
                   <Edit className="h-4 w-4 mr-2" />
-                  Edit
+                  {t('tools.header.edit')}
                 </Button>
                 {onDelete && (
                   <Button variant="destructive" onClick={handleDelete}>
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    {t('tools.header.delete')}
                   </Button>
                 )}
               </>
@@ -321,8 +327,8 @@ export function ToolDetail({
           className="w-full"
         >
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="details">{t('tools.tabs.details')}</TabsTrigger>
+            <TabsTrigger value="history">{t('tools.tabs.history')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="mt-6">
@@ -331,12 +337,12 @@ export function ToolDetail({
                 {/* Overview Card */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Overview</CardTitle>
+                    <CardTitle>{t('tools.detail.overviewTitle')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <ViewEditText
-                        label="Item Number"
+                        label={t('tools.table.itemNumber')}
                         value={
                           isEditing ? tool.itemNumber : currentTool.itemNumber
                         }
@@ -345,11 +351,11 @@ export function ToolDetail({
                         placeholder={ITEM_NUMBER_PLACEHOLDER}
                       />
                       <ViewEditText
-                        label="Name"
+                        label={t('tools.form.name')}
                         value={isEditing ? tool.name : currentTool.name}
                         onChange={(v) => updateField('name', v)}
                         isEditing={isEditing}
-                        placeholder="e.g., Prusa MK4S"
+                        placeholder={t('tools.form.namePlaceholder')}
                         required
                       />
                     </dl>
@@ -359,21 +365,21 @@ export function ToolDetail({
                 {/* Tool Information Card */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Tool Information</CardTitle>
+                      <CardTitle>{t('tools.detail.toolInfoTitle')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <ViewEditSelect
-                        label="Tool Type"
+                        label={t('tools.form.toolType')}
                         value={isEditing ? tool.toolType : currentTool.toolType}
                         onChange={(v) => updateField('toolType', v)}
                         isEditing={isEditing}
-                        options={TOOL_TYPE_OPTIONS}
+                        options={typeOptions}
                       />
                       {isEditing ? (
                         <div>
                           <dt className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
-                            Subtype
+                            {t('tools.form.subtype')}
                           </dt>
                           <dd>
                             <SearchableSelect
@@ -383,21 +389,21 @@ export function ToolDetail({
                               }
                               options={[
                                 ...subtypeOptions,
-                                { value: 'other', label: 'Other' },
+                                { value: 'other', label: t('tools.typeLabels.other') },
                               ]}
-                              placeholder="Search subtypes..."
-                              searchPlaceholder="Type to filter..."
+                              placeholder={t('tools.form.searchSubtypes')}
+                              searchPlaceholder={t('tools.form.filterSubtypes')}
                             />
                           </dd>
                         </div>
                       ) : (
                         <ViewEditStatic
-                          label="Subtype"
+                        label={t('tools.form.subtype')}
                           value={subtypeLabel(currentTool.toolSubtype)}
                         />
                       )}
                       <ViewEditText
-                        label="Manufacturer"
+                        label={t('tools.form.manufacturer')}
                         value={
                           isEditing
                             ? tool.manufacturer
@@ -405,14 +411,14 @@ export function ToolDetail({
                         }
                         onChange={(v) => updateField('manufacturer', v)}
                         isEditing={isEditing}
-                        placeholder="e.g., Prusa Research"
+                        placeholder={t('tools.form.manufacturerPlaceholder')}
                       />
                       <ViewEditText
-                        label="Model"
+                        label={t('tools.form.model')}
                         value={isEditing ? tool.model : currentTool.model}
                         onChange={(v) => updateField('model', v)}
                         isEditing={isEditing}
-                        placeholder="e.g., MK4S"
+                        placeholder={t('tools.form.modelPlaceholder')}
                       />
                     </dl>
                   </CardContent>
@@ -424,7 +430,7 @@ export function ToolDetail({
                     Object.keys(currentTool.capabilities).length > 0)) && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Capabilities</CardTitle>
+                      <CardTitle>{t('tools.detail.capabilitiesTitle')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       {isEditing ? (
@@ -447,15 +453,15 @@ export function ToolDetail({
               <div className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Status & Location</CardTitle>
+                      <CardTitle>{t('tools.detail.statusLocationTitle')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <ViewEditText
-                      label="Location"
+                      label={t('tools.form.location')}
                       value={isEditing ? tool.location : currentTool.location}
                       onChange={(v) => updateField('location', v)}
                       isEditing={isEditing}
-                      placeholder="e.g., Workshop bench 3"
+                      placeholder={t('tools.form.locationPlaceholder')}
                     />
                   </CardContent>
                 </Card>
@@ -463,7 +469,7 @@ export function ToolDetail({
                 {/* Notes */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Notes</CardTitle>
+                      <CardTitle>{t('tools.detail.notesTitle')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ViewEditTextarea
@@ -471,7 +477,7 @@ export function ToolDetail({
                       value={isEditing ? tool.notes : currentTool.notes}
                       onChange={(v) => updateField('notes', v)}
                       isEditing={isEditing}
-                      placeholder="Free-form notes about this tool..."
+                      placeholder={t('tools.form.notesPlaceholder')}
                     />
                   </CardContent>
                 </Card>
@@ -495,7 +501,7 @@ export function ToolDetail({
                     >
                       <CardHeader className="pb-3">
                         <CollapsibleTrigger className="hover:opacity-70">
-                          <CardTitle>Custom Attributes</CardTitle>
+                          <CardTitle>{t('tools.detail.attributesTitle')}</CardTitle>
                         </CollapsibleTrigger>
                       </CardHeader>
                       <CollapsibleContent>
@@ -518,7 +524,7 @@ export function ToolDetail({
                             </dl>
                           ) : (
                             <p className="text-sm text-slate-500 dark:text-slate-400">
-                              No custom attributes defined.
+                              {t('tools.detail.noAttributes')}
                             </p>
                           )}
                         </CardContent>
@@ -531,26 +537,26 @@ export function ToolDetail({
                   <Card>
                     <CardHeader>
                       <CollapsibleTrigger className="hover:opacity-70">
-                        <CardTitle>Metadata</CardTitle>
+                        <CardTitle>{t('tools.detail.metadataTitle')}</CardTitle>
                       </CollapsibleTrigger>
                     </CardHeader>
                     <CollapsibleContent>
                       <CardContent className="space-y-3">
                         <ViewEditStatic
-                          label="Revision"
+                          label={t('tools.detail.revisionLabel')}
                           value={currentTool.revision}
                         />
                         <ViewEditStatic
-                          label="Created"
+                          label={t('tools.detail.createdLabel')}
                           value={formatDate(currentTool.createdAt)}
                         />
                         <ViewEditStatic
-                          label="Last Modified"
+                          label={t('tools.detail.modifiedLabel')}
                           value={formatDate(currentTool.modifiedAt)}
                         />
                         {!isCreateMode && (
                           <ViewEditStatic
-                            label="Tool ID"
+                            label={t('tools.detail.toolIdLabel')}
                             value={currentTool.id}
                             mono
                           />
@@ -575,7 +581,7 @@ export function ToolDetail({
               <Card>
                 <CardContent className="py-12 text-center">
                   <p className="text-slate-500">
-                    Save the tool first to view history
+                    {t('tools.detail.saveFirstHistory')}
                   </p>
                 </CardContent>
               </Card>

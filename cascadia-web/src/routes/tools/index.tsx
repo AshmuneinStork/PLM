@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { z } from 'zod'
 import type { Tool } from '@cascadia/commons/items/types/tool'
@@ -66,6 +67,7 @@ export const Route = createFileRoute('/tools/')({
 })
 
 function ToolsListPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
   const { handleError, showSuccess } = useErrorHandler()
@@ -90,10 +92,12 @@ function ToolsListPage() {
     if (!tool.id) return
 
     confirm({
-      title: 'Delete Tool',
-      description: `Are you sure you want to delete ${tool.itemNumber}? This action cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('tools.dialogs.deleteTitle'),
+      description: t('tools.dialogs.deleteBody', {
+        itemNumber: tool.itemNumber,
+      }),
+      actionLabel: t('tools.dialogs.deleteAction'),
+      cancelLabel: t('tools.dialogs.cancelAction'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -101,10 +105,15 @@ function ToolsListPage() {
             method: 'DELETE',
           })
 
-          showSuccess('Tool deleted', `${tool.itemNumber} has been deleted`)
+          showSuccess(
+            t('tools.toasts.deletedTitle'),
+            t('tools.toasts.deletedBody', {
+              itemNumber: tool.itemNumber,
+            }),
+          )
           await invalidate('tools')
         } catch (error) {
-          handleError(error, { title: 'Failed to delete tool' })
+          handleError(error, { title: t('tools.toasts.deleteFailedTitle') })
         }
       },
     })
@@ -116,16 +125,16 @@ function ToolsListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-            Tools
+            {t('tools.list.title')}
           </h1>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Manufacturing tools and equipment inventory
+            {t('tools.list.subtitle')}
           </p>
         </div>
         <Link to="/tools/new">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            Create Tool
+            {t('tools.list.createAction')}
           </Button>
         </Link>
       </div>
@@ -135,15 +144,15 @@ function ToolsListPage() {
         itemType="Tool"
         filters={TOOL_FILTERS}
         total={total}
-        totalLabel="Total Tools"
+        totalLabel={t('tools.list.totalLabel')}
       />
 
       {/* Tools Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Tools</CardTitle>
+          <CardTitle>{t('tools.list.cardTitle')}</CardTitle>
           <CardDescription>
-            {total} {total === 1 ? 'tool' : 'tools'} in the system
+            {t('tools.list.cardCount', { count: total })}
           </CardDescription>
         </CardHeader>
         <CardContent>

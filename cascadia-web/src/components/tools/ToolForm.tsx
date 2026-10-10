@@ -3,6 +3,7 @@
 
 import { useForm, useStore } from '@tanstack/react-form'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   TOOL_SUBTYPES,
   getSubtypeGroup,
@@ -32,11 +33,7 @@ interface ToolFormProps {
   isSubmitting?: boolean
 }
 
-const TOOL_TYPE_OPTIONS = [
-  { value: 'manufacturing', label: 'Manufacturing' },
-  { value: 'quality', label: 'Quality' },
-  { value: 'utility', label: 'Utility' },
-]
+const TOOL_TYPE_VALUES = ['manufacturing', 'quality', 'utility'] as const
 
 export function ToolForm({
   tool,
@@ -44,6 +41,7 @@ export function ToolForm({
   onCancel,
   isSubmitting,
 }: ToolFormProps) {
+  const { t } = useTranslation('entities')
   const [capabilities, setCapabilities] = useState<Record<string, unknown>>(
     tool?.capabilities ?? {},
   )
@@ -102,12 +100,12 @@ export function ToolForm({
       {/* Name */}
       <form.Field name="name">
         {(field) => (
-          <FormField label="Name" error={field.state.meta.errors[0]}>
+          <FormField label={t('tools.form.name')} error={field.state.meta.errors[0]}>
             <Input
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
-              placeholder="e.g., Prusa MK4S"
+              placeholder={t('tools.form.namePlaceholder')}
             />
           </FormField>
         )}
@@ -116,7 +114,7 @@ export function ToolForm({
       {/* Tool Type */}
       <form.Field name="toolType">
         {(field) => (
-          <FormField label="Tool Type" error={field.state.meta.errors[0]}>
+          <FormField label={t('tools.form.toolType')} error={field.state.meta.errors[0]}>
             <Select
               value={field.state.value}
               onValueChange={(v) =>
@@ -124,12 +122,12 @@ export function ToolForm({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select type" />
+                <SelectValue placeholder={t('tools.form.selectType')} />
               </SelectTrigger>
               <SelectContent>
-                {TOOL_TYPE_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
+                {TOOL_TYPE_VALUES.map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {t(`tools.typeLabels.${value}`)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -141,13 +139,13 @@ export function ToolForm({
       {/* Tool Subtype */}
       <form.Field name="toolSubtype">
         {(field) => (
-          <FormField label="Subtype" error={field.state.meta.errors[0]}>
+          <FormField label={t('tools.form.subtype')} error={field.state.meta.errors[0]}>
             <SearchableSelect
               value={field.state.value}
               onValueChange={(v) => field.handleChange(v)}
-              options={[...subtypeOptions, { value: 'other', label: 'Other' }]}
-              placeholder="Search subtypes..."
-              searchPlaceholder="Type to filter..."
+              options={[...subtypeOptions, { value: 'other', label: t('tools.typeLabels.other') }]}
+              placeholder={t('tools.form.searchSubtypes')}
+              searchPlaceholder={t('tools.form.filterSubtypes')}
             />
           </FormField>
         )}
@@ -157,12 +155,12 @@ export function ToolForm({
       <div className="grid grid-cols-2 gap-4">
         <form.Field name="manufacturer">
           {(field) => (
-            <FormField label="Manufacturer" error={field.state.meta.errors[0]}>
+            <FormField label={t('tools.form.manufacturer')} error={field.state.meta.errors[0]}>
               <Input
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="e.g., Prusa Research"
+                placeholder={t('tools.form.manufacturerPlaceholder')}
               />
             </FormField>
           )}
@@ -170,12 +168,12 @@ export function ToolForm({
 
         <form.Field name="model">
           {(field) => (
-            <FormField label="Model" error={field.state.meta.errors[0]}>
+            <FormField label={t('tools.form.model')} error={field.state.meta.errors[0]}>
               <Input
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="e.g., MK4S"
+                placeholder={t('tools.form.modelPlaceholder')}
               />
             </FormField>
           )}
@@ -187,12 +185,12 @@ export function ToolForm({
       <div className="grid grid-cols-2 gap-4">
         <form.Field name="location">
           {(field) => (
-            <FormField label="Location" error={field.state.meta.errors[0]}>
+            <FormField label={t('tools.form.location')} error={field.state.meta.errors[0]}>
               <Input
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="e.g., Workshop bench 3"
+                placeholder={t('tools.form.locationPlaceholder')}
               />
             </FormField>
           )}
@@ -211,12 +209,12 @@ export function ToolForm({
       {/* Notes */}
       <form.Field name="notes">
         {(field) => (
-          <FormField label="Notes" error={field.state.meta.errors[0]}>
+          <FormField label={t('tools.form.notes')} error={field.state.meta.errors[0]}>
             <Textarea
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               onBlur={field.handleBlur}
-              placeholder="Free-form notes about this tool..."
+              placeholder={t('tools.form.notesPlaceholder')}
               rows={3}
             />
           </FormField>
@@ -230,15 +228,15 @@ export function ToolForm({
       <div className="flex justify-end gap-2 pt-4">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            {t('tools.form.cancel')}
           </Button>
         )}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting
-            ? 'Saving...'
+            ? t('tools.form.saving')
             : tool?.id
-              ? 'Update Tool'
-              : 'Create Tool'}
+              ? t('tools.form.updateTool')
+              : t('tools.form.createTool')}
         </Button>
       </div>
     </form>

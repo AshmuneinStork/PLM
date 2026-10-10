@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import type { Tool } from '@cascadia/commons/items/types/tool'
@@ -23,6 +24,7 @@ export const Route = createFileRoute('/tools/$id')({
 })
 
 function ToolDetailPage() {
+  const { t } = useTranslation('entities')
   const router = useRouter()
   const navigate = useNavigate()
   const { showSuccess } = useErrorHandler()
@@ -42,8 +44,10 @@ function ToolDetailPage() {
     })
 
     showSuccess(
-      'Tool updated',
-      `${updatedTool.itemNumber} has been updated successfully`,
+      t('tools.toasts.updatedTitle'),
+      t('tools.toasts.updatedBody', {
+        itemNumber: updatedTool.itemNumber,
+      }),
     )
     await invalidate('tools')
   }
@@ -55,7 +59,10 @@ function ToolDetailPage() {
       method: 'DELETE',
     })
 
-    showSuccess('Tool deleted', `${tool.itemNumber} has been deleted`)
+    showSuccess(
+      t('tools.toasts.deletedTitle'),
+      t('tools.toasts.deletedBody', { itemNumber: tool.itemNumber }),
+    )
     await invalidate('tools')
     navigate({ to: '/tools' })
   }

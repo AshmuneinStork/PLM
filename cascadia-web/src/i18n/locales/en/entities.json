@@ -1264,5 +1264,142 @@
         "ecoLabel": "Change Order"
       }
     }
+  },
+  "tools": {
+    "table": {
+      "itemNumber": "Item Number",
+      "name": "Name",
+      "type": "Type",
+      "subtype": "Subtype",
+      "manufacturer": "Manufacturer",
+      "model": "Model",
+      "state": "State",
+      "location": "Location",
+      "searchPlaceholder": "Search...",
+      "filterPlaceholder": "Filter...",
+      "filterStatePlaceholder": "Filter state...",
+      "openMenu": "Open menu",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "del": "Delete",
+      "emptyMessage": "No tools found",
+      "emptyDescription": "Create your first tool to get started"
+    },
+    "typeLabels": {
+      "manufacturing": "Manufacturing",
+      "quality": "Quality",
+      "utility": "Utility",
+      "other": "Other"
+    },
+    "list": {
+      "title": "Tools",
+      "subtitle": "Manufacturing tools and equipment inventory",
+      "createAction": "Create Tool",
+      "totalLabel": "Total Tools",
+      "cardTitle": "All Tools",
+      "cardCount_one": "{{count}} tool in the system",
+      "cardCount_other": "{{count}} tools in the system",
+      "viewing": "(viewing {{context}})"
+    },
+    "toasts": {
+      "createdTitle": "Tool created",
+      "createdBody": "{{name}} has been created successfully",
+      "updatedTitle": "Tool updated",
+      "updatedBody": "{{itemNumber}} has been updated successfully",
+      "deletedTitle": "Tool deleted",
+      "deletedBody": "{{itemNumber}} has been deleted",
+      "deleteFailedTitle": "Failed to delete tool",
+      "createFailedTitle": "Failed to create tool"
+    },
+    "dialogs": {
+      "deleteTitle": "Delete Tool",
+      "deleteBody": "Are you sure you want to delete {{itemNumber}}? This action cannot be undone.",
+      "deleteAction": "Delete",
+      "cancelAction": "Cancel"
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "e.g., Prusa MK4S",
+      "toolType": "Tool Type",
+      "selectType": "Select type",
+      "subtype": "Subtype",
+      "searchSubtypes": "Search subtypes...",
+      "filterSubtypes": "Type to filter...",
+      "manufacturer": "Manufacturer",
+      "manufacturerPlaceholder": "e.g., Prusa Research",
+      "model": "Model",
+      "modelPlaceholder": "e.g., MK4S",
+      "location": "Location",
+      "locationPlaceholder": "e.g., Workshop bench 3",
+      "notes": "Notes",
+      "notesPlaceholder": "Free-form notes about this tool...",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "updateTool": "Update Tool",
+      "createTool": "Create Tool"
+    },
+    "header": {
+      "createTitle": "Create New Tool",
+      "createSubtitle": "Enter the details for the new tool",
+      "unnamed": "Unnamed",
+      "newFallback": "New Tool",
+      "back": "Back",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "saving": "Saving...",
+      "createTool": "Create Tool",
+      "saveChanges": "Save Changes",
+      "save": "Save",
+      "deleteTitle": "Delete Tool"
+    },
+    "tabs": {
+      "details": "Details",
+      "history": "History"
+    },
+    "detail": {
+      "overviewTitle": "Overview",
+      "toolInfoTitle": "Tool Information",
+      "capabilitiesTitle": "Capabilities",
+      "statusLocationTitle": "Status & Location",
+      "notesTitle": "Notes",
+      "attributesTitle": "Custom Attributes",
+      "metadataTitle": "Metadata",
+      "revisionLabel": "Revision",
+      "createdLabel": "Created",
+      "modifiedLabel": "Last Modified",
+      "toolIdLabel": "Tool ID",
+      "noAttributes": "No custom attributes defined.",
+      "saveFirstHistory": "Save the tool first to view history",
+      "itemNumberPlaceholder": "TOOL-000001",
+      "namePlaceholder": "Tool name",
+      "manufacturerPlaceholder": "e.g., Prusa Research",
+      "modelPlaceholder": "e.g., MK4S",
+      "locationPlaceholder": "e.g., Workshop bench 3",
+      "overviewHint": "Basic identification for this tool"
+    },
+    "capabilities": {
+      "title": "Capabilities",
+      "selectSubtype": "Select a tool subtype to configure capabilities.",
+      "noRecorded": "No capabilities recorded.",
+      "freeformPlaceholder": "Build volume: 250 x 210 x 220\nMaterials: PLA, PETG, ABS\nHeated bed: yes\nMax power: 60",
+      "hintLead": "One capability per line, as",
+      "hintMiddle": "Separate list values with commas",
+      "hintToggles": "for on-off capabilities, and",
+      "hintDims": "for dimensions. No quotes or brackets needed.",
+      "savedAs_one": "Saved as {{count}} capability",
+      "savedAs_other": "Saved as {{count}} capabilities",
+      "fdmTitle": "FDM Printer Capabilities",
+      "slaTitle": "SLA Printer Capabilities",
+      "cncMillTitle": "CNC Mill Capabilities",
+      "cncLatheTitle": "CNC Lathe Capabilities",
+      "laserTitle": "Laser Cutter Capabilities",
+      "manualMillTitle": "Manual Mill Capabilities",
+      "manualLatheTitle": "Manual Lathe Capabilities",
+      "miterSawTitle": "Miter Saw Capabilities",
+      "drillPressTitle": "Drill Press Capabilities",
+      "pressBrakeTitle": "Press Brake Capabilities",
+      "surfaceGrinderTitle": "Surface Grinder Capabilities"
+    }
   }
 }

@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Edit, Eye, MoreVertical, Trash2 } from 'lucide-react'
 import { TOOL_SUBTYPES } from '@cascadia/commons/items/types/tool'
 import type { KnownToolSubtype, Tool } from '@cascadia/commons/items/types/tool'
@@ -13,7 +14,7 @@ import type {
   Row,
   SortingState,
 } from '@/components/ui'
-import { Badge, Button, DataGrid } from '@/components/ui'
+import { Button, DataGrid } from '@/components/ui'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +26,8 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
 } from '@/components/ui/ContextMenu'
+import { StateBadge } from '@/components/items/StateBadge'
+import { useLifecyclePhases } from '@/hooks/useLifecyclePhases'
 
 interface ToolTableProps {
   items: Array<Tool>
@@ -49,16 +52,6 @@ interface ToolTableProps {
   onGlobalFilterChange?: (filter: string) => void
   pagination?: PaginationState
   onPaginationChange?: (pagination: PaginationState) => void
-}
-
-const statusVariant: Record<
-  string,
-  'default' | 'secondary' | 'success' | 'warning' | 'destructive'
-> = {
-  available: 'success',
-  in_use: 'default',
-  maintenance: 'warning',
-  retired: 'destructive',
 }
 
 function subtypeLabel(subtype?: string): string {
@@ -89,14 +82,30 @@ export function ToolTable({
   pagination,
   onPaginationChange,
 }: ToolTableProps) {
+  const { t } = useTranslation('entities')
+  // State filter options and badges come from the Tool lifecycle's
+  // configuration, not from a list in code
+  const { data: lifecycle } = useLifecyclePhases('Tool')
+  const stateFilterOptions = (lifecycle?.states ?? []).map((state) => ({
+    label: state.name,
+    value: state.id,
+  }))
+
+  const typeFilterOptions = (
+    ['manufacturing', 'quality', 'utility'] as const
+  ).map((value) => ({
+    label: t(`tools.typeLabels.${value}`),
+    value,
+  }))
+
   const columns: Array<DataGridColumn<Tool>> = [
     {
       id: 'itemNumber',
-      header: 'Item Number',
+      header: t('tools.table.itemNumber'),
       accessorKey: 'itemNumber',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('tools.table.searchPlaceholder'),
       cell: ({ row }) =>
         row.original.id ? (
           <Link
@@ -112,33 +121,29 @@ export function ToolTable({
     },
     {
       id: 'name',
-      header: 'Name',
+      header: t('tools.table.name'),
       accessorKey: 'name',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('tools.table.filterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'toolType',
-      header: 'Type',
+      header: t('tools.table.type'),
       accessorKey: 'toolType',
       enableFiltering: true,
       filterType: 'multiSelect',
-      filterOptions: [
-        { label: 'Manufacturing', value: 'manufacturing' },
-        { label: 'Quality', value: 'quality' },
-        { label: 'Utility', value: 'utility' },
-      ],
+      filterOptions: typeFilterOptions,
       cell: ({ getValue }) => {
         const value = getValue() as string | undefined
         if (!value) return '-'
-        return <span className="capitalize">{value}</span>
+        return <span>{t(`tools.typeLabels.${value}`)}</span>
       },
     },
     {
       id: 'toolSubtype',
-      header: 'Subtype',
+      header: t('tools.table.subtype'),
       accessorKey: 'toolSubtype',
       enableFiltering: false,
       cell: ({ getValue }) => (
@@ -149,44 +154,40 @@ export function ToolTable({
     },
     {
       id: 'manufacturer',
-      header: 'Manufacturer',
+      header: t('tools.table.manufacturer'),
       accessorKey: 'manufacturer',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('tools.table.filterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'model',
-      header: 'Model',
+      header: t('tools.table.model'),
       accessorKey: 'model',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('tools.table.filterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
     {
       id: 'state',
-      header: 'State',
+      header: t('tools.table.state'),
       accessorKey: 'state',
       enableFiltering: true,
-      filterType: 'text',
-      filterPlaceholder: 'Filter state...',
-      cell: ({ getValue }) => {
-        const value = getValue() as string | undefined
-        if (!value) return '-'
-        return (
-          <Badge variant={statusVariant[value] ?? 'secondary'}>{value}</Badge>
-        )
-      },
+      filterType: 'multiSelect',
+      filterOptions: stateFilterOptions,
+      cell: ({ getValue }) => (
+        <StateBadge itemType="Tool" state={getValue() as string} />
+      ),
     },
     {
       id: 'location',
-      header: 'Location',
+      header: t('tools.table.location'),
       accessorKey: 'location',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('tools.table.filterPlaceholder'),
       cell: ({ getValue }) => (getValue() as string) || '-',
     },
   ]
@@ -201,7 +202,7 @@ export function ToolTable({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t('tools.table.openMenu')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -209,14 +210,14 @@ export function ToolTable({
             <DropdownMenuItem asChild>
               <Link to="/tools/$id" params={{ id: tool.id }}>
                 <Eye className="mr-2 h-4 w-4" />
-                View details
+                {t('tools.table.viewDetails')}
               </Link>
             </DropdownMenuItem>
           )}
           {onEdit && (
             <DropdownMenuItem onClick={() => onEdit(tool)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('tools.table.edit')}
             </DropdownMenuItem>
           )}
           {onDelete && (
@@ -227,7 +228,7 @@ export function ToolTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('tools.table.del')}
               </DropdownMenuItem>
             </>
           )}
@@ -247,7 +248,7 @@ export function ToolTable({
           {onEdit && (
             <ContextMenuItem onClick={() => onEdit(tool)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('tools.table.edit')}
             </ContextMenuItem>
           )}
           {onDelete && (
@@ -258,14 +259,14 @@ export function ToolTable({
                 className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+                {t('tools.table.del')}
               </ContextMenuItem>
             </>
           )}
         </>
       )
     },
-    [onEdit, onDelete],
+    [onEdit, onDelete, t],
   )
 
   const getRowUrl = useCallback((row: Tool) => {
@@ -285,8 +286,8 @@ export function ToolTable({
       defaultSorting={defaultSorting}
       defaultColumnFilters={defaultColumnFilters}
       defaultGlobalFilter={defaultGlobalFilter}
-      emptyMessage="No tools found"
-      emptyDescription="Create your first tool to get started"
+      emptyMessage={t('tools.table.emptyMessage')}
+      emptyDescription={t('tools.table.emptyDescription')}
       exportFilename="tools"
       serverSidePagination={serverSidePagination}
       totalRows={totalRows}
