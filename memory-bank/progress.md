@@ -21,6 +21,7 @@
 - [x] Wave 2 B4-2b (decab3f): software dictionaries header/tabs/form/detail/external EN/RU — header 20 + tabs 3 + form 22 + detail 16 + external 6, table targetHardware/sourceMode; EN-дубль удалён, порядок секций выровнен, паритет 100% (list RU few/many extra), интерполяции сохранены, typecheck-all EXIT 0, license/eol EXIT 0. Остаток B4-2c: проводка компонентов на t().
 - [x] Wave 2 B4-2c1: SoftwareDetail + BuildArtifactCard EN/RU — useTranslation в 3 компонентах + BuildArtifactCard, *_VALUES + t() options, External panels, delete confirm, disabled/reasons, Details-tab полностью, software.artifact.* 14/14 EN/RU; SourceViewer оставлен EN-островом; паритет software.* 100%, хардкодов UI 0, typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0.
 - [x] Wave 2 B4-2c2 (1e42b2b): SoftwareTable sourceMode + SourceViewer/SourceDiffDialog EN/RU — таблица через sourceModeLabels, viewer 38+toasts+versionPicker, diff 5/5, RU-плюралы file/importedCount, паритет 100%, typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0.
+- [x] Wave 2 B4-2c3 (ad3a96a): SourceChangesList EN/RU — changes.* 4+status.3 (previous/thisCommit/showDiff + added/modified/deleted с фолбэком), паритет 100%, хардкодов UI 0, typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0.
 
 ## Осталось
 - [ ] Волна 2: сущности.
