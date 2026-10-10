@@ -1628,6 +1628,16 @@
       "after": "After",
       "loading": "Loading diff...",
       "binary": "Binary file - line diff not available"
+    },
+    "changes": {
+      "previous": "Previous",
+      "thisCommit": "This commit",
+      "showDiff": "Show line diff",
+      "status": {
+        "added": "added",
+        "modified": "modified",
+        "deleted": "deleted"
+      }
     }
   }
 }

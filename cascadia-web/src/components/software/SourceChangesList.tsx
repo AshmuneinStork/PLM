@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { SourceDiffDialog } from './SourceDiffDialog'
 import type { SourceDiffTarget } from './SourceDiffDialog'
 import { Badge } from '@/components/ui'
@@ -40,6 +41,7 @@ export function SourceChangesList({
   itemId: string
   changes: Array<SourceFieldChange>
 }) {
+  const { t } = useTranslation('entities')
   const [diffTarget, setDiffTarget] = useState<SourceDiffTarget | null>(null)
 
   return (
@@ -57,18 +59,20 @@ export function SourceChangesList({
                 path: change.fieldPath ?? '',
                 oldHash,
                 newHash,
-                oldLabel: 'Previous',
-                newLabel: 'This commit',
+                oldLabel: t('software.changes.previous'),
+                newLabel: t('software.changes.thisCommit'),
               })
             }
             className="flex w-full items-center gap-2 rounded px-1 py-0.5 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800"
-            title="Show line diff"
+            title={t('software.changes.showDiff')}
           >
             <Badge
               variant={statusVariant[change.fieldName] ?? 'secondary'}
               className="w-20 justify-center text-xs"
             >
-              {change.fieldName}
+              {t(`software.changes.status.${change.fieldName}`, {
+                defaultValue: change.fieldName,
+              })}
             </Badge>
             <span className="truncate font-mono text-slate-700 dark:text-slate-300">
               {change.fieldPath}
