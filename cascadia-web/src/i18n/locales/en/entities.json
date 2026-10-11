@@ -239,6 +239,45 @@
       "deletedTitle": "Workspace deleted",
       "deletedBody": "\"{{name}}\" has been deleted",
       "deleteFailedTitle": "Failed to delete workspace"
+    },
+    "members": {
+      "title": "Member Designs",
+      "count_one": "{{count}} design in this family",
+      "count_other": "{{count}} designs in this family",
+      "addAction": "Add Member",
+      "emptyTitle": "No member designs in this family yet",
+      "emptyHint": "Add existing designs or create new ones to organize your variants",
+      "emptyAction": "Add Member Design",
+      "columns": {
+        "code": "Code",
+        "name": "Name",
+        "items": "Items",
+        "status": "Status",
+        "latestBaseline": "Latest Baseline",
+        "actions": "Actions"
+      },
+      "statusHasReleases": "Has Releases",
+      "statusInDevelopment": "In Development",
+      "menuOpen": "Open menu",
+      "viewAction": "View Design",
+      "openNewTabAction": "Open in New Tab",
+      "removeAction": "Remove from Family",
+      "removeTitle": "Remove from Family",
+      "removeBody": "Are you sure you want to remove {{member}} from the {{family}} family? The design will become standalone but will not be deleted.",
+      "cancelAction": "Cancel",
+      "removeFailedTitle": "Failed to remove member"
+    },
+    "addMember": {
+      "title": "Add Member to Family",
+      "descBody": "Select a standalone design to add to the {{code}} family",
+      "searchPlaceholder": "Search designs...",
+      "loading": "Loading designs...",
+      "noMatch": "No designs matching \"{{q}}\"",
+      "noEligible": "No eligible designs found. Designs must be standalone (no parent) and in the same program.",
+      "cancelAction": "Cancel",
+      "addingAction": "Adding...",
+      "addAction": "Add to Family",
+      "failedTitle": "Failed to add design to family"
     }
   },
   "parts": {

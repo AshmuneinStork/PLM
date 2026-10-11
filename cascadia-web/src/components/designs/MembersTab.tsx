@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from '@tanstack/react-router'
 import {
   ExternalLink,
@@ -64,6 +65,7 @@ export function MembersTab({
   programId,
   readOnly = false,
 }: MembersTabProps) {
+  const { t } = useTranslation('entities')
   const { confirm } = useAlertDialog()
   const { handleError } = useErrorHandler()
   const [members, setMembers] = useState<Array<MemberDesign>>([])
@@ -92,10 +94,13 @@ export function MembersTab({
   // Handle removing a member from the family
   const handleRemoveMember = (memberId: string, memberCode: string) => {
     confirm({
-      title: 'Remove from Family',
-      description: `Are you sure you want to remove ${memberCode} from the ${designCode} family? The design will become standalone but will not be deleted.`,
-      actionLabel: 'Remove',
-      cancelLabel: 'Cancel',
+      title: t('designs.members.removeTitle'),
+      description: t('designs.members.removeBody', {
+        member: memberCode,
+        family: designCode,
+      }),
+      actionLabel: t('designs.members.removeAction'),
+      cancelLabel: t('designs.members.cancelAction'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -107,7 +112,7 @@ export function MembersTab({
           )
           await fetchMembers()
         } catch (error) {
-          handleError(error, { title: 'Failed to remove member' })
+          handleError(error, { title: t('designs.members.removeFailedTitle') })
         }
       },
     })
@@ -137,16 +142,15 @@ export function MembersTab({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Member Designs</CardTitle>
+              <CardTitle>{t('designs.members.title')}</CardTitle>
               <CardDescription>
-                {members.length} design{members.length !== 1 ? 's' : ''} in this
-                family
+                {t('designs.members.count', { count: members.length })}
               </CardDescription>
             </div>
             {!readOnly && (
               <Button onClick={() => setAddDialogOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Member
+                {t('designs.members.addAction')}
               </Button>
             )}
           </div>
@@ -156,11 +160,10 @@ export function MembersTab({
             <div className="text-center py-12 border rounded-lg">
               <Package className="h-12 w-12 mx-auto mb-4 opacity-50 text-slate-400" />
               <p className="text-slate-500 dark:text-slate-400">
-                No member designs in this family yet
+                {t('designs.members.emptyTitle')}
               </p>
               <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
-                Add existing designs or create new ones to organize your
-                variants
+                {t('designs.members.emptyHint')}
               </p>
               {!readOnly && (
                 <Button
@@ -169,7 +172,7 @@ export function MembersTab({
                   variant="outline"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Member Design
+                  {t('designs.members.emptyAction')}
                 </Button>
               )}
             </div>
@@ -177,12 +180,20 @@ export function MembersTab({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="text-right">Items</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Latest Baseline</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t('designs.members.columns.code')}</TableHead>
+                  <TableHead>{t('designs.members.columns.name')}</TableHead>
+                  <TableHead className="text-right">
+                    {t('designs.members.columns.items')}
+                  </TableHead>
+                  <TableHead>
+                    {t('designs.members.columns.status')}
+                  </TableHead>
+                  <TableHead>
+                    {t('designs.members.columns.latestBaseline')}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    {t('designs.members.columns.actions')}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -208,7 +219,9 @@ export function MembersTab({
                       <Badge
                         variant={member.hasReleases ? 'success' : 'secondary'}
                       >
-                        {member.hasReleases ? 'Has Releases' : 'In Development'}
+                        {member.hasReleases
+                          ? t('designs.members.statusHasReleases')
+                          : t('designs.members.statusInDevelopment')}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -227,14 +240,16 @@ export function MembersTab({
                             className="h-8 w-8"
                           >
                             <MoreVertical className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
+                            <span className="sr-only">
+                              {t('designs.members.menuOpen')}
+                            </span>
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
                             <Link to="/designs/$id" params={{ id: member.id }}>
                               <Eye className="mr-2 h-4 w-4" />
-                              View Design
+                              {t('designs.members.viewAction')}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
@@ -244,7 +259,7 @@ export function MembersTab({
                               target="_blank"
                             >
                               <ExternalLink className="mr-2 h-4 w-4" />
-                              Open in New Tab
+                              {t('designs.members.openNewTabAction')}
                             </Link>
                           </DropdownMenuItem>
                           {!readOnly && (
@@ -255,7 +270,7 @@ export function MembersTab({
                               className="text-orange-600 dark:text-orange-400 focus:text-orange-600 dark:focus:text-orange-400"
                             >
                               <UserMinus className="mr-2 h-4 w-4" />
-                              Remove from Family
+                              {t('designs.members.removeAction')}
                             </DropdownMenuItem>
                           )}
                         </DropdownMenuContent>
