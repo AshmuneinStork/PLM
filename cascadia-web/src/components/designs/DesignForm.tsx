@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm, useStore } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
@@ -73,6 +74,7 @@ export function DesignForm({
   onCancel,
   isSubmitting,
 }: DesignFormProps) {
+  const { t } = useTranslation('entities')
   const form = useForm({
     defaultValues: {
       name: design?.name || '',
@@ -139,7 +141,7 @@ export function DesignForm({
         <form.Field name="name">
           {(field) => (
             <FormField
-              label="Design Name"
+              label={t('designs.form.name')}
               required
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
@@ -149,7 +151,7 @@ export function DesignForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="UAV Type 1 Configuration"
+                placeholder={t('designs.form.namePlaceholder')}
                 error={!!field.state.meta.errors.length}
               />
             </FormField>
@@ -160,10 +162,10 @@ export function DesignForm({
         <form.Field name="code">
           {(field) => (
             <FormField
-              label="Design Code"
+              label={t('designs.form.code')}
               required
               error={field.state.meta.errors[0]}
-              helpText="Unique identifier (uppercase, hyphens allowed)"
+              helpText={t('designs.form.codeHelp')}
             >
               <Input
                 name={field.name}
@@ -172,7 +174,7 @@ export function DesignForm({
                   field.handleChange(e.target.value.toUpperCase())
                 }
                 onBlur={field.handleBlur}
-                placeholder="UAV-T1"
+                placeholder={t('designs.form.codePlaceholder')}
                 error={!!field.state.meta.errors.length}
               />
             </FormField>
@@ -183,11 +185,11 @@ export function DesignForm({
         <form.Field name="designType">
           {(field) => (
             <FormField
-              label="Type"
+              label={t('designs.form.designType')}
               error={field.state.meta.errors[0]}
               helpText={
                 field.state.value === 'Family'
-                  ? 'A family groups related variant designs'
+                  ? t('designs.form.familyHelp')
                   : undefined
               }
             >
@@ -201,12 +203,12 @@ export function DesignForm({
                 disabled={isEditMode}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t('designs.form.selectType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Engineering">Engineering</SelectItem>
-                  <SelectItem value="Family">Family</SelectItem>
-                  <SelectItem value="Library">Library</SelectItem>
+                  <SelectItem value="Engineering">{t('designs.form.typeEngineering')}</SelectItem>
+                  <SelectItem value="Family">{t('designs.form.typeFamily')}</SelectItem>
+                  <SelectItem value="Library">{t('designs.form.typeLibrary')}</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -217,9 +219,9 @@ export function DesignForm({
         <form.Field name="programId">
           {(field) => (
             <FormField
-              label="Program"
+              label={t('designs.form.project')}
               error={field.state.meta.errors[0]}
-              helpText="Optional program association"
+              helpText={t('designs.form.projectHelp')}
             >
               <Select
                 value={field.state.value || 'none'}
@@ -228,10 +230,10 @@ export function DesignForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select program (optional)" />
+                  <SelectValue placeholder={t('designs.form.selectProject')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No Program</SelectItem>
+                  <SelectItem value="none">{t('designs.form.noProject')}</SelectItem>
                   {programs.map((program) => (
                     <SelectItem key={program.id} value={program.id}>
                       {program.code} - {program.name}
@@ -248,9 +250,9 @@ export function DesignForm({
           <form.Field name="parentDesignId">
             {(field) => (
               <FormField
-                label="Parent Family"
+                label={t('designs.form.parentFamily')}
                 error={field.state.meta.errors[0]}
-                helpText="Optional: group this design under a family"
+                helpText={t('designs.form.parentFamilyHelp')}
               >
                 <Select
                   value={field.state.value || 'none'}
@@ -263,13 +265,13 @@ export function DesignForm({
                     <SelectValue
                       placeholder={
                         loadingFamilies
-                          ? 'Loading families...'
-                          : 'Select family (optional)'
+                          ? t('designs.form.loadingFamilies')
+                          : t('designs.form.selectFamily')
                       }
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">No Family</SelectItem>
+                    <SelectItem value="none">{t('designs.form.noFamily')}</SelectItem>
                     {families.map((family) => (
                       <SelectItem key={family.id} value={family.id}>
                         {family.code} - {family.name}
@@ -286,9 +288,9 @@ export function DesignForm({
         <form.Field name="plannedQuantity">
           {(field) => (
             <FormField
-              label="Planned Quantity"
+              label={t('designs.form.plannedQuantity')}
               error={field.state.meta.errors[0]}
-              helpText="Number of units planned"
+              helpText={t('designs.form.plannedQuantityHelp')}
             >
               <Input
                 name={field.name}
@@ -296,7 +298,7 @@ export function DesignForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="100"
+                placeholder={t('designs.form.quantityPlaceholder')}
                 error={!!field.state.meta.errors.length}
               />
             </FormField>
@@ -307,7 +309,7 @@ export function DesignForm({
         <form.Field name="description">
           {(field) => (
             <FormField
-              label="Description"
+              label={t('designs.form.description')}
               error={field.state.meta.errors[0]}
               className="md:col-span-2"
             >
@@ -316,7 +318,7 @@ export function DesignForm({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder="Design description..."
+                placeholder={t('designs.form.descriptionPlaceholder')}
                 rows={3}
                 error={!!field.state.meta.errors.length}
               />
@@ -334,15 +336,15 @@ export function DesignForm({
             onClick={onCancel}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('designs.form.cancel')}
           </Button>
         )}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting
-            ? 'Saving...'
+            ? t('designs.form.saving')
             : design?.id
-              ? 'Update Design'
-              : 'Create Design'}
+              ? t('designs.form.updateAction')
+              : t('designs.form.createAction')}
         </Button>
       </div>
     </form>

@@ -4,6 +4,7 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { z } from 'zod'
 import type { Design } from '@cascadia/commons/types/design'
@@ -60,6 +61,7 @@ export const Route = createFileRoute('/designs/')({
 })
 
 function DesignsListPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
   const { handleError, showSuccess } = useErrorHandler()
@@ -100,10 +102,10 @@ function DesignsListPage() {
 
   const handleArchiveDesign = (design: Design) => {
     confirm({
-      title: 'Archive Design',
-      description: `Are you sure you want to archive ${design.code}? The design will no longer appear in lists but data will be preserved.`,
-      actionLabel: 'Archive',
-      cancelLabel: 'Cancel',
+      title: t('designs.dialogs.archiveTitle'),
+      description: t('designs.dialogs.archiveBody', { code: design.code }),
+      actionLabel: t('designs.dialogs.archiveAction'),
+      cancelLabel: t('designs.dialogs.cancelAction'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -111,10 +113,10 @@ function DesignsListPage() {
             method: 'POST',
           })
 
-          showSuccess('Design archived', `${design.code} has been archived`)
+          showSuccess(t('designs.toasts.archivedTitle'), t('designs.toasts.archivedBody', { code: design.code }))
           await invalidate('designs')
         } catch (error) {
-          handleError(error, { title: 'Failed to archive design' })
+          handleError(error, { title: t('designs.toasts.archiveFailedTitle') })
         }
       },
     })
@@ -126,10 +128,10 @@ function DesignsListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-            Designs
+            {t('designs.list.title')}
           </h1>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Manage your design configurations, families, and libraries
+            {t('designs.list.subtitle')}
           </p>
         </div>
         <Link
@@ -142,7 +144,7 @@ function DesignsListPage() {
         >
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            Create Design
+            {t('designs.list.createAction')}
           </Button>
         </Link>
       </div>
@@ -151,13 +153,13 @@ function DesignsListPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardDescription>Total</CardDescription>
+            <CardDescription>{t('designs.list.totalLabel')}</CardDescription>
             <CardTitle className="text-3xl">{total}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardDescription>Engineering</CardDescription>
+            <CardDescription>{t('designs.list.engineeringLabel')}</CardDescription>
             <CardTitle className="text-3xl text-cyan-600 dark:text-cyan-400">
               {counts?.design ?? 0}
             </CardTitle>
@@ -165,7 +167,7 @@ function DesignsListPage() {
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardDescription>Families</CardDescription>
+            <CardDescription>{t('designs.list.familiesLabel')}</CardDescription>
             <CardTitle className="text-3xl text-amber-600 dark:text-amber-400">
               {counts?.family ?? 0}
             </CardTitle>
@@ -173,7 +175,7 @@ function DesignsListPage() {
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardDescription>Libraries</CardDescription>
+            <CardDescription>{t('designs.list.librariesLabel')}</CardDescription>
             <CardTitle className="text-3xl text-purple-600 dark:text-purple-400">
               {counts?.library ?? 0}
             </CardTitle>
@@ -186,12 +188,12 @@ function DesignsListPage() {
         <CardHeader>
           <CardTitle>
             {searchParams.programId
-              ? `${programs.find((p) => p.id === searchParams.programId)?.name ?? 'Program'} Designs`
-              : 'All Designs'}
+              ? t('designs.list.cardTitleProgram', { name: programs.find((p) => p.id === searchParams.programId)?.name ?? t('designs.list.programFallback') })
+              : t('designs.list.cardTitleAll')}
           </CardTitle>
           <CardDescription>
-            {total} {total === 1 ? 'design' : 'designs'}
-            {searchParams.programId ? ' in this program' : ' in the system'}
+            {t(total === 1 ? 'designs.list.cardCount_one' : 'designs.list.cardCount_other', { count: total })}
+            {searchParams.programId ? t('designs.list.cardSuffixProgram') : t('designs.list.cardSuffixSystem')}
           </CardDescription>
         </CardHeader>
         <CardContent>

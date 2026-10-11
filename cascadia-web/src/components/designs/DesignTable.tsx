@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Archive,
   Edit,
@@ -113,14 +114,15 @@ export function DesignTable({
   pagination,
   onPaginationChange,
 }: DesignTableProps) {
+  const { t } = useTranslation('entities')
   const columns: Array<DataGridColumn<DesignWithHierarchy>> = [
     {
       id: 'code',
-      header: 'Code',
+      header: t('designs.table.code'),
       accessorKey: 'code',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('designs.table.filterPlaceholder'),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           {getDesignTypeIcon(row.original.designType)}
@@ -136,35 +138,39 @@ export function DesignTable({
     },
     {
       id: 'name',
-      header: 'Name',
+      header: t('parts.columns.name'),
       accessorKey: 'name',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('designs.table.filterPlaceholder'),
     },
     {
       id: 'designType',
-      header: 'Type',
+      header: t('designs.table.designType'),
       accessorKey: 'designType',
       enableFiltering: true,
       filterType: 'multiSelect',
       filterOptions: [
-        { label: 'Engineering', value: 'Engineering' },
-        { label: 'Family', value: 'Family' },
-        { label: 'Library', value: 'Library' },
+        { label: t('designs.table.typeLabels.Engineering'), value: 'Engineering' },
+        { label: t('designs.table.typeLabels.Family'), value: 'Family' },
+        { label: t('designs.table.typeLabels.Library'), value: 'Library' },
       ],
       cell: ({ getValue }) => {
         const value = getValue() as string
-        return <Badge variant={getDesignTypeBadgeVariant(value)}>{value}</Badge>
+        return (
+          <Badge variant={getDesignTypeBadgeVariant(value)}>
+            {t(`designs.table.typeLabels.${value}`)}
+          </Badge>
+        )
       },
     },
     {
       id: 'programCode',
-      header: 'Program',
+      header: t('designs.table.program'),
       accessorKey: 'programCode',
       enableFiltering: true,
       filterType: 'text',
-      filterPlaceholder: 'Filter...',
+      filterPlaceholder: t('designs.table.filterPlaceholder'),
       cell: ({ row }) => {
         const programId = row.original.programId
         const programCode = row.original.programCode
@@ -193,7 +199,7 @@ export function DesignTable({
     },
     {
       id: 'createdAt',
-      header: 'Created',
+      header: t('designs.table.created'),
       accessorKey: 'createdAt',
       cell: ({ getValue }) => {
         const value = getValue() as string | Date | null
@@ -210,20 +216,20 @@ export function DesignTable({
         <DropdownMenuTrigger asChild>
           <Button size="icon" variant="ghost" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t('designs.table.openMenu')}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
             <Link to="/designs/$id" params={{ id: design.id }}>
               <Eye className="mr-2 h-4 w-4" />
-              View details
+              {t('designs.table.viewDetails')}
             </Link>
           </DropdownMenuItem>
           {onEdit && (
             <DropdownMenuItem onClick={() => onEdit(design)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('designs.table.edit')}
             </DropdownMenuItem>
           )}
           {onArchive && !design.isArchived && (
@@ -234,7 +240,7 @@ export function DesignTable({
                 className="text-orange-600 dark:text-orange-400 focus:text-orange-600 dark:focus:text-orange-400"
               >
                 <Archive className="mr-2 h-4 w-4" />
-                Archive
+                {t('designs.table.archive')}
               </DropdownMenuItem>
             </>
           )}
@@ -255,7 +261,7 @@ export function DesignTable({
           {onEdit && (
             <ContextMenuItem onClick={() => onEdit(design)}>
               <Edit className="mr-2 h-4 w-4" />
-              Edit
+              {t('designs.table.edit')}
             </ContextMenuItem>
           )}
           {onArchive && !design.isArchived && (
@@ -266,7 +272,7 @@ export function DesignTable({
                 className="text-orange-600 dark:text-orange-400 focus:text-orange-600 dark:focus:text-orange-400"
               >
                 <Archive className="mr-2 h-4 w-4" />
-                Archive
+                {t('designs.table.archive')}
               </ContextMenuItem>
             </>
           )}
@@ -294,8 +300,8 @@ export function DesignTable({
       defaultSorting={defaultSorting}
       defaultColumnFilters={defaultColumnFilters}
       defaultGlobalFilter={defaultGlobalFilter}
-      emptyMessage="No designs found"
-      emptyDescription="Create your first design to get started"
+      emptyMessage={t('designs.table.emptyMessage')}
+      emptyDescription={t('designs.table.emptyDescription')}
       exportFilename="designs"
       serverSidePagination={serverSidePagination}
       totalRows={totalRows}

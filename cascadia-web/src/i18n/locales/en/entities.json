@@ -43,6 +43,96 @@
       "modifiedPrefix": "Modified:"
     }
   },
+  "designs": {
+    "table": {
+      "code": "Code",
+      "designType": "Design Type",
+      "typeFilterPlaceholder": "Filter type...",
+      "typeAll": "All types",
+      "typeLabels": {
+        "Engineering": "Engineering",
+        "Library": "Library",
+        "Family": "Family"
+      },
+      "program": "Program",
+      "created": "Created",
+      "actions": "Actions",
+      "openMenu": "Open menu",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "archive": "Archive",
+      "filterPlaceholder": "Filter...",
+      "emptyMessage": "No designs found",
+      "emptyDescription": "Create your first design to get started"
+    },
+    "list": {
+      "title": "Designs",
+      "subtitle": "Manage your design configurations, families, and libraries",
+      "createAction": "Create Design",
+      "totalLabel": "Total",
+      "engineeringLabel": "Engineering",
+      "familiesLabel": "Families",
+      "librariesLabel": "Libraries",
+      "cardTitleAll": "All Designs",
+      "cardTitleProgram": "{{name}} Designs",
+      "programFallback": "Program",
+      "cardCount_one": "{{count}} design",
+      "cardCount_other": "{{count}} designs",
+      "cardSuffixProgram": "in this program",
+      "cardSuffixSystem": "in the system"
+    },
+    "dialogs": {
+      "archiveTitle": "Archive Design",
+      "archiveBody": "Are you sure you want to archive {{code}}? The design will be hidden from the list but can be restored later.",
+      "archiveAction": "Archive",
+      "cancelAction": "Cancel"
+    },
+    "toasts": {
+      "archivedTitle": "Design archived",
+      "archivedBody": "{{code}} has been archived",
+      "archiveFailedTitle": "Failed to archive design",
+      "createdTitle": "Design created",
+      "createdBody": "{{code}} has been created successfully",
+      "createFailedTitle": "Failed to create design"
+    },
+    "form": {
+      "detailsTitle": "Design Details",
+      "requiredHint": "All fields marked with * are required.",
+      "name": "Design Name",
+      "namePlaceholder": "UAV Type 1 Configuration",
+      "code": "Design Code",
+      "codeHelp": "Unique identifier (uppercase, hyphens allowed)",
+      "codePlaceholder": "UAV-T1",
+      "designType": "Type",
+      "familyHelp": "A family groups related variant designs",
+      "selectType": "Select type",
+      "typeEngineering": "Engineering",
+      "typeLibrary": "Library",
+      "typeFamily": "Family",
+      "project": "Program",
+      "projectHelp": "Optional program association",
+      "selectProject": "Select program (optional)",
+      "noProject": "No Program",
+      "parentFamily": "Parent Family",
+      "parentFamilyHelp": "Optional: group this design under a family",
+      "selectFamily": "Select family (optional)",
+      "noFamily": "No Family",
+      "loadingFamilies": "Loading families...",
+      "plannedQuantity": "Planned Quantity",
+      "plannedQuantityHelp": "Number of units planned",
+      "quantityPlaceholder": "100",
+      "description": "Description",
+      "descriptionPlaceholder": "Design description...",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "updateAction": "Update Design",
+      "createAction": "Create Design"
+    },
+    "new": {
+      "title": "Create New Design",
+      "subtitle": "Enter the details for the new design"
+    }
+  },
   "parts": {
     "columns": {
       "itemNumber": "Item Number",

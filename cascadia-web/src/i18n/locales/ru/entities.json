@@ -45,6 +45,98 @@
       "modifiedPrefix": "Изменено:"
     }
   },
+  "designs": {
+    "table": {
+      "code": "Код",
+      "designType": "Тип проекта",
+      "typeFilterPlaceholder": "Фильтр по типу...",
+      "typeAll": "Все типы",
+      "typeLabels": {
+        "Engineering": "Инженерный",
+        "Library": "Библиотека",
+        "Family": "Семейство"
+      },
+      "program": "Программа",
+      "created": "Создано",
+      "actions": "Действия",
+      "openMenu": "Открыть меню",
+      "viewDetails": "Подробности",
+      "edit": "Изменить",
+      "archive": "Архивировать",
+      "filterPlaceholder": "Фильтр...",
+      "emptyMessage": "Проекты не найдены",
+      "emptyDescription": "Создайте первый проект, чтобы начать"
+    },
+    "list": {
+      "title": "Проекты",
+      "subtitle": "Управление конфигурациями проектов, семействами и библиотеками",
+      "createAction": "Создать проект",
+      "totalLabel": "Всего",
+      "engineeringLabel": "Инженерные",
+      "familiesLabel": "Семейства",
+      "librariesLabel": "Библиотеки",
+      "cardTitleAll": "Все проекты",
+      "cardTitleProgram": "Проекты {{name}}",
+      "programFallback": "Программа",
+      "cardCount_one": "{{count}} проект",
+      "cardCount_few": "{{count}} проекта",
+      "cardCount_many": "{{count}} проектов",
+      "cardCount_other": "{{count}} проектов",
+      "cardSuffixProgram": "в этой программе",
+      "cardSuffixSystem": "в системе"
+    },
+    "dialogs": {
+      "archiveTitle": "Архивировать проект",
+      "archiveBody": "Вы уверены, что хотите архивировать {{code}}? Проект будет скрыт из списка, но его можно будет восстановить позже.",
+      "archiveAction": "Архивировать",
+      "cancelAction": "Отмена"
+    },
+    "toasts": {
+      "archivedTitle": "Проект архивирован",
+      "archivedBody": "{{code}} архивирован",
+      "archiveFailedTitle": "Не удалось архивировать проект",
+      "createdTitle": "Проект создан",
+      "createdBody": "{{code}} успешно создан",
+      "createFailedTitle": "Не удалось создать проект"
+    },
+    "form": {
+      "detailsTitle": "Детали проекта",
+      "requiredHint": "Все поля, отмеченные *, обязательны.",
+      "name": "Название проекта",
+      "namePlaceholder": "Конфигурация БПЛА Тип 1",
+      "code": "Код проекта",
+      "codeHelp": "Уникальный идентификатор (заглавные буквы, дефисы разрешены)",
+      "codePlaceholder": "UAV-T1",
+      "designType": "Тип",
+      "familyHelp": "Семейство группирует связанные вариантные проекты",
+      "selectType": "Выберите тип",
+      "typeEngineering": "Инженерный",
+      "typeLibrary": "Библиотека",
+      "typeFamily": "Семейство",
+      "project": "Программа",
+      "projectHelp": "Необязательная привязка к программе",
+      "selectProject": "Выберите программу (необязательно)",
+      "noProject": "Без программы",
+      "parentFamily": "Родительское семейство",
+      "parentFamilyHelp": "Необязательно: включите проект в семейство",
+      "selectFamily": "Выберите семейство (необязательно)",
+      "noFamily": "Без семейства",
+      "loadingFamilies": "Загрузка семейств...",
+      "plannedQuantity": "Плановое количество",
+      "plannedQuantityHelp": "Планируемое число единиц",
+      "quantityPlaceholder": "100",
+      "description": "Описание",
+      "descriptionPlaceholder": "Описание проекта...",
+      "cancel": "Отмена",
+      "saving": "Сохранение...",
+      "updateAction": "Обновить проект",
+      "createAction": "Создать проект"
+    },
+    "new": {
+      "title": "Создать новый проект",
+      "subtitle": "Введите данные нового проекта"
+    }
+  },
   "parts": {
     "columns": {
       "itemNumber": "Номер изделия",

@@ -4,6 +4,7 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft } from 'lucide-react'
 import { z } from 'zod'
 import type { CreateDesignInput, Design } from '@cascadia/commons/types/design'
@@ -34,6 +35,7 @@ export const Route = createFileRoute('/designs/new')({
 })
 
 function NewDesignPage() {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const { handleError, showSuccess } = useErrorHandler()
   const invalidate = useInvalidateResources()
@@ -52,10 +54,7 @@ function NewDesignPage() {
         },
       )
 
-      showSuccess(
-        'Design created',
-        `${data.code} has been created successfully`,
-      )
+      showSuccess(t('designs.toasts.createdTitle'), t('designs.toasts.createdBody', { code: data.code }))
 
       // Refresh every cached view of designs before leaving, so the list
       // page shows the new row whether it is reached by Back, by the
@@ -65,7 +64,7 @@ function NewDesignPage() {
       // Navigate to the new design's detail page
       navigate({ to: '/designs/$id', params: { id: result.data.design.id } })
     } catch (error) {
-      handleError(error, { title: 'Failed to create design' })
+      handleError(error, { title: t('designs.toasts.createFailedTitle') })
     } finally {
       setIsSubmitting(false)
     }
@@ -86,10 +85,10 @@ function NewDesignPage() {
         </Link>
         <div>
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-            Create New Design
+            {t('designs.new.title')}
           </h1>
           <p className="text-slate-600 dark:text-slate-400 mt-1">
-            Enter the details for the new design
+            {t('designs.new.subtitle')}
           </p>
         </div>
       </div>
@@ -97,9 +96,9 @@ function NewDesignPage() {
       {/* Form Card */}
       <Card>
         <CardHeader>
-          <CardTitle>Design Details</CardTitle>
+          <CardTitle>{t('designs.form.detailsTitle')}</CardTitle>
           <CardDescription>
-            All fields marked with * are required.
+            {t('designs.form.requiredHint')}
           </CardDescription>
         </CardHeader>
         <CardContent>
