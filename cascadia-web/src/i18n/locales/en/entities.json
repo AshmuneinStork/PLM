@@ -150,6 +150,27 @@
     "quickJump": {
       "label": "Quick Jump:",
       "createAction": "Create Tag"
+    },
+    "header": {
+      "main": "Main",
+      "branchFallback": "Branch",
+      "tagFallback": "Tag",
+      "commitFallback": "Commit {{id}}",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "save": "Save",
+      "gapAnalysis": "Gap Analysis",
+      "edit": "Edit",
+      "clone": "Clone",
+      "release": "Release to Manufacturing",
+      "archive": "Archive"
+    },
+    "viewer": {
+      "title": "3D Model",
+      "topLevelFallback": "Top-level parts of this design",
+      "noModelBody": "No viewable 3D model is attached to {{itemNumber}}.",
+      "noPartsBody": "This design has no top-level parts to display.",
+      "topLevelPartLabel": "Top-level part"
     }
   },
   "parts": {

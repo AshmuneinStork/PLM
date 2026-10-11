@@ -154,6 +154,27 @@
     "quickJump": {
       "label": "Быстрый переход:",
       "createAction": "Создать тег"
+    },
+    "header": {
+      "main": "Основная",
+      "branchFallback": "Ветка",
+      "tagFallback": "Тег",
+      "commitFallback": "Коммит {{id}}",
+      "cancel": "Отмена",
+      "saving": "Сохранение...",
+      "save": "Сохранить",
+      "gapAnalysis": "Анализ разрывов",
+      "edit": "Редактировать",
+      "clone": "Клонировать",
+      "release": "Выпустить в производство",
+      "archive": "Архивировать"
+    },
+    "viewer": {
+      "title": "3D-модель",
+      "topLevelFallback": "Изделия верхнего уровня этого проекта",
+      "noModelBody": "К {{itemNumber}} не прикреплена отображаемая 3D-модель.",
+      "noPartsBody": "В этом проекте нет изделий верхнего уровня для отображения.",
+      "topLevelPartLabel": "Изделие верхнего уровня"
     }
   },
   "parts": {

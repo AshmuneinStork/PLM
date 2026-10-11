@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { Link } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import {
   Archive,
   ArrowLeft,
@@ -77,6 +78,7 @@ export function DesignPageHeader({
   onReleaseToManufacturing,
   onGapAnalysis,
 }: DesignPageHeaderProps) {
+  const { t } = useTranslation('entities')
   // Get context badge variant based on current view mode
   const getContextBadgeVariant = () => {
     switch (versionContext.type) {
@@ -97,15 +99,15 @@ export function DesignPageHeader({
   const getContextLabel = () => {
     switch (versionContext.type) {
       case 'main':
-        return 'Main'
+        return t('designs.header.main')
       case 'branch':
-        return versionContext.branchName || 'Branch'
+        return versionContext.branchName || t('designs.header.branchFallback')
       case 'tag':
-        return versionContext.tagName || 'Tag'
+        return versionContext.tagName || t('designs.header.tagFallback')
       case 'commit':
-        return `Commit ${versionContext.commitId?.slice(0, 8)}`
+        return t('designs.header.commitFallback', { id: versionContext.commitId?.slice(0, 8) })
       default:
-        return 'Main'
+        return t('designs.header.main')
     }
   }
 
@@ -177,11 +179,11 @@ export function DesignPageHeader({
                 disabled={isSaving}
               >
                 <X className="h-4 w-4 mr-2" />
-                Cancel
+                {t('designs.header.cancel')}
               </Button>
               <Button onClick={onSave} disabled={isSaving}>
                 <Save className="h-4 w-4 mr-2" />
-                {isSaving ? 'Saving...' : 'Save'}
+                {isSaving ? t('designs.header.saving') : t('designs.header.save')}
               </Button>
             </>
           ) : (
@@ -190,7 +192,7 @@ export function DesignPageHeader({
               {onGapAnalysis && design.designType !== 'Family' && (
                 <Button variant="outline" onClick={onGapAnalysis}>
                   <Search className="h-4 w-4 mr-2" />
-                  Gap Analysis
+                  {t('designs.header.gapAnalysis')}
                 </Button>
               )}
               {onEdit && (
@@ -200,7 +202,7 @@ export function DesignPageHeader({
                   disabled={isHistoricalView}
                 >
                   <Edit className="h-4 w-4 mr-2" />
-                  Edit
+                  {t('designs.header.edit')}
                 </Button>
               )}
               {onClone && design.designType === 'Engineering' && (
@@ -210,7 +212,7 @@ export function DesignPageHeader({
                   disabled={isHistoricalView}
                 >
                   <Copy className="h-4 w-4 mr-2" />
-                  Clone
+                  {t('designs.header.clone')}
                 </Button>
               )}
               {onReleaseToManufacturing &&
@@ -221,7 +223,7 @@ export function DesignPageHeader({
                     disabled={isHistoricalView}
                   >
                     <Factory className="h-4 w-4 mr-2" />
-                    Release to Manufacturing
+                    {t('designs.header.release')}
                   </Button>
                 )}
               {onArchive && design.designType !== 'Library' && (
@@ -231,7 +233,7 @@ export function DesignPageHeader({
                   disabled={isHistoricalView}
                 >
                   <Archive className="h-4 w-4 mr-2" />
-                  Archive
+                  {t('designs.header.archive')}
                 </Button>
               )}
               <Button variant="ghost" size="icon">
