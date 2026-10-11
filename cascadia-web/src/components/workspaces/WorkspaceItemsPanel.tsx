@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { GitBranch, Loader2, X } from 'lucide-react'
 import type { WorkspaceItem } from '@/query'
 import {
@@ -40,6 +41,7 @@ export function WorkspaceItemsPanel({
   workspaceId,
   readOnly = false,
 }: WorkspaceItemsPanelProps) {
+  const { t } = useTranslation('entities')
   const { confirm } = useAlertDialog()
   const { handleError, showSuccess } = useErrorHandler()
   const invalidate = useInvalidateResources()
@@ -48,16 +50,16 @@ export function WorkspaceItemsPanel({
   )
 
   const removeItem = async (item: WorkspaceItem) => {
-    const label = item.itemNumber ?? 'Item'
+    const label = item.itemNumber ?? t('designs.workspaces.items.itemFallback')
     try {
       await apiFetch(
         `/api/v1/workspaces/${workspaceId}/items/${item.itemMasterId}`,
         { method: 'DELETE' },
       )
-      showSuccess('Item removed', `${label} removed from workspace`)
+      showSuccess(t('designs.workspaces.items.removedTitle'), t('designs.workspaces.items.removedBody', { label }))
       await invalidate('workspaces')
     } catch (error) {
-      handleError(error, { title: 'Failed to remove item' })
+      handleError(error, { title: t('designs.workspaces.items.removeFailedTitle') })
     }
   }
 
@@ -65,13 +67,13 @@ export function WorkspaceItemsPanel({
   // a modified item discards the workspace's edits. Both deserve a warning —
   // undoing an untouched checkout does not.
   const handleRemove = (item: WorkspaceItem) => {
-    const label = item.itemNumber ?? 'this item'
+    const label = item.itemNumber ?? t('designs.workspaces.items.thisItemFallback')
     if (item.changeType === 'added') {
       confirm({
-        title: 'Delete Draft Item',
-        description: `"${label}" was created on this workspace and exists nowhere else. Removing it permanently deletes the draft.\n\nThis action cannot be undone.`,
-        actionLabel: 'Delete Draft',
-        cancelLabel: 'Cancel',
+        title: t('designs.workspaces.items.deleteDraftTitle'),
+        description: t('designs.workspaces.items.deleteDraftBody', { label }),
+        actionLabel: t('designs.workspaces.items.deleteDraftAction'),
+        cancelLabel: t('designs.workspaces.items.cancelAction'),
         variant: 'destructive',
         onConfirm: () => removeItem(item),
       })
@@ -80,10 +82,10 @@ export function WorkspaceItemsPanel({
       item.changeType === 'deleted'
     ) {
       confirm({
-        title: 'Discard Workspace Changes',
-        description: `Remove "${label}" from this workspace? The changes made on this workspace are discarded and the item reverts to its released version.\n\nThis action cannot be undone.`,
-        actionLabel: 'Discard Changes',
-        cancelLabel: 'Cancel',
+        title: t('designs.workspaces.items.discardTitle'),
+        description: t('designs.workspaces.items.discardBody', { label }),
+        actionLabel: t('designs.workspaces.items.discardAction'),
+        cancelLabel: t('designs.workspaces.items.cancelAction'),
         variant: 'destructive',
         onConfirm: () => removeItem(item),
       })
@@ -116,7 +118,7 @@ export function WorkspaceItemsPanel({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            Workspace Items
+            {t('designs.workspaces.items.title')}
           </h2>
           <div className="flex items-center gap-2">
             <Badge variant="outline">{totalItems} total</Badge>
@@ -139,24 +141,24 @@ export function WorkspaceItemsPanel({
             <div className="text-center py-8 border rounded-lg">
               <GitBranch className="h-12 w-12 mx-auto mb-4 opacity-50 text-slate-400" />
               <p className="text-slate-500 dark:text-slate-400">
-                No items in this workspace yet
+                {t('designs.workspaces.items.emptyTitle')}
               </p>
               <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
-                Check out items to this workspace to start working on them
+                {t('designs.workspaces.items.emptyBody')}
               </p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Item Number</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Change Type</TableHead>
-                  <TableHead>State</TableHead>
-                  <TableHead>Rev</TableHead>
+                  <TableHead>{t("designs.workspaces.items.colNumber")}</TableHead>
+                  <TableHead>{t("designs.workspaces.items.colName")}</TableHead>
+                  <TableHead>{t("designs.workspaces.items.colType")}</TableHead>
+                  <TableHead>{t("designs.workspaces.items.colChangeType")}</TableHead>
+                  <TableHead>{t("designs.workspaces.items.colState")}</TableHead>
+                  <TableHead>{t("designs.workspaces.items.colRev")}</TableHead>
                   {!readOnly && (
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-right">{t("designs.workspaces.items.colActions")}</TableHead>
                   )}
                 </TableRow>
               </TableHeader>
@@ -189,7 +191,7 @@ export function WorkspaceItemsPanel({
                         </Badge>
                       ) : (
                         <span className="text-sm text-slate-400">
-                          checked out
+                          {t("designs.workspaces.items.checkedOut")}
                         </span>
                       )}
                     </TableCell>
@@ -208,7 +210,7 @@ export function WorkspaceItemsPanel({
                             size="sm"
                             variant="ghost"
                             onClick={() => handleRemove(item)}
-                            title="Remove from workspace"
+                            title={t('designs.workspaces.items.removeTitle')}
                           >
                             <X className="h-4 w-4 text-red-600 dark:text-red-400" />
                           </Button>

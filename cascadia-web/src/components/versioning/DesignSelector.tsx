@@ -3,6 +3,7 @@
 
 import { useTranslation } from 'react-i18next'
 import type { Design } from '@cascadia/commons/types/design'
+import i18n from '@/i18n/config'
 import {
   Select,
   SelectContent,
@@ -120,6 +121,6 @@ export function DesignSelector({
  * Get design display text (code - name)
  */
 export function getDesignDisplayText(design: Design | undefined): string {
-  if (!design) return 'Unknown Design'
+  if (!design) return i18n.t('designs.versioning.designSelector.unknown', { ns: 'entities' })
   return `${design.code} - ${design.name}`
 }

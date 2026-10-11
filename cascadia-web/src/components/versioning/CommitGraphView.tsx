@@ -12,6 +12,7 @@ import {
   ReactFlowProvider,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
+import { useTranslation } from 'react-i18next'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { CommitNode } from './CommitNode'
 import { MainHeadNode } from './MainHeadNode'
@@ -55,6 +56,7 @@ function CommitGraphViewInner({
   branchId,
   onViewHistoricalState,
 }: CommitGraphViewProps) {
+  const { t } = useTranslation('entities')
   const { theme } = useTheme()
 
   const {
@@ -63,7 +65,7 @@ function CommitGraphViewInner({
     error: loadError,
   } = useQuery(designHistoryGraphQuery<CommitGraphData>(designId, branchId))
   const error = loadError
-    ? 'Failed to load commit graph. Please try again.'
+    ? t('designs.versioning.graph.loadFailed')
     : null
 
   // Handle commit click
@@ -255,7 +257,7 @@ function CommitGraphViewInner({
       <div className="flex items-center justify-center h-[500px] bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
-          <p className="text-sm text-slate-500">Loading commit graph...</p>
+          <p className="text-sm text-slate-500">{t("designs.versioning.graph.loading")}</p>
         </div>
       </div>
     )
@@ -276,9 +278,9 @@ function CommitGraphViewInner({
     return (
       <div className="flex items-center justify-center h-[500px] bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800">
         <div className="flex flex-col items-center gap-3 text-center px-4">
-          <p className="text-slate-500 dark:text-slate-400">No commits yet</p>
+          <p className="text-slate-500 dark:text-slate-400">{t('designs.versioning.graph.emptyTitle')}</p>
           <p className="text-sm text-slate-400 dark:text-slate-500">
-            Commits will appear here once changes are made
+            {t('designs.versioning.graph.emptyBody')}
           </p>
         </div>
       </div>
@@ -289,7 +291,7 @@ function CommitGraphViewInner({
     <div className="flex items-center gap-4 text-xs">
       <div className="flex items-center gap-1.5">
         <div className="w-3 h-3 rounded-full bg-green-500" />
-        <span className="text-slate-600 dark:text-slate-400">main</span>
+        <span>{t('designs.versioning.graph.legendMain')}</span>
       </div>
       {branchId && graphData.selectedBranchName && (
         <div className="flex items-center gap-1.5">
@@ -301,14 +303,14 @@ function CommitGraphViewInner({
       )}
       <div className="flex items-center gap-1.5">
         <div className="w-6 h-0.5 bg-slate-400" />
-        <span className="text-slate-600 dark:text-slate-400">parent</span>
+        <span>{t('designs.versioning.graph.legendParent')}</span>
       </div>
       <div className="flex items-center gap-1.5">
         <div
           className="w-6 h-0.5 bg-orange-500"
           style={{ borderStyle: 'dashed' }}
         />
-        <span className="text-slate-600 dark:text-slate-400">merge</span>
+        <span>{t('designs.versioning.graph.legendMerge')}</span>
       </div>
     </div>
   )
@@ -318,8 +320,8 @@ function CommitGraphViewInner({
 
   return (
     <FullscreenGraphWrapper
-      title="Design History"
-      subtitle={`${commitCount} commit${commitCount !== 1 ? 's' : ''}`}
+      title={t('designs.versioning.graph.title')}
+      subtitle={t("designs.versioning.graph.commits", { count: commitCount })}
       inlineHeight="600px"
       footer={legend}
     >

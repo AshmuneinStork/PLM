@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Handle, Position } from '@xyflow/react'
 import { GitCommit, GitMerge, Layers, Tag } from 'lucide-react'
 import type { NodeProps } from '@xyflow/react'
@@ -52,7 +53,10 @@ function getColorClasses(branchType: string): BranchColorScheme {
 /**
  * Format relative time from date string
  */
-function formatRelativeTime(dateString: string): string {
+function formatRelativeTime(
+  dateString: string,
+  t: (k: string, o?: Record<string, unknown>) => string,
+): string {
   const date = new Date(dateString)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
@@ -64,13 +68,13 @@ function formatRelativeTime(dateString: string): string {
   if (diffDays > 30) {
     return date.toLocaleDateString()
   } else if (diffDays > 0) {
-    return `${diffDays}d ago`
+    return t('designs.versioning.node.daysAgo', { count: diffDays })
   } else if (diffHours > 0) {
-    return `${diffHours}h ago`
+    return t('designs.versioning.node.hoursAgo', { count: diffHours })
   } else if (diffMins > 0) {
-    return `${diffMins}m ago`
+    return t('designs.versioning.node.minsAgo', { count: diffMins })
   } else {
-    return 'just now'
+    return t('designs.versioning.node.justNow')
   }
 }
 
@@ -102,6 +106,7 @@ function truncateMessage(message: string, maxLength: number = 40): string {
 const COMMIT_NODE_WIDTH = 220
 
 function CommitNodeComponent({ data, selected }: NodeProps<CommitGraphNode>) {
+  const { t } = useTranslation('entities')
   const colors = getColorClasses(data.branchType)
   const hasTags = data.tags && data.tags.length > 0
   const changeStats = formatChangeStats(data.changeStats)
@@ -165,7 +170,7 @@ function CommitNodeComponent({ data, selected }: NodeProps<CommitGraphNode>) {
             {/* Consolidated count badge */}
             {isConsolidated && (
               <Badge variant="secondary" className="text-xs py-0 px-1.5">
-                {data.consolidatedCount} commits
+                {t('designs.versioning.node.commits', { count: data.consolidatedCount })}
               </Badge>
             )}
             {/* Change stats badge */}
@@ -189,7 +194,7 @@ function CommitNodeComponent({ data, selected }: NodeProps<CommitGraphNode>) {
         <div className="flex items-center gap-2 mt-2 text-xs text-slate-500 dark:text-slate-400">
           <span className="truncate max-w-[100px]">{data.author.name}</span>
           <span className="text-slate-400 dark:text-slate-500">•</span>
-          <span>{formatRelativeTime(data.date)}</span>
+          <span>{formatRelativeTime(data.date, t)}</span>
         </div>
 
         {/* Tags (if any) */}

@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FileBox, Loader2 } from 'lucide-react'
 import {
   Button,
@@ -41,6 +42,7 @@ export function ConvertToChangeOrderDialog({
   itemCount,
   onSuccess,
 }: ConvertToChangeOrderDialogProps) {
+  const { t } = useTranslation('entities')
   const { handleError, showSuccess } = useErrorHandler()
   const [changeOrderTitle, setChangeOrderTitle] = useState('')
   const [changeOrderDescription, setChangeOrderDescription] = useState('')
@@ -52,8 +54,8 @@ export function ConvertToChangeOrderDialog({
 
   const handleConvert = async () => {
     if (!changeOrderTitle.trim()) {
-      handleError(new Error('A title is required'), {
-        title: 'Validation Error',
+      handleError(new Error(t('designs.workspaces.convert.titleRequired')), {
+        title: t('designs.workspaces.convert.validationTitle'),
       })
       return
     }
@@ -79,8 +81,16 @@ export function ConvertToChangeOrderDialog({
       })
 
       showSuccess(
-        'Workspace converted to a change order',
-        `Created ${response.data.ecoNumber} with ${response.data.itemsConverted} item${response.data.itemsConverted !== 1 ? 's' : ''}${response.data.itemsSkipped > 0 ? ` (${response.data.itemsSkipped} skipped)` : ''}`,
+        t('designs.workspaces.convert.convertedTitle'),
+        t('designs.workspaces.convert.convertedBody', {
+          number: response.data.ecoNumber,
+          converted: response.data.itemsConverted,
+        }) +
+          (response.data.itemsSkipped > 0
+            ? t('designs.workspaces.convert.convertedSkipped', {
+                skipped: response.data.itemsSkipped,
+              })
+            : ''),
       )
 
       onOpenChange(false)
@@ -90,7 +100,7 @@ export function ConvertToChangeOrderDialog({
       onSuccess?.(response.data.ecoId, response.data.ecoNumber)
     } catch (error) {
       handleError(error, {
-        title: 'Failed to convert the workspace to a change order',
+        title: t('designs.workspaces.convert.failedTitle'),
       })
     } finally {
       setIsSubmitting(false)
@@ -103,21 +113,22 @@ export function ConvertToChangeOrderDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileBox className="h-5 w-5" />
-            Convert to Engineering Change Order
+            {t('designs.workspaces.convert.title')}
           </DialogTitle>
           <DialogDescription>
-            Create a new change order from workspace{' '}
-            <strong>{workspaceName}</strong>. This will move {itemCount} item
-            {itemCount !== 1 ? 's' : ''} to formal change control.
+            {t('designs.workspaces.convert.description', {
+              workspace: workspaceName,
+              count: itemCount,
+            })}
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-4 space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="eco-title">Title *</Label>
+            <Label htmlFor="eco-title">{t('designs.workspaces.convert.titleLabel')}</Label>
             <Input
               id="eco-title"
-              placeholder="e.g., Update power supply design"
+              placeholder={t('designs.workspaces.convert.titlePlaceholder')}
               value={changeOrderTitle}
               onChange={(e) => setChangeOrderTitle(e.target.value)}
               disabled={isSubmitting}
@@ -126,10 +137,10 @@ export function ConvertToChangeOrderDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="eco-description">Description</Label>
+            <Label htmlFor="eco-description">{t('designs.workspaces.convert.descriptionLabel')}</Label>
             <Textarea
               id="eco-description"
-              placeholder="Describe the changes included in this change order..."
+              placeholder={t('designs.workspaces.convert.descriptionPlaceholder')}
               value={changeOrderDescription}
               onChange={(e) => setChangeOrderDescription(e.target.value)}
               disabled={isSubmitting}
@@ -138,7 +149,7 @@ export function ConvertToChangeOrderDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="change-type">Change Type</Label>
+            <Label htmlFor="change-type">{t('designs.workspaces.convert.changeTypeLabel')}</Label>
             <Select
               value={changeType}
               onValueChange={(value) =>
@@ -177,7 +188,7 @@ export function ConvertToChangeOrderDialog({
               htmlFor="delete-workspace"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Delete workspace after conversion
+              {t('designs.workspaces.convert.deleteAfterLabel')}
             </label>
           </div>
         </div>
@@ -188,7 +199,7 @@ export function ConvertToChangeOrderDialog({
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
           >
-            Cancel
+            {t('designs.workspaces.convert.cancelAction')}
           </Button>
           <Button
             onClick={handleConvert}
@@ -197,12 +208,12 @@ export function ConvertToChangeOrderDialog({
             {isSubmitting ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Converting...
+                {t('designs.workspaces.convert.convertingAction')}
               </>
             ) : (
               <>
                 <FileBox className="h-4 w-4 mr-2" />
-                Convert to Change Order
+                {t('designs.workspaces.convert.convertAction')}
               </>
             )}
           </Button>

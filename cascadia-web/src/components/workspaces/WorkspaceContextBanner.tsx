@@ -3,6 +3,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { ExternalLink, GitBranch } from 'lucide-react'
 import { Badge, Card } from '@/components/ui'
 import { workspaceDetailQuery } from '@/query'
@@ -14,6 +15,7 @@ interface WorkspaceContextBannerProps {
 export function WorkspaceContextBanner({
   branchId,
 }: WorkspaceContextBannerProps) {
+  const { t } = useTranslation('entities')
   // Shares the workspace detail cache entry with the workspace pages. A
   // branch that turns out not to be a workspace puts the query in an error
   // state, which renders as nothing — the banner is a probe, not a gate.
@@ -34,16 +36,14 @@ export function WorkspaceContextBanner({
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-medium text-cyan-900 dark:text-cyan-100">
-                  Viewing in Workspace
+                  {t('designs.workspaces.banner.title')}
                 </span>
                 <Badge variant="secondary" className="text-xs">
                   {displayName}
                 </Badge>
               </div>
               <p className="text-sm text-cyan-700 dark:text-cyan-300 mt-0.5">
-                You are viewing this item in your workspace context. Changes
-                made here are private until you convert to an ECO or merge with
-                main.
+                {t('designs.workspaces.banner.body')}
               </p>
             </div>
           </div>
@@ -52,7 +52,7 @@ export function WorkspaceContextBanner({
             params={{ id: workspace.id }}
             className="flex items-center gap-1 text-sm font-medium text-cyan-700 hover:text-cyan-900 dark:text-cyan-300 dark:hover:text-cyan-100 whitespace-nowrap"
           >
-            View Workspace
+            {t('designs.workspaces.banner.viewAction')}
             <ExternalLink className="h-4 w-4" />
           </Link>
         </div>
