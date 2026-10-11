@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useTranslation } from 'react-i18next'
 import type { VersionContext } from '@/hooks/useVersionContext'
 import type { DataGridColumn } from '@/components/ui/DataGrid'
 import type { DesignItem, GridParams } from '@/query'
@@ -31,14 +32,16 @@ const getTypeBadgeVariant = (itemType: string) => {
   }
 }
 
-const columns: Array<DataGridColumn<DesignItem>> = [
+function useLibraryColumns(): Array<DataGridColumn<DesignItem>> {
+  const { t } = useTranslation('entities')
+  return [
   {
     id: 'itemNumber',
-    header: 'Item Number',
+    header: t('designs.library.colNumber'),
     accessorKey: 'itemNumber',
     enableFiltering: true,
     filterType: 'text',
-    filterPlaceholder: 'Filter...',
+    filterPlaceholder: t('designs.library.filterPlaceholder'),
     cell: ({ row }) => (
       <ItemLink
         itemType={row.original.itemType}
@@ -51,7 +54,7 @@ const columns: Array<DataGridColumn<DesignItem>> = [
   },
   {
     id: 'itemType',
-    header: 'Type',
+    header: t('designs.library.colType'),
     accessorKey: 'itemType',
     enableFiltering: true,
     filterType: 'multiSelect',
@@ -71,27 +74,27 @@ const columns: Array<DataGridColumn<DesignItem>> = [
   },
   {
     id: 'name',
-    header: 'Name',
+    header: t('designs.library.colName'),
     accessorKey: 'name',
     enableFiltering: true,
     filterType: 'text',
-    filterPlaceholder: 'Filter...',
+    filterPlaceholder: t('designs.library.filterPlaceholder'),
   },
   {
     id: 'revision',
-    header: 'Revision',
+    header: t('designs.library.colRevision'),
     accessorKey: 'revision',
     meta: { align: 'center' },
   },
   {
     id: 'state',
-    header: 'State',
+    header: t('designs.library.colState'),
     accessorKey: 'state',
     enableFiltering: true,
     // Library items span item types, each with its own lifecycle — a free
     // text filter rather than one type's state list
     filterType: 'text',
-    filterPlaceholder: 'Filter state...',
+    filterPlaceholder: t('designs.library.filterStatePlaceholder'),
     cell: ({ row, getValue }) => (
       <StateBadge
         itemType={row.original.itemType}
@@ -102,7 +105,7 @@ const columns: Array<DataGridColumn<DesignItem>> = [
   },
   {
     id: 'modifiedAt',
-    header: 'Modified',
+    header: t('designs.library.colModified'),
     accessorKey: 'modifiedAt',
     cell: ({ getValue }) => {
       const val = getValue() as string
@@ -113,13 +116,16 @@ const columns: Array<DataGridColumn<DesignItem>> = [
       )
     },
   },
-]
+  ]
+}
 
 export function LibraryItemsTab({
   designId,
   versionContext,
   isHistoricalView,
 }: LibraryItemsTabProps) {
+  const { t } = useTranslation('entities')
+  const columns = useLibraryColumns()
   const { items, dataGridProps } = useServerDataGrid<DesignItem>({
     query: (grid: GridParams) =>
       designItemsGridQuery(designId, grid, {
@@ -137,10 +143,10 @@ export function LibraryItemsTab({
       getRowUrl={(row) => getItemDetailPath(row.itemType, row.id) ?? undefined}
       emptyMessage={
         isHistoricalView
-          ? 'No items found at this point in history'
-          : 'No items in this library'
+          ? t('designs.library.emptyHistorical')
+          : t('designs.library.emptyDefault')
       }
-      emptyDescription="Items added to this library design will appear here."
+      emptyDescription={t("designs.library.emptyHint")}
       exportFilename="library-items"
       defaultSorting={[{ id: 'itemNumber', desc: false }]}
       {...dataGridProps}

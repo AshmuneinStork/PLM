@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { ExternalLink, Loader2, Plus } from 'lucide-react'
 import type { VersionContext } from '@/hooks/useVersionContext'
@@ -42,6 +43,7 @@ export function AllItemsTab({
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [stateFilter, setStateFilter] = useState<string>('all')
+  const { t } = useTranslation('entities')
 
   const {
     data: items = [],
@@ -55,7 +57,7 @@ export function AllItemsTab({
     }),
   )
   const error = loadError
-    ? 'Failed to load items. The API endpoint may not be implemented yet.'
+    ? t('designs.allItems.loadFailed')
     : null
 
   // Filter items
@@ -123,17 +125,17 @@ export function AllItemsTab({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Input
-            placeholder="Search items..."
+            placeholder={t("designs.allItems.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-64"
           />
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Type" />
+              <SelectValue placeholder={t("designs.allItems.typePlaceholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="all">{t("designs.allItems.allTypes")}</SelectItem>
               {itemTypes.map((type) => (
                 <SelectItem key={type} value={type}>
                   {type}
@@ -143,10 +145,10 @@ export function AllItemsTab({
           </Select>
           <Select value={stateFilter} onValueChange={setStateFilter}>
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="State" />
+              <SelectValue placeholder={t("designs.allItems.statePlaceholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All States</SelectItem>
+              <SelectItem value="all">{t("designs.allItems.allStates")}</SelectItem>
               {itemStates.map((state) => (
                 <SelectItem key={state} value={state}>
                   {state}
@@ -158,7 +160,7 @@ export function AllItemsTab({
         {onCreateItem && (
           <Button onClick={onCreateItem} disabled={isHistoricalView}>
             <Plus className="h-4 w-4 mr-2" />
-            New Item
+            {t('designs.allItems.createAction')}
           </Button>
         )}
       </div>
@@ -169,7 +171,7 @@ export function AllItemsTab({
           <CardContent className="py-4">
             <p className="text-amber-700 dark:text-amber-300">{error}</p>
             <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">
-              This feature requires the items API endpoint to be implemented.
+              {t('designs.allItems.loadHint')}
             </p>
           </CardContent>
         </Card>
@@ -178,12 +180,12 @@ export function AllItemsTab({
       {/* Items List */}
       <Card>
         <CardHeader>
-          <CardTitle>All Items</CardTitle>
+          <CardTitle>{t('designs.allItems.title')}</CardTitle>
           <CardDescription>
-            {filteredItems.length} of {items.length} items
+            {t('designs.allItems.countLine', { shown: filteredItems.length, total: items.length })}
             {isHistoricalView && (
               <span className="text-amber-600 dark:text-amber-400 ml-2">
-                (viewing historical state)
+                {t('designs.allItems.historicalNote')}
               </span>
             )}
           </CardDescription>
@@ -193,12 +195,12 @@ export function AllItemsTab({
             <div className="border rounded-lg divide-y dark:border-slate-700 dark:divide-slate-700">
               {/* Header */}
               <div className="flex items-center gap-4 py-2 px-4 bg-slate-50 dark:bg-slate-800 text-sm font-medium text-slate-500 dark:text-slate-400">
-                <div className="w-24">Number</div>
-                <div className="w-20">Type</div>
-                <div className="flex-1">Name</div>
-                <div className="w-16 text-center">Rev</div>
-                <div className="w-24 text-center">State</div>
-                <div className="w-32">Modified</div>
+                <div className="w-24">{t("designs.allItems.colNumber")}</div>
+                <div className="w-20">{t("designs.allItems.colType")}</div>
+                <div className="flex-1">{t("designs.allItems.colName")}</div>
+                <div className="w-16 text-center">{t("designs.allItems.colRev")}</div>
+                <div className="w-24 text-center">{t("designs.allItems.colState")}</div>
+                <div className="w-32">{t("designs.allItems.colModified")}</div>
                 <div className="w-20"></div>
               </div>
 
@@ -251,8 +253,8 @@ export function AllItemsTab({
             !error && (
               <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                 {items.length === 0
-                  ? 'No items found in this design.'
-                  : 'No items match your filters.'}
+                  ? t('designs.allItems.emptyDesign')
+                  : t('designs.allItems.emptyFiltered')}
               </div>
             )
           )}

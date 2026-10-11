@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Info } from 'lucide-react'
 import type { FormEvent } from 'react'
@@ -81,6 +82,7 @@ export function CreatePartInDesignForm({
   onBack,
   onCreated,
 }: CreatePartInDesignFormProps) {
+  const { t } = useTranslation('entities')
   const { handleError, showSuccess, showWarning } = useErrorHandler()
   const [itemNumber, setItemNumber] = useState('')
   const [name, setName] = useState('')
@@ -132,7 +134,7 @@ export function CreatePartInDesignForm({
         return {
           item,
           nestError:
-            error instanceof Error ? error.message : 'The BOM line was refused',
+            error instanceof Error ? error.message : t('designs.createPart.lineRefusedFallback'),
         }
       }
     },
@@ -140,24 +142,24 @@ export function CreatePartInDesignForm({
     onSuccess: ({ item, nestError }) => {
       if (nestError) {
         showWarning(
-          `${item.itemNumber} was created, but not placed under ${parent?.itemNumber}`,
+          t('designs.createPart.nestedWarningTitle', { item: item.itemNumber, parent: parent?.itemNumber }),
           nestError,
         )
       } else if (parent) {
         showSuccess(
-          'Part created',
-          `${item.itemNumber} is now under ${parent.itemNumber}`,
+          t('designs.createPart.createdUnderTitle'),
+          t('designs.createPart.createdUnderBody', { item: item.itemNumber, parent: parent.itemNumber }),
         )
       } else {
         showSuccess(
-          'Part created',
-          `${item.itemNumber} is now a top-level part of ${designCode}`,
+          t('designs.createPart.createdUnderTitle'),
+          t('designs.createPart.createdTopBody', { item: item.itemNumber, design: designCode }),
         )
       }
       onCreated(item)
     },
     onError: (error: unknown) => {
-      handleError(error, { title: 'Failed to create part' })
+      handleError(error, { title: t('designs.createPart.failedTitle') })
     },
   })
 
@@ -174,43 +176,43 @@ export function CreatePartInDesignForm({
     <form onSubmit={handleSubmit} data-testid="create-part-form">
       <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ViewEditText
-          label="Item Number"
+          label={t("designs.createPart.itemNumberLabel")}
           value={itemNumber}
           onChange={setItemNumber}
           isEditing
-          placeholder="Leave blank to auto-number"
+          placeholder={t("designs.createPart.itemNumberPlaceholder")}
           data-testid="create-part-item-number"
         />
         <ViewEditSelect
-          label="Type"
+          label={t("designs.createPart.typeLabel")}
           value={partType}
           onChange={(value) => setPartType(value as PartType)}
           isEditing
-          options={PART_TYPE_OPTIONS}
+          options={PART_TYPE_OPTIONS.map((o) => ({ value: o.value, label: o.value === 'Manufacture' ? t('parts.typeLabels.manufacture') : o.value === 'Purchase' ? t('parts.typeLabels.purchase') : o.value === 'Software' ? t('parts.typeLabels.software') : t('parts.typeLabels.phantom') }))}
           data-testid="create-part-type"
         />
         <ViewEditText
-          label="Name"
+          label={t("designs.createPart.nameLabel")}
           value={name}
           onChange={setName}
           isEditing
-          placeholder="Part name"
+          placeholder={t("designs.createPart.namePlaceholder")}
           required
           className="md:col-span-2"
           data-testid="create-part-name"
         />
         <ViewEditTextarea
-          label="Description"
+          label={t("designs.createPart.descriptionLabel")}
           value={description}
           onChange={setDescription}
           isEditing
-          placeholder="Enter a description..."
+          placeholder={t("designs.createPart.descriptionPlaceholder")}
           className="md:col-span-2"
         />
         {parent && (
           <>
             <ViewEditNumber
-              label="Quantity"
+              label={t("designs.createPart.quantityLabel")}
               value={quantity}
               onChange={setQuantity}
               isEditing
@@ -219,12 +221,12 @@ export function CreatePartInDesignForm({
               required
             />
             <ViewEditNumber
-              label="Find Number"
+              label={t("designs.createPart.findNumberLabel")}
               value={findNumber}
               onChange={setFindNumber}
               isEditing
               min={1}
-              placeholder="Optional"
+              placeholder={t("designs.createPart.findNumberPlaceholder")}
             />
           </>
         )}
@@ -234,9 +236,7 @@ export function CreatePartInDesignForm({
         <div className="flex items-start gap-2 mt-4 p-3 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-sm rounded-md">
           <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
           <span>
-            This design is under change control, so nothing can be created on
-            main. Switch the page to a change-order or workspace branch and the
-            part will be created there.
+            {t('designs.createPart.blockedBody')}
           </span>
         </div>
       )}
@@ -249,7 +249,7 @@ export function CreatePartInDesignForm({
           onClick={onBack}
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
-          Back
+          {t('designs.createPart.backAction')}
         </Button>
         <Button
           type="submit"
@@ -257,10 +257,10 @@ export function CreatePartInDesignForm({
           data-testid="create-part-submit"
         >
           {createPart.isPending
-            ? 'Creating...'
+            ? t('designs.createPart.creatingAction')
             : parent
-              ? 'Create and Add to BOM'
-              : 'Create Part'}
+              ? t('designs.createPart.submitBOM')
+              : t('designs.createPart.submitTop')}
         </Button>
       </DialogFooter>
     </form>

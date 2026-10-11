@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import {
@@ -170,6 +171,7 @@ export function useStructureRowActions({
   onPullIn,
 }: UseStructureRowActionsOptions) {
   const navigate = useNavigate()
+  const { t } = useTranslation('entities')
   const { confirm } = useAlertDialog()
   const { handleError, showSuccess } = useErrorHandler()
 
@@ -196,7 +198,7 @@ export function useStructureRowActions({
       }),
     invalidates: ['designs'],
     onError: (error: Error) =>
-      handleError(error, { title: 'Failed to remove from structure' }),
+      handleError(error, { title: t('designs.rowActions.removeFailedTitle') }),
   })
 
   // Sets inDesignStructure: a non-structure part becomes a root.
@@ -209,7 +211,7 @@ export function useStructureRowActions({
       }),
     invalidates: ['designs'],
     onError: (error: Error) =>
-      handleError(error, { title: 'Failed to add to structure' }),
+      handleError(error, { title: t('designs.rowActions.addFailedTitle') }),
   })
 
   // The part itself, not its place in the tree. Named 'parts' so the parts
@@ -221,7 +223,7 @@ export function useStructureRowActions({
     onSuccess: (_data, part) =>
       showSuccess('Part deleted', `${part.itemNumber} has been deleted`),
     onError: (error: Error) =>
-      handleError(error, { title: 'Failed to delete part' }),
+      handleError(error, { title: t('designs.rowActions.deleteFailedTitle') }),
   })
 
   // A reference is a row of its own, so removing one leaves the part it names
@@ -238,44 +240,48 @@ export function useStructureRowActions({
     },
     invalidates: ['designs'],
     onError: (error: Error) =>
-      handleError(error, { title: 'Failed to remove reference' }),
+      handleError(error, { title: t('designs.rowActions.removeRefFailedTitle') }),
   })
 
   const confirmRemoveFromStructure = (node: BOMTreeNode) =>
     confirm({
-      title: 'Remove from Structure',
-      description: `Are you sure you want to remove ${node.itemNumber} from the design structure? The part will move to Non-Structure Items but will still belong to this design.`,
-      actionLabel: 'Remove',
-      cancelLabel: 'Cancel',
+      title: t('designs.rowActions.removeTitle'),
+      description: t('designs.rowActions.removeBody', { item: node.itemNumber }),
+      actionLabel: t('designs.rowActions.removeAction'),
+      cancelLabel: t('designs.rowActions.cancelAction'),
       variant: 'destructive',
       onConfirm: () => removeFromStructure.mutate(node.itemId),
     })
 
   const confirmAddToStructure = (item: NonStructureItem) =>
     confirm({
-      title: 'Add to Structure',
-      description: `Add ${item.itemNumber} to the design structure as a top-level part?`,
-      actionLabel: 'Add',
-      cancelLabel: 'Cancel',
+      title: t('designs.rowActions.addTitle'),
+      description: t('designs.rowActions.addBody', { item: item.itemNumber }),
+      actionLabel: t('designs.rowActions.addAction'),
+      cancelLabel: t('designs.rowActions.cancelAction'),
       onConfirm: () => addToStructure.mutate(item.id),
     })
 
   const confirmDeletePart = (part: { id: string; itemNumber: string }) =>
     confirm({
-      title: 'Delete Part',
-      description: `Permanently delete ${part.itemNumber} from ${designCode}? Assemblies that use it lose that BOM line, and parts under it stay in the design. This cannot be undone.`,
-      actionLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: t('designs.rowActions.deleteTitle'),
+      description: t('designs.rowActions.deleteBody', { item: part.itemNumber, design: designCode }),
+      actionLabel: t('designs.rowActions.deleteAction'),
+      cancelLabel: t('designs.rowActions.cancelAction'),
       variant: 'destructive',
       onConfirm: () => deletePart.mutate(part),
     })
 
   const confirmRemoveReference = (node: BOMTreeNode, referenceId: string) =>
     confirm({
-      title: 'Remove Reference',
-      description: `Remove the reference to ${node.itemNumber} from ${designCode}? The part stays in ${node.designCode ?? 'its own design'}; only this design's link to it is removed.`,
-      actionLabel: 'Remove',
-      cancelLabel: 'Cancel',
+      title: t('designs.rowActions.removeRefTitle'),
+      description: t('designs.rowActions.removeRefBody', {
+              item: node.itemNumber,
+              design: designCode,
+              home: node.designCode ?? t('designs.rowActions.homeFallback'),
+            }),
+      actionLabel: t('designs.rowActions.removeRefAction'),
+      cancelLabel: t('designs.rowActions.cancelAction'),
       variant: 'destructive',
       onConfirm: () => removeReference.mutate(referenceId),
     })
@@ -288,7 +294,7 @@ export function useStructureRowActions({
     const view: Array<RowAction> = route
       ? [
           {
-            label: foreign ? 'View in Home Design' : 'View',
+            label: foreign ? t('designs.rowActions.viewHomeAction') : t('designs.rowActions.viewAction'),
             icon: ExternalLink,
             onSelect: () => void navigate({ to: route }),
           },
@@ -299,19 +305,19 @@ export function useStructureRowActions({
     const edit: Array<RowAction> = foreign
       ? [
           {
-            label: 'Pull In as Usage Copy',
+            label: t('designs.rowActions.pullInAction'),
             icon: ArrowDownToLine,
             onSelect: () => onPullIn(node),
           },
         ]
       : node.itemType === 'Part'
-        ? [{ label: 'Add Child', icon: Plus, onSelect: () => onAddChild(node) }]
+        ? [{ label: t('designs.rowActions.addChildAction'), icon: Plus, onSelect: () => onAddChild(node) }]
         : []
 
     const remove: Array<RowAction> = []
     if (!foreign && !node.relationshipId) {
       remove.push({
-        label: 'Remove from Structure',
+        label: t('designs.rowActions.removeFromStructure'),
         icon: ListMinus,
         destructive: true,
         onSelect: () => confirmRemoveFromStructure(node),
@@ -322,7 +328,7 @@ export function useStructureRowActions({
       : undefined
     if (referenceId) {
       remove.push({
-        label: 'Remove Reference',
+        label: t('designs.rowActions.removeReference'),
         icon: Link2Off,
         destructive: true,
         onSelect: () => confirmRemoveReference(node, referenceId),
@@ -330,7 +336,7 @@ export function useStructureRowActions({
     }
     if (!foreign && node.itemType === 'Part' && canDeleteParts) {
       remove.push({
-        label: 'Delete Part',
+        label: t('designs.rowActions.deletePart'),
         icon: Trash2,
         destructive: true,
         onSelect: () =>
@@ -347,7 +353,7 @@ export function useStructureRowActions({
     return [
       [
         {
-          label: 'Add to Structure',
+          label: t('designs.rowActions.addToStructure'),
           icon: Plus,
           onSelect: () => confirmAddToStructure(item),
         },
@@ -355,7 +361,7 @@ export function useStructureRowActions({
       canDeleteParts
         ? [
             {
-              label: 'Delete Part',
+              label: t('designs.rowActions.deletePart'),
               icon: Trash2,
               destructive: true,
               onSelect: () => confirmDeletePart(item),
@@ -382,7 +388,7 @@ export function useStructureRowActions({
     renderCell: (node) => (
       <RowActionsMenu
         groups={nodeActions(node)}
-        label={`Actions for ${node.itemNumber}`}
+        label={t('designs.rowActions.actionsFor', { item: node.itemNumber })}
       />
     ),
   }
@@ -407,11 +413,11 @@ export function useStructureRowActions({
             disabled={addingItemId === item.id}
           >
             <Plus className="h-3 w-3 mr-1" />
-            {addingItemId === item.id ? 'Adding...' : 'Add to Structure'}
+            {addingItemId === item.id ? t('designs.rowActions.addingAction') : t('designs.rowActions.addToStructure')}
           </Button>
           <RowActionsMenu
             groups={groups}
-            label={`Actions for ${item.itemNumber}`}
+            label={t('designs.rowActions.actionsFor', { item: item.itemNumber })}
           />
         </div>
       )

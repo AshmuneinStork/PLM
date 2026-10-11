@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowDownToLine, Download, Loader2, Plus, X } from 'lucide-react'
 import { AddPartToDesignDialog } from './AddPartToDesignDialog'
@@ -96,6 +97,7 @@ export function StructureTab({
   versionContext,
   isHistoricalView,
 }: StructureTabProps) {
+  const { t } = useTranslation('entities')
   const { handleError } = useErrorHandler()
   const invalidate = useInvalidateResources()
 
@@ -307,11 +309,11 @@ export function StructureTab({
     () => [
       {
         id: 'itemNumber',
-        header: 'Item',
+        header: t('designs.structure.gridColItem'),
         accessorKey: 'itemNumber',
         enableFiltering: true,
         filterType: 'text',
-        filterPlaceholder: 'Filter item...',
+        filterPlaceholder: t('designs.structure.filterItemPlaceholder'),
         cell: ({ row }) => (
           <ItemLink
             itemType={row.original.itemType}
@@ -324,15 +326,15 @@ export function StructureTab({
       },
       {
         id: 'name',
-        header: 'Name',
+        header: t('designs.structure.gridColName'),
         accessorKey: 'name',
         enableFiltering: true,
         filterType: 'text',
-        filterPlaceholder: 'Filter name...',
+        filterPlaceholder: t('designs.structure.filterNamePlaceholder'),
       },
       {
         id: 'itemType',
-        header: 'Type',
+        header: t('designs.structure.gridColType'),
         accessorKey: 'itemType',
         enableFiltering: true,
         filterType: 'multiSelect',
@@ -346,13 +348,13 @@ export function StructureTab({
       },
       {
         id: 'revision',
-        header: 'Rev',
+        header: t('designs.structure.gridColRev'),
         accessorKey: 'revision',
         meta: { width: '70px', align: 'center' },
       },
       {
         id: 'state',
-        header: 'State',
+        header: t('designs.structure.gridColState'),
         accessorKey: 'state',
         enableFiltering: true,
         filterType: 'multiSelect',
@@ -368,7 +370,7 @@ export function StructureTab({
         },
       },
     ],
-    [nonStructureTypeOptions, nonStructureStateOptions],
+    [nonStructureTypeOptions, nonStructureStateOptions, t],
   )
 
   // Build a parent map from the tree: node -> parent
@@ -459,7 +461,7 @@ export function StructureTab({
       setPullInDialogOpen(false)
     },
     onError: (error: Error) =>
-      handleError(error, { title: 'Failed to pull in reference' }),
+      handleError(error, { title: t('designs.structure.pullInFailedTitle') }),
   })
 
   const executePullIn = () => {
@@ -688,12 +690,11 @@ export function StructureTab({
         <Card className="border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800">
           <CardContent className="py-4">
             <p className="text-amber-700 dark:text-amber-300">
-              Failed to load structure. The API endpoint may not be implemented
-              yet.
+              {t('designs.structure.loadFailedTitle')}{' '}
+              {t('designs.structure.loadFailedBody')}
             </p>
             <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">
-              This feature requires the structure API endpoint to be
-              implemented.
+              {t('designs.structure.loadHint')}
             </p>
           </CardContent>
         </Card>
@@ -706,12 +707,12 @@ export function StructureTab({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Design Structure</CardTitle>
+              <CardTitle>{t('designs.structure.treeTitle')}</CardTitle>
               <CardDescription>
-                Bill of Materials hierarchy
+                {t('designs.structure.treeDescription')}
                 {isHistoricalView && (
                   <span className="text-amber-600 dark:text-amber-400 ml-2">
-                    (viewing historical state)
+                    {t('designs.structure.historicalBadge')}
                   </span>
                 )}
               </CardDescription>
@@ -719,16 +720,16 @@ export function StructureTab({
             <div className="flex items-center gap-2">
               <div className="w-80 flex-shrink-0">
                 <Input
-                  placeholder="Filter by item number or name..."
+                  placeholder={t('designs.structure.filterPlaceholder')}
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                 />
               </div>
               <Button variant="outline" size="sm" onClick={expandAll}>
-                Expand All
+                {t('designs.structure.expandAction')}
               </Button>
               <Button variant="outline" size="sm" onClick={collapseAll}>
-                Collapse All
+                {t('designs.structure.collapseAction')}
               </Button>
               {roots.length > 0 && (
                 <Button
@@ -739,13 +740,13 @@ export function StructureTab({
                   }
                 >
                   <Download className="h-4 w-4 mr-1" />
-                  Export CSV
+                  {t('designs.structure.exportAction')}
                 </Button>
               )}
               {!isHistoricalView && (
                 <Button size="sm" onClick={() => setIsAddPartDialogOpen(true)}>
                   <Plus className="h-4 w-4 mr-1" />
-                  Add Part
+                  {t('designs.structure.addTopAction')}
                 </Button>
               )}
             </div>
@@ -754,11 +755,13 @@ export function StructureTab({
           {!isHistoricalView && selection.selectedCount > 0 && (
             <div className="flex items-center gap-2 mt-3 pt-3 border-t dark:border-slate-700">
               <Badge variant="secondary" className="text-xs">
-                {selection.selectedCount} selected
+                {t('designs.structure.selectedCount', {
+                  count: selection.selectedCount,
+                })}
               </Badge>
               <Button size="sm" onClick={handleBatchPullIn}>
                 <ArrowDownToLine className="h-3.5 w-3.5 mr-1" />
-                Pull In Selected
+                {t('designs.structure.pullInSelectedAction')}
               </Button>
               <Button
                 variant="ghost"
@@ -766,7 +769,7 @@ export function StructureTab({
                 onClick={selection.clearSelection}
               >
                 <X className="h-3.5 w-3.5 mr-1" />
-                Clear
+                {t('designs.structure.clearSelectionAction')}
               </Button>
             </div>
           )}
@@ -795,13 +798,12 @@ export function StructureTab({
             />
           ) : roots.length > 0 ? (
             <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-              No items match the filter.
+              {t('designs.structure.noFilterMatch')}
             </div>
           ) : (
             !isError && (
               <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-                No BOM structure found. Add parent-child relationships between
-                parts to build the design structure.
+                {t('designs.structure.emptyTreeHint')}
               </div>
             )
           )}
@@ -814,11 +816,10 @@ export function StructureTab({
           <Card>
             <CardHeader>
               <CollapsibleTrigger className="hover:opacity-70">
-                <CardTitle>Non-Structure Items</CardTitle>
+                <CardTitle>{t('designs.structure.nonStructureTitle')}</CardTitle>
               </CollapsibleTrigger>
               <CardDescription>
-                Items in this design but not in the BOM hierarchy (documents,
-                requirements, and removed parts)
+                {t('designs.structure.nonStructureHint')}
               </CardDescription>
             </CardHeader>
             <CollapsibleContent>
@@ -841,8 +842,8 @@ export function StructureTab({
                   enableRowActions={!isHistoricalView}
                   renderRowActions={rowActions.renderNonStructureRowActions}
                   exportFilename={`${designCode}-non-structure-items`}
-                  emptyMessage="No items match the filter"
-                  emptyDescription="Try adjusting your search or filters"
+                  emptyMessage={t('designs.structure.emptyGridMessage')}
+                  emptyDescription={t('designs.structure.emptyGridHint')}
                 />
               </CardContent>
             </CollapsibleContent>
@@ -882,19 +883,18 @@ export function StructureTab({
       >
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Pull In Selected Items</DialogTitle>
+            <DialogTitle>{t('designs.structure.batchTitle')}</DialogTitle>
             <DialogDescription>
-              Convert {batchTotalItems} external item
-              {batchTotalItems !== 1 ? 's' : ''} into usage copies in this
-              design.
+              {t('designs.structure.batchBody', { count: batchTotalItems })}
             </DialogDescription>
           </DialogHeader>
 
           {/* Chain list */}
           <div className="max-h-60 overflow-y-auto space-y-1 py-1">
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              {batchChains.length} chain{batchChains.length !== 1 ? 's' : ''} to
-              process:
+              {t('designs.structure.batchChains', {
+                count: batchChains.length,
+              })}
             </p>
             <div className="space-y-0.5 ml-1">
               {batchChains.map((chain) => (
@@ -910,8 +910,9 @@ export function StructureTab({
                   </span>
                   {chain.chainNodes.length > 1 && (
                     <Badge variant="outline" className="text-xs px-1 py-0">
-                      +{chain.chainNodes.length - 1} ancestor
-                      {chain.chainNodes.length - 1 > 1 ? 's' : ''}
+                      {t('designs.structure.batchAncestors', {
+                        count: chain.chainNodes.length - 1,
+                      })}
                     </Badge>
                   )}
                 </div>
@@ -924,7 +925,10 @@ export function StructureTab({
             <div className="space-y-1 py-1">
               <Progress value={batchProgress} max={batchChains.length} />
               <p className="text-xs text-slate-500 text-center">
-                {batchProgress} / {batchChains.length} completed
+                {t('designs.structure.batchProgress', {
+                  done: batchProgress,
+                  total: batchChains.length,
+                })}
               </p>
             </div>
           )}
@@ -933,8 +937,9 @@ export function StructureTab({
           {batchErrors.length > 0 && (
             <div className="space-y-1 py-1">
               <p className="text-xs font-medium text-red-600 dark:text-red-400">
-                {batchErrors.length} item{batchErrors.length !== 1 ? 's' : ''}{' '}
-                failed:
+                {t('designs.structure.batchErrors', {
+                  count: batchErrors.length,
+                })}
               </p>
               <div className="space-y-0.5 ml-1">
                 {batchErrors.map((err) => (
@@ -963,12 +968,15 @@ export function StructureTab({
                 htmlFor="batchPullInSuffix"
                 className="text-sm font-normal cursor-pointer"
               >
-                Suffix item numbers with design code
+                {t('designs.structure.suffixLabel')}
               </Label>
             </div>
             {batchPullInSuffix && designCode && batchChains[0] && (
               <p className="text-xs text-slate-500 dark:text-slate-400 ml-6">
-                e.g., {batchChains[0].targetNode.itemNumber}-{designCode}
+                {t('designs.structure.batchSuffixExample', {
+                  item: batchChains[0].targetNode.itemNumber,
+                  code: designCode,
+                })}
               </p>
             )}
           </div>
@@ -979,12 +987,18 @@ export function StructureTab({
               onClick={() => setBatchPullInDialogOpen(false)}
               disabled={batchPullInLoading}
             >
-              Cancel
+              {t('designs.structure.cancelAction')}
             </Button>
             <Button onClick={executeBatchPullIn} disabled={batchPullInLoading}>
               {batchPullInLoading
-                ? `Pulling in... (${batchProgress}/${batchChains.length})`
-                : `Pull In ${batchChains.length} Item${batchChains.length !== 1 ? 's' : ''}`}
+                ? t('designs.structure.batchPulling', {
+                    count: batchChains.length,
+                    done: batchProgress,
+                    total: batchChains.length,
+                  })
+                : t('designs.structure.batchPullAction', {
+                    count: batchChains.length,
+                  })}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -994,28 +1008,33 @@ export function StructureTab({
       <Dialog open={pullInDialogOpen} onOpenChange={setPullInDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Pull In as Usage Copy</DialogTitle>
+            <DialogTitle>{t('designs.structure.singleTitle')}</DialogTitle>
             <DialogDescription>
               {pullInChainInfo && pullInChainInfo.chainNodes.length === 1 ? (
-                <>
-                  Convert{' '}
-                  <span className="font-medium text-slate-900 dark:text-slate-100">
-                    {pullInChainInfo.targetNode.itemNumber}
-                  </span>{' '}
-                  into a usage copy in this design. Its BOM children will remain
-                  as references to their source design.
-                </>
+                <Trans
+                  i18nKey="designs.structure.singleBodySingle"
+                  ns="entities"
+                  values={{ item: pullInChainInfo.targetNode.itemNumber }}
+                  components={{
+                    b: (
+                      <span className="font-medium text-slate-900 dark:text-slate-100" />
+                    ),
+                  }}
+                />
               ) : pullInChainInfo ? (
-                <>
-                  Convert{' '}
-                  <span className="font-medium text-slate-900 dark:text-slate-100">
-                    {pullInChainInfo.targetNode.itemNumber}
-                  </span>{' '}
-                  into a usage copy. {pullInChainInfo.chainNodes.length - 1}{' '}
-                  ancestor
-                  {pullInChainInfo.chainNodes.length - 1 > 1 ? 's' : ''} will
-                  also be pulled in.
-                </>
+                <Trans
+                  i18nKey="designs.structure.singleBodyMulti"
+                  ns="entities"
+                  values={{
+                    item: pullInChainInfo.targetNode.itemNumber,
+                    count: pullInChainInfo.chainNodes.length - 1,
+                  }}
+                  components={{
+                    b: (
+                      <span className="font-medium text-slate-900 dark:text-slate-100" />
+                    ),
+                  }}
+                />
               ) : null}
             </DialogDescription>
           </DialogHeader>
@@ -1024,7 +1043,7 @@ export function StructureTab({
           {pullInChainInfo && pullInChainInfo.chainNodes.length > 1 && (
             <div className="space-y-1 py-1">
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                Items to pull in:
+                {t('designs.structure.chainLabel')}
               </p>
               <div className="space-y-0.5 ml-1">
                 {pullInChainInfo.chainNodes.map((chainNode, idx) => (
@@ -1050,7 +1069,7 @@ export function StructureTab({
                     </span>
                     {chainNode.itemId === pullInChainInfo.targetNode.itemId && (
                       <Badge variant="outline" className="text-xs px-1 py-0">
-                        target
+                        {t('designs.structure.targetBadge')}
                       </Badge>
                     )}
                   </div>
@@ -1072,12 +1091,15 @@ export function StructureTab({
                 htmlFor="pullInSuffix"
                 className="text-sm font-normal cursor-pointer"
               >
-                Suffix item numbers with design code
+                {t('designs.structure.suffixLabel')}
               </Label>
             </div>
             {pullInSuffix && designCode && pullInChainInfo && (
               <p className="text-xs text-slate-500 dark:text-slate-400 ml-6">
-                e.g., {pullInChainInfo.targetNode.itemNumber}-{designCode}
+                {t('designs.structure.suffixExample', {
+                  item: pullInChainInfo.targetNode.itemNumber,
+                  code: designCode,
+                })}
               </p>
             )}
           </div>
@@ -1088,10 +1110,12 @@ export function StructureTab({
               onClick={() => setPullInDialogOpen(false)}
               disabled={pullIn.isPending}
             >
-              Cancel
+              {t('designs.structure.cancelAction')}
             </Button>
             <Button onClick={executePullIn} disabled={pullIn.isPending}>
-              {pullIn.isPending ? 'Pulling in...' : 'Pull In'}
+              {pullIn.isPending
+                ? t('designs.structure.pullingAction')
+                : t('designs.structure.pullInAction')}
             </Button>
           </DialogFooter>
         </DialogContent>

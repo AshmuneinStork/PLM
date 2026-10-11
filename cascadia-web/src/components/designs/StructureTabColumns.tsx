@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link2 } from 'lucide-react'
 import { formatPartDesignation } from '@cascadia/commons/types/variants'
 import type { ColumnDefinition } from '@/components/bom/BomTreeView'
@@ -22,6 +23,7 @@ export function useStructureColumns(
   isHistoricalView: boolean,
   roots: Array<BOMTreeNode>,
 ): Array<ColumnDefinition> {
+  const { t } = useTranslation('entities')
   const showOption = useMemo(() => {
     const has = (list: Array<BOMTreeNode>): boolean =>
       list.some(
@@ -35,7 +37,7 @@ export function useStructureColumns(
       const columns: Array<ColumnDefinition> = [
         {
           id: 'item',
-          label: 'Item',
+          label: t('designs.structure.columns.colItem'),
           width: 'flex-[2] min-w-[200px]',
           renderCell: (node) => (
             <>
@@ -58,7 +60,7 @@ export function useStructureColumns(
                 <Badge
                   variant="outline"
                   className="text-xs text-blue-600 dark:text-blue-400 border-blue-300 dark:border-blue-600 flex-shrink-0"
-                  title={`Cross-design reference from ${node.designName || node.designCode}`}
+                  title={t('designs.structure.columns.crossRefFrom', { name: node.designName || node.designCode })}
                 >
                   XREF {node.designCode}
                 </Badge>
@@ -67,7 +69,7 @@ export function useStructureColumns(
                 <Badge
                   variant="outline"
                   className="text-xs text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-600 flex-shrink-0"
-                  title={`From ${node.designName || node.designCode}`}
+                  title={t('designs.structure.columns.externalFrom', { name: node.designName || node.designCode })}
                 >
                   <Link2 className="h-3 w-3 mr-1" />
                   {node.designCode}
@@ -78,7 +80,7 @@ export function useStructureColumns(
         },
         {
           id: 'name',
-          label: 'Name',
+          label: t('designs.structure.columns.colName'),
           width: 'flex-[2] min-w-[150px]',
           renderCell: (node) => (
             <span className="truncate text-slate-600 dark:text-slate-400">
@@ -88,7 +90,7 @@ export function useStructureColumns(
         },
         {
           id: 'type',
-          label: 'Type',
+          label: t('designs.structure.columns.colType'),
           width: 'w-20 flex-shrink-0',
           align: 'center',
           renderCell: (node) => (
@@ -99,7 +101,7 @@ export function useStructureColumns(
         },
         {
           id: 'qty',
-          label: 'Qty',
+          label: t('designs.structure.columns.colQty'),
           width: 'w-14 flex-shrink-0',
           align: 'center',
           renderCell: (node) => (
@@ -110,7 +112,7 @@ export function useStructureColumns(
         },
         {
           id: 'rev',
-          label: 'Rev',
+          label: t('designs.structure.columns.colRev'),
           width: 'w-14 flex-shrink-0',
           align: 'center',
           renderCell: (node) => (
@@ -119,7 +121,7 @@ export function useStructureColumns(
         },
         {
           id: 'state',
-          label: 'State',
+          label: t('designs.structure.columns.colState'),
           width: 'w-24 flex-shrink-0',
           align: 'center',
           renderCell: (node) => (
@@ -138,7 +140,7 @@ export function useStructureColumns(
           align: 'center',
           renderCell: (node) =>
             node.isInWork ? (
-              <span className="text-amber-500" title="In work on ECO">
+              <span className="text-amber-500" title={t('designs.structure.columns.inWorkTitle')}>
                 &#8635;
               </span>
             ) : null,
@@ -147,7 +149,7 @@ export function useStructureColumns(
       if (showOption) {
         columns.splice(4, 0, {
           id: 'option',
-          label: 'Option',
+          label: t('designs.structure.columns.colOption'),
           width: 'w-40 flex-shrink-0',
           renderCell: (node) => (
             <OptionConditionChips
@@ -167,7 +169,7 @@ export function useStructureColumns(
       ) {
         columns.splice(4, 0, {
           id: 'execution',
-          label: 'Execution',
+          label: t('designs.structure.columns.colExecution'),
           width: 'w-20 flex-shrink-0',
           align: 'center',
           renderCell: (node) => (
