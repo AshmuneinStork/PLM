@@ -93,7 +93,10 @@
       "archiveFailedTitle": "Failed to archive design",
       "createdTitle": "Design created",
       "createdBody": "{{code}} has been created successfully",
-      "createFailedTitle": "Failed to create design"
+      "createFailedTitle": "Failed to create design",
+      "updatedTitle": "Design updated",
+      "updatedBody": "{{code}} has been updated successfully",
+      "updateFailedTitle": "Failed to update design"
     },
     "form": {
       "detailsTitle": "Design Details",
@@ -131,6 +134,22 @@
     "new": {
       "title": "Create New Design",
       "subtitle": "Enter the details for the new design"
+    },
+    "edit": {
+      "title": "Edit Design",
+      "subtitle": "Update details for {{code}}"
+    },
+    "banner": {
+      "title": "VIEWING HISTORICAL STATE",
+      "tagFallback": "Tag {{id}}",
+      "commitFallback": "Commit {{id}}",
+      "stateFallback": "Historical State",
+      "returnAction": "Return to Current",
+      "note": "All data shown reflects the state at this point in time. Edit and create actions are disabled."
+    },
+    "quickJump": {
+      "label": "Quick Jump:",
+      "createAction": "Create Tag"
     }
   },
   "parts": {

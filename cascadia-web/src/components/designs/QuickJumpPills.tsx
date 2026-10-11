@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { Plus, Tag } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui'
 import { cn } from '@/utils'
 
@@ -30,6 +31,7 @@ export function QuickJumpPills({
   maxVisible = 5,
   className,
 }: QuickJumpPillsProps) {
+  const { t } = useTranslation('entities')
   // Sort by creation date (newest first) and take the most recent
   const recentTags = [...tags]
     .sort(
@@ -45,7 +47,7 @@ export function QuickJumpPills({
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <span className="text-sm text-slate-500 dark:text-slate-400 mr-1">
-        Quick Jump:
+        {t('designs.quickJump.label')}
       </span>
 
       {recentTags.map((tag) => (
@@ -80,7 +82,7 @@ export function QuickJumpPills({
           className="rounded-full"
         >
           <Plus className="h-3 w-3 mr-1" />
-          Create Tag
+          {t('designs.quickJump.createAction')}
         </Button>
       )}
     </div>

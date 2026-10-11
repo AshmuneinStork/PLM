@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { ArrowLeft, Clock } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { VersionContext } from '@/hooks/useVersionContext'
 import { Button } from '@/components/ui'
 
@@ -14,15 +15,16 @@ export function HistoricalViewBanner({
   context,
   onReturnToCurrent,
 }: HistoricalViewBannerProps) {
+  const { t } = useTranslation('entities')
   // Get display label for context
   const getContextLabel = () => {
     if (context.type === 'tag') {
-      return context.tagName || `Tag ${context.tagId?.slice(0, 8)}`
+      return context.tagName || t('designs.banner.tagFallback', { id: context.tagId?.slice(0, 8) })
     }
     if (context.type === 'commit') {
-      return `Commit ${context.commitId?.slice(0, 8)}`
+      return t('designs.banner.commitFallback', { id: context.commitId?.slice(0, 8) })
     }
-    return 'Historical State'
+    return t('designs.banner.stateFallback')
   }
 
   return (
@@ -34,7 +36,7 @@ export function HistoricalViewBanner({
           </div>
           <div>
             <h3 className="font-semibold text-amber-800 dark:text-amber-200">
-              VIEWING HISTORICAL STATE
+              {t('designs.banner.title')}
             </h3>
             <p className="text-sm text-amber-700 dark:text-amber-300">
               {getContextLabel()}
@@ -48,13 +50,12 @@ export function HistoricalViewBanner({
           className="border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-900/40"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Return to Current
+          {t('designs.banner.returnAction')}
         </Button>
       </div>
 
       <div className="mt-3 text-sm text-amber-600 dark:text-amber-400">
-        All data shown reflects the state at this point in time. Edit and create
-        actions are disabled.
+        {t('designs.banner.note')}
       </div>
     </div>
   )
