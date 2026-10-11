@@ -111,7 +111,7 @@ export function ChangeOrdersTab({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="all">{t('designs.changeOrders.allStatuses')}</SelectItem>
               {(coLifecycle?.states ?? []).map((state) => (
                 <SelectItem key={state.id} value={state.id}>
                   {state.name}
