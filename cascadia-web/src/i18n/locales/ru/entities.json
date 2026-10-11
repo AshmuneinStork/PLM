@@ -100,7 +100,10 @@
       "createFailedTitle": "Не удалось создать проект",
       "updatedTitle": "Проект обновлён",
       "updatedBody": "{{code}} успешно обновлён",
-      "updateFailedTitle": "Не удалось обновить проект"
+      "updateFailedTitle": "Не удалось обновить проект",
+      "updatedDetailsTitle": "Проект обновлён",
+      "updateDetailsFailedTitle": "Не удалось обновить проект",
+      "updatedDetailsBody": "Детали сохранены"
     },
     "form": {
       "detailsTitle": "Детали проекта",
@@ -175,6 +178,52 @@
       "noModelBody": "К {{itemNumber}} не прикреплена отображаемая 3D-модель.",
       "noPartsBody": "В этом проекте нет изделий верхнего уровня для отображения.",
       "topLevelPartLabel": "Изделие верхнего уровня"
+    },
+    "details": {
+      "description": "Описание",
+      "descriptionPlaceholder": "Описание проекта...",
+      "noDescription": "Без описания",
+      "program": "Программа",
+      "selectProgram": "Выберите программу",
+      "noProgram": "Без программы",
+      "parentFamily": "Родительское семейство",
+      "loadingFamilies": "Загрузка семейств...",
+      "noFamily": "Без семейства",
+      "plannedQuantity": "Плановое количество",
+      "quantityUnit": "шт.",
+      "quantityPlaceholder": "100",
+      "notSet": "Не задано",
+      "attributesTitle": "Пользовательские атрибуты",
+      "noAttributesBody": "Пользовательские атрибуты не заданы."
+    },
+    "addChoice": {
+      "createNew": "Создать новый",
+      "useExisting": "Использовать существующий"
+    },
+    "baselines": {
+      "createAction": "Создать бейзлайн",
+      "title": "Бейзлайны и теги",
+      "name": "Название",
+      "type": "Тип",
+      "description": "Описание",
+      "created": "Создан",
+      "actions": "Действия",
+      "noDescription": "Без описания",
+      "viewTitle": "Просмотреть на этом бейзлайне",
+      "compareTitle": "Сравнить с другим бейзлайном",
+      "exportTitle": "Экспорт BOM — скоро",
+      "emptyBody": "Бейзлайны и теги ещё не созданы. Создайте бейзлайн, чтобы зафиксировать текущую конфигурацию.",
+      "compareTitle2": "Сравнение бейзлайнов",
+      "compareSubtitle": "Сравните два бейзлайна, чтобы увидеть изменения",
+      "fromPlaceholder": "Исходный бейзлайн...",
+      "toPlaceholder": "Целевой бейзлайн...",
+      "toSeparator": "—",
+      "compareAction": "Сравнить",
+      "comingSoon": "Скоро",
+      "count_one": "Создан {{count}} бейзлайн",
+      "count_few": "Создано {{count}} бейзлайна",
+      "count_many": "Создано {{count}} бейзлайнов",
+      "count_other": "Создано {{count}} бейзлайна"
     }
   },
   "parts": {

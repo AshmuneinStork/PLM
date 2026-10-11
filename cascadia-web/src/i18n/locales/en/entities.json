@@ -96,7 +96,10 @@
       "createFailedTitle": "Failed to create design",
       "updatedTitle": "Design updated",
       "updatedBody": "{{code}} has been updated successfully",
-      "updateFailedTitle": "Failed to update design"
+      "updateFailedTitle": "Failed to update design",
+      "updatedDetailsTitle": "Design updated",
+      "updateDetailsFailedTitle": "Failed to update design",
+      "updatedDetailsBody": "Details have been saved"
     },
     "form": {
       "detailsTitle": "Design Details",
@@ -171,6 +174,50 @@
       "noModelBody": "No viewable 3D model is attached to {{itemNumber}}.",
       "noPartsBody": "This design has no top-level parts to display.",
       "topLevelPartLabel": "Top-level part"
+    },
+    "details": {
+      "description": "Description",
+      "descriptionPlaceholder": "Design description...",
+      "noDescription": "No description",
+      "program": "Program",
+      "selectProgram": "Select program",
+      "noProgram": "No program",
+      "parentFamily": "Parent Family",
+      "loadingFamilies": "Loading families...",
+      "noFamily": "No family",
+      "plannedQuantity": "Planned Quantity",
+      "quantityUnit": "units",
+      "quantityPlaceholder": "100",
+      "notSet": "Not set",
+      "attributesTitle": "Custom Attributes",
+      "noAttributesBody": "No custom attributes defined."
+    },
+    "addChoice": {
+      "createNew": "Create New",
+      "useExisting": "Use Existing"
+    },
+    "baselines": {
+      "createAction": "Create Baseline",
+      "title": "Baselines & Tags",
+      "name": "Name",
+      "type": "Type",
+      "description": "Description",
+      "created": "Created",
+      "actions": "Actions",
+      "noDescription": "No description",
+      "viewTitle": "View at this baseline",
+      "compareTitle": "Compare to another baseline",
+      "exportTitle": "Export BOM — coming soon",
+      "emptyBody": "No baselines or tags created yet. Create a baseline to capture the current configuration.",
+      "compareTitle2": "Compare Baselines",
+      "compareSubtitle": "Compare two baselines to see what changed",
+      "fromPlaceholder": "From baseline...",
+      "toPlaceholder": "To baseline...",
+      "toSeparator": "to",
+      "compareAction": "Compare",
+      "comingSoon": "Coming soon",
+      "count_one": "{{count}} baseline created",
+      "count_other": "{{count}} baselines created"
     }
   },
   "parts": {
