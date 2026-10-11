@@ -34,7 +34,7 @@
 
 - [ ] Vitest dom-тесты фронта (сейчас .test.tsx нет) + e2e smoke EN/RU.
 - [ ] Доки.
-- [ ] Docker smoke: build app + /health 200 + EN/RU на /login и /setup.
+- [x] Docker smoke: build app + /health 200 + EN/RU на /login и /setup.
 - [ ] PR feature/i18n-ru -> main.
 
 ## Известные проблемы

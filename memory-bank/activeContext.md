@@ -34,11 +34,11 @@
 - format.ts: getItemNumberPlaceholder()/getItemNumberHelpText() через i18n.t, ITEM_NUMBER_PLACEHOLDER deprecated как fallback.
 - B1b: currency/unit коды (USD/kg) не переводятся; числовые плейсхолдеры (0.000/0.00/30) остаются; timeAgo через pluralize (EN one/other, RU one/few/many/other).
 
-## Прод-поднятие (старт)
-- Ветка: `feature/i18n-ru`, HEAD `9f39cf1` + незакоммиченный 2-4 (tech-tokens + 2 файла).
-- Стратегия: коммит 2-4 → сборка из исходников через `docker-compose.yml` (build app из Dockerfile) или `npm run build` + `npm run serve`.
-- Demo-образа из GHCR не годятся — RU-код туда попадёт только после мержа в main.
-- Открытые вопросы: хост (локальный Docker/VM/serve), чистая vs занятая БД, BASE_URL+proxy, нужен ли seed:demo.
+## Прод-поднятие (done 11.10.2026)
+- Образ `000_plm-app:latest` собран из `feature/i18n-ru` (a5ef6ea), 2.28GB, RU-строки в бандле подтверждены.
+- `docker compose up -d app` in-place поверх volumes `000_plm_*` — данные сохранены.
+- Бут: `migrations applied successfully / database is current`, `health: healthy`, `/api/v1/health` → 200, `/` → 200.
+- Осталось пользователю: открыть http://localhost:3000/login, переключить RU, проверить тосты/даты/историю (qty/find#/ref без перевода).
 2. B1c: PartDetail.tsx (1031 строка, разбить) + PartDetailSidebar.
 3. B2-B5: остальные сущности по пилоту.
 4. Волна 3: tour-steps.ts → getTourSteps(t), тосты/Zod по ключам, Intl.DateTimeFormat.
