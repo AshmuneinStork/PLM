@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
 import type { VersionContext } from '@/hooks/useVersionContext'
 import type { DesignDetailsSectionHandle } from '@/components/designs/DesignDetailsSection'
 import type { Branch, TagItem } from '@/components/designs/DesignPageHeader'
@@ -89,6 +90,7 @@ export const Route = createFileRoute('/designs/$id')({
 })
 
 function DesignDetailPage() {
+  const { t } = useTranslation('entities')
   const { id } = Route.useParams()
   const navigate = useNavigate()
   const { confirm } = useAlertDialog()
@@ -182,10 +184,10 @@ function DesignDetailPage() {
 
   const handleArchive = () => {
     confirm({
-      title: 'Archive Design',
-      description: `Are you sure you want to archive ${design.code}? The design will no longer appear in lists but data will be preserved.`,
-      actionLabel: 'Archive',
-      cancelLabel: 'Cancel',
+      title: t('designs.archive.confirmTitle'),
+      description: t('designs.archive.confirmBody', { code: design.code }),
+      actionLabel: t('designs.archive.confirmAction'),
+      cancelLabel: t('designs.archive.cancelAction'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -193,11 +195,11 @@ function DesignDetailPage() {
             method: 'DELETE',
           })
 
-          showSuccess('Design archived', `${design.code} has been archived`)
+          showSuccess(t('designs.toasts.archivedTitle'), t('designs.toasts.archivedBody', { code: design.code }))
           await invalidate('designs')
           navigate({ to: '/designs' })
         } catch (error) {
-          handleError(error, { title: 'Failed to archive design' })
+          handleError(error, { title: t('designs.toasts.archiveFailedTitle') })
         }
       },
     })
