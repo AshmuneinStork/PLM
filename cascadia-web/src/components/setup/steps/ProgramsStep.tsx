@@ -29,8 +29,6 @@ import {
   SelectValue,
 } from '@/components/ui'
 
-const { t } = useTranslation('setup')
-
 interface CreatedProgram {
   id: string
   name: string
@@ -73,6 +71,7 @@ async function readErrorMessage(
 }
 
 export function ProgramsStep({ onCompleted }: ProgramsStepProps) {
+  const { t } = useTranslation('setup')
   const [createdPrograms, setCreatedPrograms] = useState<Array<CreatedProgram>>(
     [],
   )

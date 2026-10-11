@@ -19,8 +19,6 @@ import {
   CardTitle,
 } from '@/components/ui'
 
-const { t } = useTranslation('setup')
-
 interface ToolsStepProps {
   onCompleted: () => void
 }
@@ -48,6 +46,7 @@ function makeAndModel(tool: Tool): string {
 }
 
 export function ToolsStep({ onCompleted }: ToolsStepProps) {
+  const { t } = useTranslation('setup')
   const invalidate = useInvalidateResources()
   const [showForm, setShowForm] = useState(false)
   const [saving, setSaving] = useState(false)
