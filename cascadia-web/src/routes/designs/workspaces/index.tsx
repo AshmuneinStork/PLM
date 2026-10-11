@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { Link, createFileRoute } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, GitBranch, Trash2 } from 'lucide-react'
 import type { Workspace } from '@/query'
@@ -31,6 +32,7 @@ export const Route = createFileRoute('/designs/workspaces/')({
 })
 
 function WorkspacesPage() {
+  const { t } = useTranslation('entities')
   const queryClient = useQueryClient()
   const { confirm } = useAlertDialog()
   const { handleError, showSuccess } = useErrorHandler()
@@ -53,20 +55,23 @@ function WorkspacesPage() {
     }
 
     // Build description with item count warning
-    let description = `Are you sure you want to delete the workspace "${displayName}" from ${workspace.designName}?`
+    let description = t('designs.workspaces.deleteBody', {
+      name: displayName,
+      design: workspace.designName,
+    })
     if (draftCount > 0) {
-      description += `\n\nThis will permanently delete ${draftCount} item${draftCount === 1 ? '' : 's'} that exist${draftCount === 1 ? 's' : ''} only on this workspace.`
+      description += `\n\n${t('designs.workspaces.draftWarning', { count: draftCount })}`
     }
-    description += '\n\nThis action cannot be undone.'
+    description += `\n\n${t('designs.workspaces.cannotUndo')}`
 
     confirm({
-      title: 'Delete Workspace',
+      title: t('designs.workspaces.deleteTitle'),
       description,
       actionLabel:
         draftCount > 0
-          ? `Delete Workspace and ${draftCount} Item${draftCount === 1 ? '' : 's'}`
-          : 'Delete Workspace',
-      cancelLabel: 'Cancel',
+          ? t('designs.workspaces.deleteWithItems', { count: draftCount })
+          : t('designs.workspaces.deleteAction'),
+      cancelLabel: t('designs.workspaces.cancelAction'),
       variant: 'destructive',
       onConfirm: async () => {
         try {
@@ -74,10 +79,13 @@ function WorkspacesPage() {
             method: 'DELETE',
           })
 
-          showSuccess('Workspace deleted', `"${displayName}" has been deleted`)
+          showSuccess(
+            t('designs.workspaces.deletedTitle'),
+            t('designs.workspaces.deletedBody', { name: displayName }),
+          )
           await invalidate('workspaces')
         } catch (error) {
-          handleError(error, { title: 'Failed to delete workspace' })
+          handleError(error, { title: t('designs.workspaces.deleteFailedTitle') })
         }
       },
     })

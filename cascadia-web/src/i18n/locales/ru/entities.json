@@ -224,6 +224,31 @@
       "count_few": "Создано {{count}} бейзлайна",
       "count_many": "Создано {{count}} бейзлайнов",
       "count_other": "Создано {{count}} бейзлайна"
+    },
+    "archive": {
+      "confirmTitle": "Архивировать проект",
+      "confirmBody": "Вы уверены, что хотите архивировать {{code}}? Проект исчезнет из списков, но данные будут сохранены.",
+      "confirmAction": "Архивировать",
+      "cancelAction": "Отмена"
+    },
+    "workspaces": {
+      "deleteTitle": "Удалить воркспейс",
+      "deleteBody": "Вы уверены, что хотите удалить воркспейс \"{{name}}\" из {{design}}?",
+      "deleteBodyShort": "Вы уверены, что хотите удалить воркспейс \"{{name}}\"?",
+      "draftWarning_one": "Это навсегда удалит {{count}} изделие, существующее только в этом воркспейсе.",
+      "draftWarning_few": "Это навсегда удалит {{count}} изделия, существующие только в этом воркспейсе.",
+      "draftWarning_many": "Это навсегда удалит {{count}} изделий, существующих только в этом воркспейсе.",
+      "draftWarning_other": "Это навсегда удалит {{count}} изделия, существующие только в этом воркспейсе.",
+      "cannotUndo": "Это действие нельзя отменить.",
+      "deleteAction": "Удалить воркспейс",
+      "deleteWithItems_one": "Удалить воркспейс и {{count}} изделие",
+      "deleteWithItems_few": "Удалить воркспейс и {{count}} изделия",
+      "deleteWithItems_many": "Удалить воркспейс и {{count}} изделий",
+      "deleteWithItems_other": "Удалить воркспейс и {{count}} изделия",
+      "cancelAction": "Отмена",
+      "deletedTitle": "Воркспейс удалён",
+      "deletedBody": "\"{{name}}\" удалён",
+      "deleteFailedTitle": "Не удалось удалить воркспейс"
     }
   },
   "parts": {

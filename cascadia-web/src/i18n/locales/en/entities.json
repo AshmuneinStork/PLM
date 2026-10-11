@@ -218,6 +218,27 @@
       "comingSoon": "Coming soon",
       "count_one": "{{count}} baseline created",
       "count_other": "{{count}} baselines created"
+    },
+    "archive": {
+      "confirmTitle": "Archive Design",
+      "confirmBody": "Are you sure you want to archive {{code}}? The design will no longer appear in lists but data will be preserved.",
+      "confirmAction": "Archive",
+      "cancelAction": "Cancel"
+    },
+    "workspaces": {
+      "deleteTitle": "Delete Workspace",
+      "deleteBody": "Are you sure you want to delete the workspace \"{{name}}\" from {{design}}?",
+      "deleteBodyShort": "Are you sure you want to delete the workspace \"{{name}}\"?",
+      "draftWarning_one": "This will permanently delete {{count}} item that exists only on this workspace.",
+      "draftWarning_other": "This will permanently delete {{count}} items that exist only on this workspace.",
+      "cannotUndo": "This action cannot be undone.",
+      "deleteAction": "Delete Workspace",
+      "deleteWithItems_one": "Delete Workspace and {{count}} Item",
+      "deleteWithItems_other": "Delete Workspace and {{count}} Items",
+      "cancelAction": "Cancel",
+      "deletedTitle": "Workspace deleted",
+      "deletedBody": "\"{{name}}\" has been deleted",
+      "deleteFailedTitle": "Failed to delete workspace"
     }
   },
   "parts": {
