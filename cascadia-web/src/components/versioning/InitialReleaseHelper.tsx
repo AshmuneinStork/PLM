@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, FileText, Info, Rocket } from 'lucide-react'
@@ -39,6 +40,7 @@ export function InitialReleaseHelper({
   onCreateChangeOrder: onCreateChangeOrder,
   className,
 }: InitialReleaseHelperProps) {
+  const { t } = useTranslation('entities')
   // A caller that already holds the status passes it in rather than paying for
   // a second request.
   const { data: fetchedStatus, isLoading: loading } = useQuery(
@@ -68,17 +70,17 @@ export function InitialReleaseHelper({
         <div className="flex items-center gap-2">
           <Info className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           <CardTitle className="text-lg text-blue-900 dark:text-blue-100">
-            Pre-Release Phase
+            {t('designs.versioning.initialRelease.title')}
           </CardTitle>
           <Badge variant="warning" className="ml-2">
-            {draftItemCount} Draft Items
+            {t('designs.versioning.initialRelease.draftBadge', { count: draftItemCount })}
           </Badge>
         </div>
         <CardDescription className="text-blue-700 dark:text-blue-300">
-          This design is in the initial development phase. You can create and
-          edit items directly on the main branch. When your items are ready,
-          create an ECO to release them with revision letters and enable change
-          control.
+          {t('designs.versioning.initialRelease.description')}
+          
+          
+          
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -86,12 +88,12 @@ export function InitialReleaseHelper({
           <div className="flex items-center gap-4 text-sm text-blue-600 dark:text-blue-400">
             <div className="flex items-center gap-1">
               <FileText className="h-4 w-4" />
-              <span>{totalItemCount} total items</span>
+              <span>{t('designs.versioning.initialRelease.totalItems', { count: totalItemCount })}</span>
             </div>
             {draftItemCount > 0 && (
               <div className="flex items-center gap-1">
                 <Rocket className="h-4 w-4" />
-                <span>{draftItemCount} ready for release</span>
+                <span>{t('designs.versioning.initialRelease.readyForRelease', { count: draftItemCount })}</span>
               </div>
             )}
           </div>
@@ -100,13 +102,13 @@ export function InitialReleaseHelper({
             {onCreateChangeOrder ? (
               <Button onClick={onCreateChangeOrder} variant="default">
                 <Rocket className="h-4 w-4 mr-2" />
-                Create Initial Release ECO
+                {t('designs.versioning.initialRelease.createAction')}
               </Button>
             ) : (
               <Link to="/change-orders/new">
                 <Button variant="default">
                   <Rocket className="h-4 w-4 mr-2" />
-                  Create Initial Release ECO
+                  {t('designs.versioning.initialRelease.createAction')}
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </Link>
@@ -117,15 +119,15 @@ export function InitialReleaseHelper({
         {/* Guidance steps */}
         <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
           <p className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
-            Initial Release Steps:
+            {t('designs.versioning.initialRelease.stepsTitle')}
           </p>
           <ol className="list-decimal list-inside text-sm text-blue-700 dark:text-blue-300 space-y-1">
-            <li>Create a new Change Order (ECO) with type "Initial Release"</li>
-            <li>Add all draft items to the affected items list</li>
-            <li>Submit for approval and release</li>
+            <li>{t('designs.versioning.initialRelease.step1')}</li>
+            <li>{t('designs.versioning.initialRelease.step2')}</li>
+            <li>{t('designs.versioning.initialRelease.step3')}</li>
             <li>
-              Items will receive revision letters (A, B, C...) and change
-              control will activate
+              {t('designs.versioning.initialRelease.step4')}
+              
             </li>
           </ol>
         </div>

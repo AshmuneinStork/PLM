@@ -4,6 +4,7 @@
 import { useEffect, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Check, ChevronDown, Clock, GitBranch, Tag } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { BRANCH_TYPES } from '@cascadia/commons/versioning/branch-types'
 import type { VersionContext } from '@/hooks/useVersionContext'
 import {
@@ -76,6 +77,7 @@ export function VersionContextSelector({
   itemId,
   variant = 'default',
 }: VersionContextSelectorProps) {
+  const { t } = useTranslation('entities')
   // On an item detail page the picker offers only contexts where the item
   // exists; elsewhere it offers the design's branches and tags. Exactly one
   // of these pairs is enabled at a time.
@@ -112,7 +114,7 @@ export function VersionContextSelector({
   const tags = useMemo(
     () =>
       itemId
-        ? (itemContexts?.tags ?? NO_TAGS).filter((t) => t.exists !== false)
+        ? (itemContexts?.tags ?? NO_TAGS).filter((tg) => tg.exists !== false)
         : designTags,
     [itemId, itemContexts, designTags],
   )
@@ -136,7 +138,7 @@ export function VersionContextSelector({
       (value?.type === 'main' && mainBranch) ||
       (value?.type === 'branch' &&
         branches.some((b) => b.id === value.branchId)) ||
-      (value?.type === 'tag' && tags.some((t) => t.id === value.tagId))
+      (value?.type === 'tag' && tags.some((tg) => tg.id === value.tagId))
 
     if (!isCurrentValid) {
       // Auto-select first available branch (prefer ECO, then workspace, then main)
@@ -201,7 +203,7 @@ export function VersionContextSelector({
       })
     } else if (newValue.startsWith('tag:')) {
       const tagId = newValue.replace('tag:', '')
-      const tag = tags.find((t) => t.id === tagId)
+      const tag = tags.find((tg) => tg.id === tagId)
       onChange({
         type: 'tag',
         tagId,
@@ -212,19 +214,19 @@ export function VersionContextSelector({
 
   // Get display label for current value
   const getDisplayLabel = () => {
-    if (value?.type === 'main') return 'Main'
+    if (value?.type === 'main') return t('designs.versioning.mainLabel')
     if (value?.type === 'branch') {
       const branch = branches.find((b) => b.id === value.branchId)
-      return branch?.name || 'Branch'
+      return branch?.name || t('designs.versioning.branchFallback')
     }
     if (value?.type === 'tag') {
-      const tag = tags.find((t) => t.id === value.tagId)
-      return tag?.name || 'Tag'
+      const tag = tags.find((tg) => tg.id === value.tagId)
+      return tag?.name || t('designs.versioning.tagFallback')
     }
     if (value?.type === 'commit') {
-      return `Commit ${value.commitId?.slice(0, 8)}`
+      return t('designs.versioning.commitLabel', { short: value.commitId?.slice(0, 8) })
     }
-    return 'Main'
+    return t('designs.versioning.mainLabel')
   }
 
   // Get icon for branch type
@@ -264,7 +266,7 @@ export function VersionContextSelector({
       const branch = branches.find((b) => b.id === id)
       onChange({ type: 'branch', branchId: id, branchName: branch?.name })
     } else if (type === 'tag' && id) {
-      const tag = tags.find((t) => t.id === id)
+      const tag = tags.find((tg) => tg.id === id)
       onChange({ type: 'tag', tagId: id, tagName: tag?.name })
     }
   }
@@ -279,7 +281,7 @@ export function VersionContextSelector({
     }
     return (
       <div className={`flex items-center gap-2 ${className || ''}`}>
-        {showLabel && <span className="text-sm text-slate-500">Version:</span>}
+        {showLabel && <span className="text-sm text-slate-500">{t('designs.versioning.versionLabel')}</span>}
         <div className="h-9 w-48 animate-pulse bg-slate-200 dark:bg-slate-700 rounded-md" />
       </div>
     )
@@ -307,14 +309,14 @@ export function VersionContextSelector({
           {mainBranch && (
             <>
               <DropdownMenuLabel className="text-xs text-slate-500">
-                Main Branch
+                {t('designs.versioning.mainBranch')}
               </DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => handleBreadcrumbSelect('main')}
                 className="cursor-pointer"
               >
                 <Check className="h-4 w-4 text-green-500 mr-2" />
-                <span>Main</span>
+                <span>{t('designs.versioning.mainLabel')}</span>
               </DropdownMenuItem>
             </>
           )}
@@ -324,7 +326,7 @@ export function VersionContextSelector({
             <>
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="text-xs text-slate-500">
-                Change Orders
+                {t('designs.versioning.changeOrders')}
               </DropdownMenuLabel>
               {changeOrderBranches.map((branch) => (
                 <DropdownMenuItem
@@ -336,7 +338,7 @@ export function VersionContextSelector({
                   <span>{branch.name}</span>
                   {branch.isLocked && (
                     <Badge variant="outline" className="text-xs ml-2">
-                      Locked
+                      {t('designs.versioning.lockedBadge')}
                     </Badge>
                   )}
                 </DropdownMenuItem>
@@ -349,7 +351,7 @@ export function VersionContextSelector({
             <>
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="text-xs text-slate-500">
-                Workspaces
+                {t('designs.versioning.workspaces')}
               </DropdownMenuLabel>
               {workspaceBranches.map((branch) => (
                 <DropdownMenuItem
@@ -369,7 +371,7 @@ export function VersionContextSelector({
             <>
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="text-xs text-slate-500">
-                Release Branches
+                {t('designs.versioning.releaseBranches')}
               </DropdownMenuLabel>
               {releaseBranches.map((branch) => (
                 <DropdownMenuItem
@@ -389,7 +391,7 @@ export function VersionContextSelector({
             <>
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="text-xs text-slate-500">
-                Baselines / Tags
+                {t('designs.versioning.baselinesTags')}
               </DropdownMenuLabel>
               {tags.map((tag) => (
                 <DropdownMenuItem
@@ -411,7 +413,7 @@ export function VersionContextSelector({
   // Default variant - form-style select
   return (
     <div className={`flex items-center gap-2 ${className || ''}`}>
-      {showLabel && <span className="text-sm text-slate-500">Version:</span>}
+      {showLabel && <span className="text-sm text-slate-500">{t('designs.versioning.versionLabel')}</span>}
       <Select
         value={selectValue}
         onValueChange={handleChange}
@@ -428,13 +430,13 @@ export function VersionContextSelector({
           <SelectGroup>
             <SelectLabel className="flex items-center gap-2">
               <Check className="h-3 w-3" />
-              Main Branch
+              {t('designs.versioning.mainBranch')}
             </SelectLabel>
             {mainBranch && (
               <SelectItem value="main">
                 <div className="flex items-center gap-2">
                   <Check className="h-4 w-4 text-green-500" />
-                  <span>Main</span>
+                  <span>{t('designs.versioning.mainLabel')}</span>
                 </div>
               </SelectItem>
             )}
@@ -445,7 +447,7 @@ export function VersionContextSelector({
             <SelectGroup>
               <SelectLabel className="flex items-center gap-2">
                 <GitBranch className="h-3 w-3" />
-                Change Orders
+                {t('designs.versioning.changeOrders')}
               </SelectLabel>
               {changeOrderBranches.map((branch) => (
                 <SelectItem key={branch.id} value={`branch:${branch.id}`}>
@@ -454,7 +456,7 @@ export function VersionContextSelector({
                     <span>{branch.name}</span>
                     {branch.isLocked && (
                       <Badge variant="outline" className="text-xs ml-2">
-                        Locked
+                        {t('designs.versioning.lockedBadge')}
                       </Badge>
                     )}
                   </div>
@@ -468,7 +470,7 @@ export function VersionContextSelector({
             <SelectGroup>
               <SelectLabel className="flex items-center gap-2">
                 <Clock className="h-3 w-3" />
-                Workspaces
+                {t('designs.versioning.workspaces')}
               </SelectLabel>
               {workspaceBranches.map((branch) => (
                 <SelectItem key={branch.id} value={`branch:${branch.id}`}>
@@ -486,7 +488,7 @@ export function VersionContextSelector({
             <SelectGroup>
               <SelectLabel className="flex items-center gap-2">
                 <GitBranch className="h-3 w-3" />
-                Release Branches
+                {t('designs.versioning.releaseBranches')}
               </SelectLabel>
               {releaseBranches.map((branch) => (
                 <SelectItem key={branch.id} value={`branch:${branch.id}`}>
@@ -504,7 +506,7 @@ export function VersionContextSelector({
             <SelectGroup>
               <SelectLabel className="flex items-center gap-2">
                 <Tag className="h-3 w-3" />
-                Baselines / Tags
+                {t('designs.versioning.baselinesTags')}
               </SelectLabel>
               {tags.map((tag) => (
                 <SelectItem key={tag.id} value={`tag:${tag.id}`}>

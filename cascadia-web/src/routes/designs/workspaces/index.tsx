@@ -24,6 +24,7 @@ import {
   workspaceListQuery,
 } from '@/query'
 import { apiFetch } from '@/api/client'
+import { formatDate } from '@/format-date'
 
 export const Route = createFileRoute('/designs/workspaces/')({
   component: WorkspacesPage,
@@ -114,10 +115,10 @@ function WorkspacesPage() {
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            My Workspaces
+            {t('designs.workspaces.pageTitle')}
           </h1>
           <p className="text-slate-600 dark:text-slate-400 mt-1">
-            Manage your private development branches
+            {t('designs.workspaces.pageDescription')}
           </p>
         </div>
       </div>
@@ -125,7 +126,7 @@ function WorkspacesPage() {
       {/* Stats */}
       <Card>
         <CardHeader className="pb-3">
-          <CardDescription>Total Workspaces</CardDescription>
+          <CardDescription>{t('designs.workspaces.statsTotal')}</CardDescription>
           <CardTitle className="text-3xl">{workspaces.length}</CardTitle>
         </CardHeader>
       </Card>
@@ -136,11 +137,10 @@ function WorkspacesPage() {
           <CardContent className="py-12 text-center">
             <GitBranch className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
-              No workspaces yet
+              {t('designs.workspaces.emptyTitle')}
             </h3>
             <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
-              Workspaces are private branches for development work. Create one
-              when adding new items to a design.
+              {t('designs.workspaces.emptyBody')}
             </p>
           </CardContent>
         </Card>
@@ -159,8 +159,8 @@ function WorkspacesPage() {
                   </Link>
                 </CardTitle>
                 <CardDescription>
-                  {designWorkspaces.length} workspace
-                  {designWorkspaces.length !== 1 ? 's' : ''}
+                  {t('designs.workspaces.groupCount', { count: designWorkspaces.length })}
+                  
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -183,14 +183,13 @@ function WorkspacesPage() {
                               {displayName}
                             </div>
                             <div className="text-sm text-slate-500">
-                              Created{' '}
-                              {new Date(
-                                workspace.createdAt,
-                              ).toLocaleDateString()}
+                              {t('designs.workspaces.createdLabel', {
+                                date: formatDate(workspace.createdAt),
+                              })}
                             </div>
                           </div>
                           {workspace.isLocked && (
-                            <Badge variant="secondary">Locked</Badge>
+                            <Badge variant="secondary">{t('designs.workspaces.lockedBadge')}</Badge>
                           )}
                         </Link>
                         <Button

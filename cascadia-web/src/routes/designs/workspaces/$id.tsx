@@ -23,6 +23,7 @@ import {
 } from '@/components/ui'
 import { useAlertDialog } from '@/hooks/useAlertDialog'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
+import { formatDateTime } from '@/format-date'
 import {
   useInvalidateResources,
   workspaceCommitsQuery,
@@ -142,11 +143,13 @@ function WorkspaceDetailPage() {
                 {displayName}
               </h1>
               <Badge variant="secondary" className="text-base">
-                Workspace
+                {t('designs.workspaceDetail.typeBadge')}
               </Badge>
             </div>
             <p className="text-slate-600 dark:text-slate-400 mt-1">
-              {workspace.designName}
+              {t('designs.workspaceDetail.description', {
+                design: workspace.designName,
+              })}
             </p>
           </div>
         </div>
@@ -158,7 +161,7 @@ function WorkspaceDetailPage() {
             disabled={workspace.itemCount === 0}
           >
             <FileBox className="h-4 w-4 mr-2" />
-            Convert to ECO
+            {t('designs.workspaceDetail.convertAction')}
           </Button>
           <Button
             variant="outline"
@@ -166,11 +169,11 @@ function WorkspaceDetailPage() {
             disabled={workspace.itemCount === 0}
           >
             <GitMerge className="h-4 w-4 mr-2" />
-            Merge to ECO
+            {t('designs.workspaceDetail.mergeAction')}
           </Button>
           <Button variant="destructive" onClick={handleDelete}>
             <Trash2 className="h-4 w-4 mr-2" />
-            Delete
+            {t('designs.workspaceDetail.deleteAction')}
           </Button>
         </div>
       </div>
@@ -182,25 +185,27 @@ function WorkspaceDetailPage() {
         className="w-full"
       >
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="items">Items</TabsTrigger>
-          <TabsTrigger value="commits">Commits ({commits.length})</TabsTrigger>
+          <TabsTrigger value="overview">{t('designs.workspaceDetail.overviewTab')}</TabsTrigger>
+          <TabsTrigger value="items">{t('designs.workspaceDetail.itemsTab')}</TabsTrigger>
+          <TabsTrigger value="commits">
+            {t('designs.workspaceDetail.commitsTab', { count: commits.length })}
+          </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="mt-6 space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Workspace Summary</CardTitle>
+              <CardTitle>{t('designs.workspaceDetail.overviewTitle')}</CardTitle>
               <CardDescription>
-                Overview of your workspace changes
+                {t('designs.workspaceDetail.overviewDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Workspace Name
+                    {t('designs.workspaceDetail.nameLabel')}
                   </dt>
                   <dd className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
                     {displayName}
@@ -208,7 +213,7 @@ function WorkspaceDetailPage() {
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Design
+                    {t('designs.workspaceDetail.designLabel')}
                   </dt>
                   <dd className="mt-1">
                     <Link
@@ -222,19 +227,20 @@ function WorkspaceDetailPage() {
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Items
+                    {t('designs.workspaceDetail.itemsLabel')}
                   </dt>
                   <dd className="mt-1 text-lg text-slate-900 dark:text-white">
-                    {workspace.itemCount} item
-                    {workspace.itemCount !== 1 ? 's' : ''}
+                    {t('designs.workspaceDetail.itemsCount', {
+                      count: workspace.itemCount,
+                    })}
                   </dd>
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Created
+                    {t('designs.workspaceDetail.createdLabel')}
                   </dt>
                   <dd className="mt-1 text-lg text-slate-900 dark:text-white">
-                    {new Date(workspace.createdAt).toLocaleDateString()}
+                    {formatDate(workspace.createdAt)}
                   </dd>
                 </div>
               </dl>
@@ -244,8 +250,8 @@ function WorkspaceDetailPage() {
           {/* Actions Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Workspace Actions</CardTitle>
-              <CardDescription>Convert or merge this workspace</CardDescription>
+              <CardTitle>{t('designs.workspaceDetail.actionsTitle')}</CardTitle>
+              <CardDescription>{t('designs.workspaceDetail.actionsDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="p-4 border border-slate-300 dark:border-slate-700 rounded-lg">
@@ -253,12 +259,10 @@ function WorkspaceDetailPage() {
                   <FileBox className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-1" />
                   <div className="flex-1">
                     <h3 className="font-medium text-slate-900 dark:text-white mb-1">
-                      Convert to ECO
+                      {t('designs.workspaceDetail.convertCardTitle')}
                     </h3>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
-                      Create a new Engineering Change Order from all items in
-                      this workspace. This will move all changes to a formal
-                      change control process.
+                      {t('designs.workspaceDetail.convertCardBody')}
                     </p>
                     <Button
                       size="sm"
@@ -266,7 +270,7 @@ function WorkspaceDetailPage() {
                       disabled={workspace.itemCount === 0}
                     >
                       <FileBox className="h-4 w-4 mr-2" />
-                      Convert to ECO
+                      {t('designs.workspaceDetail.convertAction')}
                     </Button>
                   </div>
                 </div>
@@ -277,12 +281,10 @@ function WorkspaceDetailPage() {
                   <GitMerge className="h-5 w-5 text-purple-600 dark:text-purple-400 mt-1" />
                   <div className="flex-1">
                     <h3 className="font-medium text-slate-900 dark:text-white mb-1">
-                      Merge to Existing ECO
+                      {t('designs.workspaceDetail.mergeCardTitle')}
                     </h3>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
-                      Add all items from this workspace to an existing ECO. This
-                      combines your workspace changes with other changes already
-                      in the ECO.
+                      {t('designs.workspaceDetail.mergeCardBody')}
                     </p>
                     <Button
                       size="sm"
@@ -291,7 +293,7 @@ function WorkspaceDetailPage() {
                       disabled={workspace.itemCount === 0}
                     >
                       <GitMerge className="h-4 w-4 mr-2" />
-                      Merge to ECO
+                      {t('designs.workspaceDetail.mergeAction')}
                     </Button>
                   </div>
                 </div>
@@ -309,24 +311,24 @@ function WorkspaceDetailPage() {
         <TabsContent value="commits" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Commit History</CardTitle>
+              <CardTitle>{t('designs.workspaceDetail.commitsTitle')}</CardTitle>
               <CardDescription>
-                All commits made on this workspace branch
+                {t('designs.workspaceDetail.commitsDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {loadingCommits ? (
                 <div className="text-center py-8 text-slate-500">
-                  Loading commits...
+                  {t('designs.workspaceDetail.commitsLoading')}
                 </div>
               ) : commits.length === 0 ? (
                 <div className="text-center py-8 border rounded-lg">
                   <GitBranch className="h-12 w-12 mx-auto mb-4 opacity-50 text-slate-400" />
                   <p className="text-slate-500 dark:text-slate-400">
-                    No commits yet
+                    {t('designs.workspaceDetail.commitsEmptyTitle')}
                   </p>
                   <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
-                    Commits will appear here as you save changes to items
+                    {t('designs.workspaceDetail.commitsEmptyBody')}
                   </p>
                 </div>
               ) : (
@@ -337,12 +339,14 @@ function WorkspaceDetailPage() {
                       className="p-4 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700"
                     >
                       <div className="font-medium text-slate-900 dark:text-white">
-                        {commit.message || '(No message)'}
+                        {commit.message || t('designs.workspaceDetail.commitsNoMessage')}
                       </div>
                       <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                        {commit.createdAt instanceof Date
-                          ? commit.createdAt.toLocaleString()
-                          : new Date(commit.createdAt).toLocaleString()}
+                        {formatDateTime(
+                          commit.createdAt instanceof Date
+                            ? commit.createdAt.toISOString()
+                            : commit.createdAt,
+                        )}
                       </div>
                     </div>
                   ))}
@@ -362,8 +366,10 @@ function WorkspaceDetailPage() {
         itemCount={workspace.itemCount}
         onSuccess={(changeOrderId, changeOrderNumber) => {
           showSuccess(
-            'ECO created',
-            `Successfully created ${changeOrderNumber}`,
+            t('designs.workspaceDetail.convertSuccessTitle'),
+            t('designs.workspaceDetail.convertSuccessBody', {
+              number: changeOrderNumber,
+            }),
           )
           void invalidate('workspaces', 'change-orders')
           router.navigate({
@@ -381,7 +387,10 @@ function WorkspaceDetailPage() {
         designId={workspace.designId}
         itemCount={workspace.itemCount}
         onSuccess={(changeOrderId) => {
-          showSuccess('Workspace merged', 'Items added to ECO')
+          showSuccess(
+            t('designs.workspaceDetail.mergeSuccessTitle'),
+            t('designs.workspaceDetail.mergeSuccessBody'),
+          )
           void invalidate('workspaces', 'change-orders')
           router.navigate({
             to: '/change-orders/$id',
