@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { CheckCircle2, Copy, Loader2, XCircle } from 'lucide-react'
@@ -48,6 +49,7 @@ export function CloneDesignDialog({
   sourceDesignCode,
   sourceDesignName,
 }: CloneDesignDialogProps) {
+  const { t } = useTranslation('entities')
   const navigate = useNavigate()
   const [code, setCode] = useState('')
   const [name, setName] = useState('')
@@ -81,20 +83,26 @@ export function CloneDesignDialog({
   const result = job?.result ?? null
   const error =
     submitError ??
-    (job?.status === 'failed' ? (job.error ?? 'Clone failed') : null)
+    (job?.status === 'failed'
+      ? (job.error ?? t('designs.clone.fallbackError'))
+      : null)
 
   // Reset form when dialog opens
   useEffect(() => {
     if (open) {
-      setCode(`${sourceDesignCode}-COPY`)
-      setName(`${sourceDesignName} (Copy)`)
+      setCode(
+        `${sourceDesignCode}${t('designs.clone.defaultCodeSuffix')}`,
+      )
+      setName(
+        `${sourceDesignName}${t('designs.clone.defaultNameSuffix')}`,
+      )
       setDescription('')
       setPhase('idle')
       setJobId(null)
       setSubmitError(null)
       setSuffixItemNumbers(false)
     }
-  }, [open, sourceDesignCode, sourceDesignName])
+  }, [open, sourceDesignCode, sourceDesignName, t])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -120,7 +128,7 @@ export function CloneDesignDialog({
       setPhase('cloning')
     } catch (err) {
       setPhase('failed')
-      setSubmitError((err as Error).message || 'Failed to start clone')
+      setSubmitError((err as Error).message || t('designs.clone.startFailedFallback'))
     }
   }
 
@@ -155,12 +163,10 @@ export function CloneDesignDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Copy className="h-5 w-5" />
-            Clone Design
+            {t('designs.clone.title')}
           </DialogTitle>
           <DialogDescription>
-            Create a copy of{' '}
-            <span className="font-medium">{sourceDesignCode}</span> with all its
-            items and relationships.
+            {t('designs.clone.descBody', { code: sourceDesignCode })}
           </DialogDescription>
         </DialogHeader>
 
@@ -168,41 +174,41 @@ export function CloneDesignDialog({
           <form onSubmit={handleSubmit}>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="code">Design Code</Label>
+                <Label htmlFor="code">{t('designs.clone.codeLabel')}</Label>
                 <Input
                   id="code"
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  placeholder="e.g., HULL-3"
+                  placeholder={t('designs.clone.codePlaceholder')}
                   required
                   disabled={isFormDisabled}
                   pattern="[A-Z0-9\-]+"
-                  title="Uppercase letters, numbers, and hyphens only"
+                  title={t('designs.clone.codeTitle')}
                 />
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Must be unique. Uppercase letters, numbers, and hyphens only.
+                  {t('designs.clone.codeHint')}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">{t('designs.clone.nameLabel')}</Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g., Hull Assembly 3"
+                  placeholder={t('designs.clone.namePlaceholder')}
                   required
                   disabled={isFormDisabled}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description (optional)</Label>
+                <Label htmlFor="description">{t('designs.clone.descriptionLabel')}</Label>
                 <Textarea
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Description of the cloned design..."
+                  placeholder={t('designs.clone.descriptionPlaceholder')}
                   rows={3}
                   disabled={isFormDisabled}
                 />
@@ -221,12 +227,12 @@ export function CloneDesignDialog({
                   htmlFor="suffixItemNumbers"
                   className="text-sm font-normal cursor-pointer"
                 >
-                  Suffix item numbers with design code
+                  {t('designs.clone.suffixLabel')}
                 </Label>
               </div>
               {suffixItemNumbers && code && (
                 <p className="text-xs text-slate-500 dark:text-slate-400 ml-6">
-                  e.g., PN-000001-{code}
+                  {t('designs.clone.suffixExample', { code })}
                 </p>
               )}
 
@@ -245,16 +251,16 @@ export function CloneDesignDialog({
                 onClick={handleClose}
                 disabled={status === 'submitting'}
               >
-                Cancel
+                {t('designs.clone.cancelAction')}
               </Button>
               <Button type="submit" disabled={status === 'submitting'}>
                 {status === 'submitting' ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Starting...
+                    {t('designs.clone.submittingAction')}
                   </>
                 ) : (
-                  'Clone Design'
+                  t('designs.clone.submitAction')
                 )}
               </Button>
             </DialogFooter>
@@ -266,10 +272,10 @@ export function CloneDesignDialog({
             </div>
             <div className="text-center">
               <p className="font-medium text-slate-900 dark:text-slate-100">
-                Cloning design...
+                {t('designs.clone.cloningTitle')}
               </p>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                {progressMessage || 'Please wait'}
+                {progressMessage || t('designs.clone.waitingFallback')}
               </p>
             </div>
             <Progress value={progress} className="h-2" />
@@ -284,10 +290,10 @@ export function CloneDesignDialog({
             </div>
             <div className="text-center">
               <p className="font-medium text-lg text-slate-900 dark:text-slate-100">
-                Clone Complete
+                {t('designs.clone.completeTitle')}
               </p>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                Created{' '}
+                {t('designs.clone.completeBody')}{' '}
                 <span className="font-medium text-slate-900 dark:text-slate-100">
                   {result.designCode}
                 </span>
@@ -296,7 +302,7 @@ export function CloneDesignDialog({
             <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 text-sm space-y-1">
               <div className="flex justify-between">
                 <span className="text-slate-500 dark:text-slate-400">
-                  Items cloned:
+                  {t('designs.clone.statsItems')}
                 </span>
                 <span className="font-medium text-slate-900 dark:text-slate-100">
                   {result.itemsCloned}
@@ -304,7 +310,7 @@ export function CloneDesignDialog({
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500 dark:text-slate-400">
-                  Relationships cloned:
+                  {t('designs.clone.statsRelationships')}
                 </span>
                 <span className="font-medium text-slate-900 dark:text-slate-100">
                   {result.relationshipsCloned}
@@ -312,7 +318,7 @@ export function CloneDesignDialog({
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500 dark:text-slate-400">
-                  Traceability links created:
+                  {t('designs.clone.statsTraceability')}
                 </span>
                 <span className="font-medium text-slate-900 dark:text-slate-100">
                   {result.derivedFromCreated}
@@ -320,7 +326,7 @@ export function CloneDesignDialog({
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500 dark:text-slate-400">
-                  File references:
+                  {t('designs.clone.statsFiles')}
                 </span>
                 <span className="font-medium text-slate-900 dark:text-slate-100">
                   {result.filesReferenced}
@@ -329,7 +335,7 @@ export function CloneDesignDialog({
             </div>
             <DialogFooter className="sm:justify-center">
               <Button onClick={handleNavigateToNewDesign}>
-                Go to New Design
+                {t('designs.clone.goToAction')}
               </Button>
             </DialogFooter>
           </div>
@@ -340,7 +346,7 @@ export function CloneDesignDialog({
             </div>
             <div className="text-center">
               <p className="font-medium text-lg text-slate-900 dark:text-slate-100">
-                Clone Failed
+                {t('designs.clone.failedTitle')}
               </p>
               <p className="text-sm text-red-600 dark:text-red-400 mt-1">
                 {error}
@@ -348,9 +354,9 @@ export function CloneDesignDialog({
             </div>
             <DialogFooter className="sm:justify-center">
               <Button variant="outline" onClick={handleTryAgain}>
-                Try Again
+                {t('designs.clone.tryAgainAction')}
               </Button>
-              <Button onClick={handleClose}>Close</Button>
+              <Button onClick={handleClose}>{t('designs.clone.closeAction')}</Button>
             </DialogFooter>
           </div>
         ) : null}
