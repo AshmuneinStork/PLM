@@ -35,6 +35,7 @@
 - [ ] Vitest dom-тесты фронта (сейчас .test.tsx нет) + e2e smoke EN/RU.
 - [ ] Доки.
 - [x] Docker smoke: build app + /health 200 + EN/RU на /login и /setup.
+- [x] Прод-фикс blank / и /login (a9f533b): top-level `useTranslation('setup')` в ProgramsStep/ToolsStep → внутрь компонентов; Edge headless ROOT_LEN 13510, NO ERRORS; eslint setup/ EXIT 0.
 - [ ] PR feature/i18n-ru -> main.
 
 ## Известные проблемы

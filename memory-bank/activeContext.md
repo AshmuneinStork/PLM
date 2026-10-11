@@ -39,6 +39,13 @@
 - `docker compose up -d app` in-place поверх volumes `000_plm_*` — данные сохранены.
 - Бут: `migrations applied successfully / database is current`, `health: healthy`, `/api/v1/health` → 200, `/` → 200.
 - Осталось пользователю: открыть http://localhost:3000/login, переключить RU, проверить тосты/даты/историю (qty/find#/ref без перевода).
+
+## Прод-фикс blank / и /login (done 11.10.2026, коммит a9f533b)
+- Симптом: prod `/` и `/login` — пустой `#root`, Edge headless `PAGEERROR Cannot read properties of null (reading 'useContext')`, стек `k.useContext(Dtt)` → `useTranslation("setup")` в 3-м фрейме (свой компонент).
+- Причина: `const { t } = useTranslation('setup')` на верхнем уровне модуля в `ProgramsStep.tsx:32` и `ToolsStep.tsx:22` (нарушение Rules of Hooks, React-контекст null). Не duplicate-React и не порядок инициализации i18n.
+- Фикс: хук перенесён внутрь `ProgramsStep()` и `ToolsStep()`; других top-level хуков в `cascadia-web/src` нет (grep по `useTranslation('setup')` — все 8 внутри компонентов).
+- Проверки: `docker compose build app` EXIT 0 (58.87s vite), `up -d` healthy, Edge headless `/login`+`/` ROOT_LEN 13510, NO ERRORS; eslint setup/ EXIT 0; setup/i18n vitest-файлов нет (известное ограничение TEST_DATABASE_URL).
+- Урок: top-level `useTranslation` роняет весь прод-бандл; хуки проверять grep'ом до сборки.
 2. B1c: PartDetail.tsx (1031 строка, разбить) + PartDetailSidebar.
 3. B2-B5: остальные сущности по пилоту.
 4. Волна 3: tour-steps.ts → getTourSteps(t), тосты/Zod по ключам, Intl.DateTimeFormat.
