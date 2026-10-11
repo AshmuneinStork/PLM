@@ -30,6 +30,12 @@ import {
 } from '@/components/ui'
 import { designBranchesQuery, itemHistoryQuery } from '@/query'
 import { formatDate } from '@/format-date'
+import {
+  TECH_TOKEN_FIND_NUMBER,
+  TECH_TOKEN_QTY,
+  TECH_TOKEN_REF_DESIGNATOR,
+  formatTechToken,
+} from '@/tech-tokens'
 import { SourceChangesList } from '@/components/software/SourceChangesList'
 
 interface FieldChange {
@@ -106,9 +112,12 @@ function formatRelationshipValue(value: unknown): string | null {
   if (!v.targetItemNumber) return null
 
   const parts: Array<string> = [String(v.targetItemNumber)]
-  if (v.quantity != null) parts.push(`qty: ${v.quantity}`)
-  if (v.findNumber != null) parts.push(`find#: ${v.findNumber}`)
-  if (v.referenceDesignator != null) parts.push(`ref: ${v.referenceDesignator}`)
+  if (v.quantity != null)
+    parts.push(formatTechToken(TECH_TOKEN_QTY, v.quantity))
+  if (v.findNumber != null)
+    parts.push(formatTechToken(TECH_TOKEN_FIND_NUMBER, v.findNumber))
+  if (v.referenceDesignator != null)
+    parts.push(formatTechToken(TECH_TOKEN_REF_DESIGNATOR, v.referenceDesignator))
   return parts.join(', ')
 }
 
@@ -168,10 +177,10 @@ function RelationshipChange({
           if (String(o) !== String(n)) {
             const label =
               key === 'referenceDesignator'
-                ? 'ref designator'
+                ? TECH_TOKEN_REF_DESIGNATOR
                 : key === 'findNumber'
-                  ? 'find#'
-                  : key
+                  ? TECH_TOKEN_FIND_NUMBER
+                  : TECH_TOKEN_QTY
             changedProps.push(`${label}: ${o ?? '(empty)'} → ${n ?? '(empty)'}`)
           }
         }

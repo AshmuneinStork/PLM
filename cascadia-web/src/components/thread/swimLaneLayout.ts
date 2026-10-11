@@ -6,6 +6,7 @@ import { Position } from '@xyflow/react'
 import type { Edge, Node } from '@xyflow/react'
 import type { ThreadEdge, ThreadNode } from '@cascadia/commons/thread/types'
 import { directionalMarker } from '@/components/graph/edgeStyles'
+import { TECH_TOKEN_QTY, formatTechToken } from '@/tech-tokens'
 
 type NodeData = Record<string, unknown>
 
@@ -208,7 +209,7 @@ export function swimLaneLayout(
                 edge.relationshipType === 'Produces'
               ? edgeLabel(edge)
               : edge.quantity
-                ? `qty: ${edge.quantity}`
+                ? formatTechToken(TECH_TOKEN_QTY, edge.quantity)
                 : undefined,
         labelStyle: {
           fontSize: 10,

@@ -30,7 +30,7 @@
 - [x] Wave 3 step2-1 (d9f8b8a): toasts/errors — useErrorHandler defaults на t (errors.title/unexpected с defaultValue), events parked-тост на t (events.parkedTitle count-плюрал EN one/other + RU one/few/many/other, parkedBody с ids); common EN 53 / RU 55 (разница = RU-плюралы), typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0; vitest dom не бежит без TEST_DATABASE_URL (известное ограничение).
 - [x] Wave 3 step2-2: Zod-адаптер на t — mapZodIssueToKey (custom EN-строки + коды too_small/too_big/invalid_format/invalid_value/invalid_type), common.validation 20/20 EN/RU с интерполяциями, form-validation.test.ts (маппер + адаптер), typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0; vitest не бежит без TEST_DATABASE_URL (маппер проверен через tsx напрямую).
 - [x] Wave 3 step2-3: Intl-даты — format-date.ts (formatDate/formatDateTime на Intl.DateTimeFormat, локаль из i18n, фолбэк raw), format-date.test.ts, пилот ItemHistoryTab commit.createdAt; typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0; vitest не бежит без TEST_DATABASE_URL (утилита проверена через tsx: en Mar 15 2026 / ru 15 мар. 2026).
-- [ ] Wave 3 step2-4: техтокены глоссарий (qty/find/ref как есть).
+- [x] Wave 3 step2-4: техтокены do-not-translate — tech-tokens.ts (TECH_TOKEN_QTY/FIND_NUMBER/REF_DESIGNATOR + formatTechToken) + tech-tokens.test.ts, внедрение в ItemHistoryTab (changedProps + history summary) и swimLaneLayout (edge label); typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0; vitest не бежит без TEST_DATABASE_URL (модуль проверен через tsx: qty: 2 | find#: 1 | ref: R3).
 
 - [ ] Vitest dom-тесты фронта (сейчас .test.tsx нет) + e2e smoke EN/RU.
 - [ ] Доки.

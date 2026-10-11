@@ -34,8 +34,11 @@
 - format.ts: getItemNumberPlaceholder()/getItemNumberHelpText() через i18n.t, ITEM_NUMBER_PLACEHOLDER deprecated как fallback.
 - B1b: currency/unit коды (USD/kg) не переводятся; числовые плейсхолдеры (0.000/0.00/30) остаются; timeAgo через pluralize (EN one/other, RU one/few/many/other).
 
-## Следующие шаги
-1. Коммит B1b на feature/i18n-ru.
+## Прод-поднятие (старт)
+- Ветка: `feature/i18n-ru`, HEAD `9f39cf1` + незакоммиченный 2-4 (tech-tokens + 2 файла).
+- Стратегия: коммит 2-4 → сборка из исходников через `docker-compose.yml` (build app из Dockerfile) или `npm run build` + `npm run serve`.
+- Demo-образа из GHCR не годятся — RU-код туда попадёт только после мержа в main.
+- Открытые вопросы: хост (локальный Docker/VM/serve), чистая vs занятая БД, BASE_URL+proxy, нужен ли seed:demo.
 2. B1c: PartDetail.tsx (1031 строка, разбить) + PartDetailSidebar.
 3. B2-B5: остальные сущности по пилоту.
 4. Волна 3: tour-steps.ts → getTourSteps(t), тосты/Zod по ключам, Intl.DateTimeFormat.
