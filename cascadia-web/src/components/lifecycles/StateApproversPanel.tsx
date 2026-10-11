@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Loader2, Plus, Trash2, User, Users } from 'lucide-react'
 import {
   Button,
@@ -27,6 +28,7 @@ export function StateApproversPanel({
   workflowDefinitionId,
   stateId,
 }: StateApproversPanelProps) {
+  const { t } = useTranslation('entities')
   const [saving, setSaving] = useState(false)
   const [showAddForm, setShowAddForm] = useState(false)
   const [newApproverType, setNewApproverType] = useState<'user' | 'role'>(
@@ -136,7 +138,7 @@ export function StateApproversPanel({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <Label className="text-xs font-medium">Approvers</Label>
+        <Label className="text-xs font-medium">{t('lifecycles.approvers.title')}</Label>
         {!showAddForm && (
           <Button
             type="button"
@@ -146,7 +148,7 @@ export function StateApproversPanel({
             className="h-6 px-2 text-xs"
           >
             <Plus className="h-3 w-3 mr-1" />
-            Add
+            {t('lifecycles.approvers.addApprover')}
           </Button>
         )}
       </div>
@@ -166,14 +168,14 @@ export function StateApproversPanel({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="role">Role</SelectItem>
-                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="role">{t('lifecycles.approvers.role')}</SelectItem>
+                <SelectItem value="user">{t('lifecycles.approvers.user')}</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={newApproverId} onValueChange={setNewApproverId}>
               <SelectTrigger className="h-7 text-xs flex-1">
-                <SelectValue placeholder={`Select ${newApproverType}...`} />
+                <SelectValue placeholder={newApproverType === 'user' ? t('lifecycles.approvers.selectUser') : t('lifecycles.approvers.selectRole')} />
               </SelectTrigger>
               <SelectContent>
                 {newApproverType === 'user'
@@ -199,7 +201,7 @@ export function StateApproversPanel({
               className="rounded border-slate-300 dark:border-slate-600 h-3 w-3"
             />
             <span className="text-xs text-slate-600 dark:text-slate-400">
-              Required
+              {t('lifecycles.approvers.required')}
             </span>
           </label>
 
@@ -214,7 +216,7 @@ export function StateApproversPanel({
               }}
               className="h-6 px-2 text-xs"
             >
-              Cancel
+              {t('lifecycles.approvers.cancel')}
             </Button>
             <Button
               type="button"
@@ -223,7 +225,7 @@ export function StateApproversPanel({
               disabled={!newApproverId || saving}
               className="h-6 px-2 text-xs"
             >
-              {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Add'}
+              {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : t('lifecycles.approvers.add')}
             </Button>
           </div>
         </div>
@@ -232,7 +234,7 @@ export function StateApproversPanel({
       {/* Approvers List */}
       {approvers.length === 0 && !showAddForm ? (
         <p className="text-xs text-slate-500 dark:text-slate-400 italic">
-          No approvers configured. Anyone can transition from this state.
+          {t('lifecycles.approvers.empty')}
         </p>
       ) : (
         <div className="space-y-1.5">
@@ -247,7 +249,7 @@ export function StateApproversPanel({
                 <User className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
               )}
               <span className="text-xs flex-1 truncate">
-                {approver.approverName || 'Unknown'}
+                {approver.approverName || t('lifecycles.approvers.unknown')}
               </span>
               <label className="flex items-center gap-1">
                 <input
@@ -259,7 +261,7 @@ export function StateApproversPanel({
                   disabled={saving}
                   className="rounded border-slate-300 dark:border-slate-600 h-3 w-3"
                 />
-                <span className="text-xs text-slate-500">Req</span>
+                <span className="text-xs text-slate-500">{t('lifecycles.approvers.req')}</span>
               </label>
               <Button
                 type="button"

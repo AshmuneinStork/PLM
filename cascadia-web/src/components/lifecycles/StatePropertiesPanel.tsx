@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { StateApproversPanel } from './StateApproversPanel'
 import type { LifecycleState } from '@cascadia/commons/lifecycles/types'
 import type { LifecyclePhaseConfig } from '@cascadia/commons/types/lifecycle'
@@ -31,14 +32,14 @@ interface StatePropertiesPanelProps {
 }
 
 const colorOptions = [
-  { value: 'gray', label: 'Gray', class: 'bg-slate-400' },
-  { value: 'blue', label: 'Blue', class: 'bg-blue-400' },
-  { value: 'green', label: 'Green', class: 'bg-green-400' },
-  { value: 'yellow', label: 'Yellow', class: 'bg-yellow-400' },
-  { value: 'orange', label: 'Orange', class: 'bg-orange-400' },
-  { value: 'red', label: 'Red', class: 'bg-red-400' },
-  { value: 'purple', label: 'Purple', class: 'bg-purple-400' },
-  { value: 'cyan', label: 'Cyan', class: 'bg-cyan-400' },
+  { value: 'gray', labelKey: 'lifecycles.colors.gray', class: 'bg-slate-400' },
+  { value: 'blue', labelKey: 'lifecycles.colors.blue', class: 'bg-blue-400' },
+  { value: 'green', labelKey: 'lifecycles.colors.green', class: 'bg-green-400' },
+  { value: 'yellow', labelKey: 'lifecycles.colors.yellow', class: 'bg-yellow-400' },
+  { value: 'orange', labelKey: 'lifecycles.colors.orange', class: 'bg-orange-400' },
+  { value: 'red', labelKey: 'lifecycles.colors.red', class: 'bg-red-400' },
+  { value: 'purple', labelKey: 'lifecycles.colors.purple', class: 'bg-purple-400' },
+  { value: 'cyan', labelKey: 'lifecycles.colors.cyan', class: 'bg-cyan-400' },
 ]
 
 export function StatePropertiesPanel({
@@ -48,6 +49,7 @@ export function StatePropertiesPanel({
   workflowDefinitionId,
   phases,
 }: StatePropertiesPanelProps) {
+  const { t } = useTranslation('entities')
   // Helper to update state and immediately propagate changes
   const handleChange = (updates: Partial<LifecycleState>) => {
     onUpdate({ ...state, ...updates })
@@ -57,7 +59,9 @@ export function StatePropertiesPanel({
     <Card className="w-80 shadow-lg">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">State Properties</CardTitle>
+          <CardTitle className="text-base">
+            {t('lifecycles.statePanel.title')}
+          </CardTitle>
           <Button
             type="button"
             variant="ghost"
@@ -73,7 +77,7 @@ export function StatePropertiesPanel({
         {/* State ID (readonly) */}
         <div className="space-y-1.5">
           <Label htmlFor="stateId" className="text-xs">
-            State ID
+            {t('lifecycles.statePanel.stateId')}
           </Label>
           <Input
             id="stateId"
@@ -86,20 +90,22 @@ export function StatePropertiesPanel({
         {/* State Name */}
         <div className="space-y-1.5">
           <Label htmlFor="stateName" className="text-xs">
-            Name
+            {t('lifecycles.statePanel.name')}
           </Label>
           <Input
             id="stateName"
             value={state.name}
             onChange={(e) => handleChange({ name: e.target.value })}
             className="h-8 text-sm"
-            placeholder="e.g., Draft, Released"
+            placeholder={t('lifecycles.statePanel.namePlaceholder')}
           />
         </div>
 
         {/* Color */}
         <div className="space-y-1.5">
-          <Label className="text-xs">Color</Label>
+          <Label className="text-xs">
+            {t('lifecycles.statePanel.color')}
+          </Label>
           <Select
             value={state.color || 'gray'}
             onValueChange={(value) => handleChange({ color: value })}
@@ -112,7 +118,7 @@ export function StatePropertiesPanel({
                 <SelectItem key={color.value} value={color.value}>
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${color.class}`} />
-                    {color.label}
+                    {t(color.labelKey)}
                   </div>
                 </SelectItem>
               ))}
@@ -123,7 +129,9 @@ export function StatePropertiesPanel({
         {/* Phase */}
         {phases && phases.length > 0 && (
           <div className="space-y-1.5">
-            <Label className="text-xs">Phase</Label>
+            <Label className="text-xs">
+              {t('lifecycles.statePanel.phase')}
+            </Label>
             <Select
               value={state.phaseId || '__unassigned__'}
               onValueChange={(value) =>
@@ -136,7 +144,7 @@ export function StatePropertiesPanel({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__unassigned__">Unassigned</SelectItem>
+                <SelectItem value="__unassigned__">{t('lifecycles.statePanel.noPhase')}</SelectItem>
                 {phases.map((phase) => (
                   <SelectItem key={phase.id} value={phase.id}>
                     <div className="flex items-center gap-2">
@@ -155,20 +163,20 @@ export function StatePropertiesPanel({
         {/* Description */}
         <div className="space-y-1.5">
           <Label htmlFor="stateDescription" className="text-xs">
-            Description
+            {t('lifecycles.statePanel.description')}
           </Label>
           <textarea
             id="stateDescription"
             value={state.description || ''}
             onChange={(e) => handleChange({ description: e.target.value })}
             className="w-full h-20 px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 resize-none"
-            placeholder="What does this state represent?"
+            placeholder={t('lifecycles.statePanel.descriptionPlaceholder')}
           />
         </div>
 
         {/* State Type Flags */}
         <div className="space-y-2">
-          <Label className="text-xs">State Type</Label>
+          <Label className="text-xs">{t('lifecycles.statePanel.flags')}</Label>
           <div className="flex flex-col gap-2">
             <label className="flex items-center gap-2">
               <input
@@ -184,10 +192,10 @@ export function StatePropertiesPanel({
                 className="rounded border-slate-300 dark:border-slate-600"
               />
               <span className="text-sm text-slate-700 dark:text-slate-300">
-                Initial State
+                {t('lifecycles.statePanel.initialState')}
               </span>
               <span className="text-xs text-slate-500">
-                (workflow starts here)
+                {t('lifecycles.statePanel.initialHint')}
               </span>
             </label>
             <label className="flex items-center gap-2">
@@ -205,10 +213,10 @@ export function StatePropertiesPanel({
                 className="rounded border-slate-300 dark:border-slate-600"
               />
               <span className="text-sm text-slate-700 dark:text-slate-300">
-                Final State
+                {t('lifecycles.statePanel.finalState')}
               </span>
               <span className="text-xs text-slate-500">
-                (workflow ends here)
+                {t('lifecycles.statePanel.finalHint')}
               </span>
             </label>
           </div>
@@ -218,7 +226,7 @@ export function StatePropertiesPanel({
             workflows fail closed without it — never inferred from the name. */}
         {state.isFinal && (
           <div className="space-y-1.5">
-            <Label className="text-xs">On Completion</Label>
+            <Label className="text-xs">{t('lifecycles.statePanel.onCompletion')}</Label>
             <Select
               value={state.finalKind ?? ''}
               onValueChange={(value) =>
@@ -228,14 +236,14 @@ export function StatePropertiesPanel({
               }
             >
               <SelectTrigger className="h-8 text-sm">
-                <SelectValue placeholder="Choose release or cancel…" />
+                <SelectValue placeholder={t('lifecycles.statePanel.onCompletionPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="release">
-                  Release — merge branches, assign revisions
+                  {t('lifecycles.statePanel.releaseOption')}
                 </SelectItem>
                 <SelectItem value="cancel">
-                  Cancel — archive branches without merging
+                  {t('lifecycles.statePanel.cancelOption')}
                 </SelectItem>
               </SelectContent>
             </Select>

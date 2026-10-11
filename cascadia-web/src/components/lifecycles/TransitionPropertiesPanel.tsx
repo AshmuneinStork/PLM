@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronUp, Mail, Plus, Trash2, X } from 'lucide-react'
 import type {
   ActionType,
@@ -42,27 +43,27 @@ interface TransitionPropertiesPanelProps {
 }
 
 // approval_count is gone: approvals are gated by state approvers, not guards
-const guardTypes: Array<{ value: GuardType; label: string }> = [
-  { value: 'field_value', label: 'Field Value' },
-  { value: 'user_role', label: 'User Role' },
+const guardTypes: Array<{ value: GuardType; labelKey: string }> = [
+  { value: 'field_value', labelKey: 'lifecycles.transitionPanel.guardType_field_value' },
+  { value: 'user_role', labelKey: 'lifecycles.transitionPanel.guardType_user_role' },
 ]
 
-const fieldOperators: Array<{ value: FieldOperator; label: string }> = [
-  { value: 'equals', label: 'Equals' },
-  { value: 'not_equals', label: 'Not Equals' },
-  { value: 'contains', label: 'Contains' },
-  { value: 'is_empty', label: 'Is Empty' },
-  { value: 'is_not_empty', label: 'Is Not Empty' },
-  { value: 'greater_than', label: 'Greater Than' },
-  { value: 'less_than', label: 'Less Than' },
+const fieldOperators: Array<{ value: FieldOperator; labelKey: string }> = [
+  { value: 'equals', labelKey: 'lifecycles.transitionPanel.operator_equals' },
+  { value: 'not_equals', labelKey: 'lifecycles.transitionPanel.operator_not_equals' },
+  { value: 'contains', labelKey: 'lifecycles.transitionPanel.operator_contains' },
+  { value: 'is_empty', labelKey: 'lifecycles.transitionPanel.operator_is_empty' },
+  { value: 'is_not_empty', labelKey: 'lifecycles.transitionPanel.operator_is_not_empty' },
+  { value: 'greater_than', labelKey: 'lifecycles.transitionPanel.operator_greater_than' },
+  { value: 'less_than', labelKey: 'lifecycles.transitionPanel.operator_less_than' },
 ]
 
 // The transition_driven_item action type is gone: changeActionMappings
 // applied at merge are the single mechanism for ECO-driven state change.
 // create_task is gone too — it only ever threw NotImplementedError (D5).
-const actionTypes: Array<{ value: ActionType; label: string }> = [
-  { value: 'send_notification', label: 'Send Notification' },
-  { value: 'update_field', label: 'Update Field' },
+const actionTypes: Array<{ value: ActionType; labelKey: string }> = [
+  { value: 'send_notification', labelKey: 'lifecycles.transitionPanel.actionType_send_notification' },
+  { value: 'update_field', labelKey: 'lifecycles.transitionPanel.actionType_update_field' },
 ]
 
 export function TransitionPropertiesPanel({
@@ -72,6 +73,7 @@ export function TransitionPropertiesPanel({
   onDelete,
   onClose,
 }: TransitionPropertiesPanelProps) {
+  const { t } = useTranslation('entities')
   const [expandedGuards, setExpandedGuards] = useState<Set<string>>(new Set())
   const [expandedActions, setExpandedActions] = useState<Set<string>>(new Set())
   const isWorkflow = kind === 'workflow'
@@ -118,7 +120,7 @@ export function TransitionPropertiesPanel({
   const addGuard = () => {
     const newGuard: TransitionGuard = {
       id: `guard-${Date.now()}`,
-      name: 'New Guard',
+      name: t('lifecycles.transitionPanel.newGuard'),
       type: 'field_value',
       config: { fieldName: '', operator: 'is_not_empty' },
     }
@@ -140,7 +142,7 @@ export function TransitionPropertiesPanel({
   const addAction = () => {
     const newAction: TransitionAction = {
       id: `action-${Date.now()}`,
-      name: 'New Action',
+      name: t('lifecycles.transitionPanel.newAction'),
       type: 'send_notification',
       executeOn: 'after',
       config: { recipients: [], templateId: 'workflow_transition' },
@@ -179,7 +181,9 @@ export function TransitionPropertiesPanel({
     <Card className="w-96 shadow-lg max-h-[80vh] overflow-y-auto">
       <CardHeader className="pb-3 sticky top-0 bg-white dark:bg-slate-900 z-10">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">Transition Properties</CardTitle>
+          <CardTitle className="text-base">
+            {t('lifecycles.transitionPanel.title')}
+          </CardTitle>
           <Button
             type="button"
             variant="ghost"
@@ -195,35 +199,35 @@ export function TransitionPropertiesPanel({
         {/* Transition Name */}
         <div className="space-y-1.5">
           <Label htmlFor="transitionName" className="text-xs">
-            Name
+            {t('lifecycles.transitionPanel.name')}
           </Label>
           <Input
             id="transitionName"
             value={transition.name}
             onChange={(e) => handleChange({ name: e.target.value })}
             className="h-8 text-sm"
-            placeholder="e.g., Submit, Approve, Release"
+            placeholder={t('lifecycles.transitionPanel.namePlaceholder')}
           />
         </div>
 
         {/* Description */}
         <div className="space-y-1.5">
           <Label htmlFor="transitionDescription" className="text-xs">
-            Description
+            {t('lifecycles.transitionPanel.description')}
           </Label>
           <textarea
             id="transitionDescription"
             value={transition.description || ''}
             onChange={(e) => handleChange({ description: e.target.value })}
             className="w-full h-16 px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 resize-none"
-            placeholder="What happens during this transition?"
+            placeholder={t('lifecycles.transitionPanel.descriptionPlaceholder')}
           />
         </div>
 
         {/* Required approvals */}
         <div className="space-y-1.5">
           <Label htmlFor="transitionApprovals" className="text-xs">
-            Required approvals
+            {t('lifecycles.transitionPanel.requiredApprovals')}
           </Label>
           <Input
             id="transitionApprovals"
@@ -243,16 +247,14 @@ export function TransitionPropertiesPanel({
             className="h-8 text-sm"
           />
           <p className="text-xs text-slate-500">
-            Minimum distinct approvals recorded at the source state before this
-            transition can fire. Applies on top of any named approvers on that
-            state. 0 means named approvers alone decide.
+            {t('lifecycles.transitionPanel.requiredApprovalsHint')}
           </p>
         </div>
 
         {/* Guards Section */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label className="text-xs font-semibold">Guards</Label>
+            <Label className="text-xs font-semibold">{t('lifecycles.transitionPanel.guards')}</Label>
             <Button
               type="button"
               variant="outline"
@@ -261,11 +263,11 @@ export function TransitionPropertiesPanel({
               className="h-6 text-xs"
             >
               <Plus className="h-3 w-3 mr-1" />
-              Add Guard
+              {t('lifecycles.transitionPanel.addGuard')}
             </Button>
           </div>
           <p className="text-xs text-slate-500">
-            Conditions that must be met before this transition can occur
+            {t('lifecycles.transitionPanel.guardsHint')}
           </p>
 
           {transition.guards?.map((guard, index) => (
@@ -298,7 +300,7 @@ export function TransitionPropertiesPanel({
                       updateGuard(index, { name: e.target.value })
                     }
                     className="h-7 text-xs"
-                    placeholder="Guard name"
+                    placeholder={t('lifecycles.transitionPanel.guardNamePlaceholder')}
                   />
 
                   {/* Guard Type */}
@@ -320,7 +322,7 @@ export function TransitionPropertiesPanel({
                     <SelectContent>
                       {guardTypes.map((type) => (
                         <SelectItem key={type.value} value={type.value}>
-                          {type.label}
+                          {t(type.labelKey)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -340,7 +342,7 @@ export function TransitionPropertiesPanel({
                           })
                         }
                         className="h-7 text-xs"
-                        placeholder="Field name (e.g., description)"
+                        placeholder={t('lifecycles.transitionPanel.fieldNamePlaceholder')}
                       />
                       <Select
                         value={(guard.config as any).operator || 'is_not_empty'}
@@ -356,7 +358,7 @@ export function TransitionPropertiesPanel({
                         <SelectContent>
                           {fieldOperators.map((op) => (
                             <SelectItem key={op.value} value={op.value}>
-                              {op.label}
+                              {t(op.labelKey)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -375,7 +377,7 @@ export function TransitionPropertiesPanel({
                             })
                           }
                           className="h-7 text-xs"
-                          placeholder="Value to compare"
+                          placeholder={t('lifecycles.transitionPanel.valuePlaceholder')}
                         />
                       )}
                     </div>
@@ -398,7 +400,7 @@ export function TransitionPropertiesPanel({
                         })
                       }
                       className="h-7 text-xs"
-                      placeholder="Roles (comma-separated)"
+                      placeholder={t('lifecycles.transitionPanel.rolesPlaceholder')}
                     />
                   )}
 
@@ -409,7 +411,7 @@ export function TransitionPropertiesPanel({
                       updateGuard(index, { errorMessage: e.target.value })
                     }
                     className="h-7 text-xs"
-                    placeholder="Error message when guard fails"
+                    placeholder={t('lifecycles.transitionPanel.errorPlaceholder')}
                   />
 
                   {/* Remove Guard */}
@@ -421,7 +423,7 @@ export function TransitionPropertiesPanel({
                     className="h-6 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
                     <Trash2 className="h-3 w-3 mr-1" />
-                    Remove Guard
+                    {t('lifecycles.transitionPanel.removeGuard')}
                   </Button>
                 </div>
               )}
@@ -433,7 +435,7 @@ export function TransitionPropertiesPanel({
         {isWorkflow && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label className="text-xs font-semibold">Actions</Label>
+              <Label className="text-xs font-semibold">{t('lifecycles.transitionPanel.actions')}</Label>
               <Button
                 type="button"
                 variant="outline"
@@ -442,11 +444,11 @@ export function TransitionPropertiesPanel({
                 className="h-6 text-xs"
               >
                 <Plus className="h-3 w-3 mr-1" />
-                Add Action
+                {t('lifecycles.transitionPanel.addAction')}
               </Button>
             </div>
             <p className="text-xs text-slate-500">
-              Operations to perform during the transition
+              {t('lifecycles.transitionPanel.actionsHint')}
             </p>
 
             {transition.actions?.map((action, index) => (
@@ -481,7 +483,7 @@ export function TransitionPropertiesPanel({
                         updateAction(index, { name: e.target.value })
                       }
                       className="h-7 text-xs"
-                      placeholder="Action name"
+                      placeholder={t('lifecycles.transitionPanel.actionNamePlaceholder')}
                     />
 
                     {/* Action Type */}
@@ -500,7 +502,7 @@ export function TransitionPropertiesPanel({
                       <SelectContent>
                         {actionTypes.map((type) => (
                           <SelectItem key={type.value} value={type.value}>
-                            {type.label}
+                            {t(type.labelKey)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -518,9 +520,9 @@ export function TransitionPropertiesPanel({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="before">
-                          Before Transition
+                          {t('lifecycles.transitionPanel.executeBefore')}
                         </SelectItem>
-                        <SelectItem value="after">After Transition</SelectItem>
+                        <SelectItem value="after">{t('lifecycles.transitionPanel.executeAfter')}</SelectItem>
                       </SelectContent>
                     </Select>
 
@@ -529,20 +531,20 @@ export function TransitionPropertiesPanel({
                       <div className="space-y-2 pt-2 border-t border-purple-200 dark:border-purple-800">
                         <div className="flex items-center gap-1 text-xs font-medium text-purple-700 dark:text-purple-300">
                           <Mail className="h-3 w-3" />
-                          Notification Settings
+                          {t('lifecycles.transitionPanel.notificationTitle')}
                         </div>
 
                         {/* Template (read-only for now) */}
                         <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 p-2 rounded">
-                          <span className="font-medium">Template:</span>{' '}
-                          Workflow Transition Notification
+                          <span className="font-medium">{t('lifecycles.transitionPanel.templateLabel')}</span>{' '}
+                          {t('lifecycles.transitionPanel.templateName')}
                         </div>
 
                         {/* Recipients */}
                         <div className="space-y-1">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-medium">
-                              Recipients
+                              {t('lifecycles.transitionPanel.recipients')}
                             </span>
                             <Button
                               type="button"
@@ -572,7 +574,7 @@ export function TransitionPropertiesPanel({
                               className="h-5 text-xs px-2"
                             >
                               <Plus className="h-3 w-3 mr-1" />
-                              Add
+                              {t('lifecycles.transitionPanel.addRecipient')}
                             </Button>
                           </div>
 
@@ -583,7 +585,7 @@ export function TransitionPropertiesPanel({
                             )?.recipients ?? []
                           ).length === 0 && (
                             <p className="text-xs text-slate-500 italic">
-                              No recipients configured
+                              {t('lifecycles.transitionPanel.noRecipients')}
                             </p>
                           )}
 
@@ -652,7 +654,7 @@ export function TransitionPropertiesPanel({
                                     }}
                                   >
                                     <SelectTrigger className="h-6 text-xs">
-                                      <SelectValue placeholder="Select user" />
+                                      <SelectValue placeholder={t('lifecycles.transitionPanel.selectUser')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {users.map((user) => (
@@ -694,7 +696,7 @@ export function TransitionPropertiesPanel({
                                     }}
                                   >
                                     <SelectTrigger className="h-6 text-xs">
-                                      <SelectValue placeholder="Select role" />
+                                      <SelectValue placeholder={t('lifecycles.transitionPanel.selectRole')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {roles.map((role) => (
@@ -743,8 +745,7 @@ export function TransitionPropertiesPanel({
                         </div>
 
                         <p className="text-xs text-slate-500">
-                          Recipients will only be notified if they have
-                          permission to view the item.
+                          {t('lifecycles.transitionPanel.recipientsHint')}
                         </p>
                       </div>
                     )}
@@ -758,7 +759,7 @@ export function TransitionPropertiesPanel({
                       className="h-6 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
                       <Trash2 className="h-3 w-3 mr-1" />
-                      Remove Action
+                      {t('lifecycles.transitionPanel.removeAction')}
                     </Button>
                   </div>
                 )}
@@ -773,12 +774,9 @@ export function TransitionPropertiesPanel({
             transitions of flexible workflows, where WI-4.2 enforces them.) */}
         {isWorkflow && (
           <div className="space-y-1">
-            <Label className="text-xs font-semibold">Approvals</Label>
+            <Label className="text-xs font-semibold">{t('lifecycles.transitionPanel.approvalsTitle')}</Label>
             <p className="text-xs text-slate-500">
-              Approvals are enforced through state approvers: open the source
-              state&apos;s properties and add the required approvers there.
-              Every required approver must approve before the workflow can leave
-              that state.
+              {t('lifecycles.transitionPanel.approvalsHint')}
             </p>
           </div>
         )}
@@ -793,7 +791,7 @@ export function TransitionPropertiesPanel({
             className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
           >
             <Trash2 className="h-4 w-4 mr-1" />
-            Delete Transition
+            {t('lifecycles.transitionPanel.deleteTransition')}
           </Button>
         </div>
       </CardContent>
