@@ -1040,6 +1040,9 @@
         "materialPlaceholder": "e.g., Aluminum 6061",
         "weight": "Weight",
         "cost": "Cost",
+        "customCurrency": "Custom currency",
+        "customCurrencyPlaceholder": "e.g. KZT",
+        "customCurrencyInvalid": "Enter a 3-letter code (A–Z, e.g. KZT)",
         "leadTime": "Lead Time",
         "leadTimeUnit": "days"
       },

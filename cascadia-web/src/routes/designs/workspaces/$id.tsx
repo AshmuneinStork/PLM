@@ -23,7 +23,7 @@ import {
 } from '@/components/ui'
 import { useAlertDialog } from '@/hooks/useAlertDialog'
 import { useErrorHandler } from '@/hooks/useErrorHandler'
-import { formatDateTime } from '@/format-date'
+import { formatDate, formatDateTime } from '@/format-date'
 import {
   useInvalidateResources,
   workspaceCommitsQuery,

@@ -57,3 +57,24 @@ export function formatNumberLocale(
 ): string {
   return new Intl.NumberFormat(locale, options).format(value)
 }
+
+/**
+ * Format a monetary amount using the active UI locale and a currency code.
+ * Falls back to a plain "CODE 0.00" rendering when Intl rejects the code.
+ */
+export function formatCurrencyLocale(
+  value: number | string,
+  currency: string,
+  locale: string,
+): string {
+  const numeric = typeof value === 'number' ? value : Number(value)
+  if (!Number.isFinite(numeric)) return String(value)
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+    }).format(numeric)
+  } catch {
+    return `${currency} ${numeric.toFixed(2)}`
+  }
+}

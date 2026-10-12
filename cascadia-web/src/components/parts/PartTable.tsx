@@ -28,6 +28,7 @@ import {
   ContextMenuSeparator,
 } from '@/components/ui/ContextMenu'
 import { StateBadge } from '@/components/items/StateBadge'
+import { formatCurrencyLocale } from '@/i18n/types'
 import { useLifecyclePhases } from '@/hooks/useLifecyclePhases'
 
 interface PartTableProps {
@@ -78,7 +79,8 @@ export function PartTable({
 }: PartTableProps) {
   // State filter options and badges come from the Part lifecycle's
   // configuration, not from a list in code
-  const { t } = useTranslation('entities')
+  const { t, i18n } = useTranslation('entities')
+  const locale = i18n.resolvedLanguage || i18n.language || 'en'
   const { data: lifecycle } = useLifecyclePhases('Part')
   const stateFilterOptions = (lifecycle?.states ?? []).map((state) => ({
     label: state.name,
@@ -230,9 +232,9 @@ export function PartTable({
       meta: { align: 'right' },
       cell: ({ row }) => {
         const cost = row.original.cost
-        const currency = row.original.costCurrency
+        const currency = row.original.costCurrency || 'USD'
         if (!cost) return '-'
-        return `${currency} ${parseFloat(cost).toFixed(2)}`
+        return formatCurrencyLocale(cost, currency, locale)
       },
     },
     {

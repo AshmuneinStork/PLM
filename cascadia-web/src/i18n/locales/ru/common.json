@@ -19,6 +19,12 @@
     "russian": "Русский",
     "switchTo": "Переключить на {{language}}"
   },
+  "currency": {
+    "label": "Валюта отображения",
+    "customLabel": "Свой код",
+    "customPlaceholder": "напр. KZT",
+    "customInvalid": "Введите 3-буквенный код (A–Z, напр. KZT)"
+  },
   "theme": {
     "toggle": "Переключить тему",
     "switchTo": "Переключить на {{mode}} тему",

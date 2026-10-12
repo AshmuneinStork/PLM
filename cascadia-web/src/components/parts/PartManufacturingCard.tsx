@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 Cascadia PLM LLC
 
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Part } from '@cascadia/commons/items/types/part'
 import {
@@ -9,11 +10,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  Input,
   ViewEditBadge,
   ViewEditCurrency,
   ViewEditNumber,
   ViewEditText,
 } from '@/components/ui'
+import { CURRENCY_OPTIONS, isValidCurrencyCode } from '@/currency'
 
 // Shared with the design page's in-place part form, so both offer the one
 // list of types.
@@ -32,12 +35,7 @@ const WEIGHT_UNIT_OPTIONS = [
   { value: 'oz', label: 'oz' },
 ]
 
-const CURRENCY_OPTIONS = [
-  { value: 'USD', label: 'USD' },
-  { value: 'EUR', label: 'EUR' },
-  { value: 'GBP', label: 'GBP' },
-  { value: 'JPY', label: 'JPY' },
-]
+const CUSTOM_CURRENCY_VALUE = '__custom__'
 
 /**
  * Production and sourcing fields: type, tracking policy, material, weight,
@@ -61,6 +59,38 @@ export function PartManufacturingCard({
 }) {
   const { t } = useTranslation('entities')
   const updateField = onFieldChange
+  const [customCode, setCustomCode] = useState('')
+  const [customError, setCustomError] = useState<string | null>(null)
+  const currentCurrency = isEditing
+    ? edited.costCurrency
+    : displayed.costCurrency
+  const knownCurrency = CURRENCY_OPTIONS.some((o) => o.value === currentCurrency)
+  const currencySelectValue =
+    currentCurrency && !knownCurrency ? CUSTOM_CURRENCY_VALUE : (currentCurrency ?? 'USD')
+  const currencyOptions = [
+    ...CURRENCY_OPTIONS,
+    { value: CUSTOM_CURRENCY_VALUE, label: t('parts.detail.manufacturing.customCurrency') },
+  ]
+
+  const handleCurrencySelect = (v: string) => {
+    setCustomError(null)
+    if (v === CUSTOM_CURRENCY_VALUE) {
+      // Keep showing the custom input; apply on blur/Enter below.
+      setCustomCode((prev) => prev || currentCurrency || '')
+      return
+    }
+    updateField('costCurrency', v)
+  }
+
+  const applyCustomCode = () => {
+    const normalized = customCode.trim().toUpperCase()
+    if (!isValidCurrencyCode(normalized)) {
+      setCustomError(t('parts.detail.manufacturing.customCurrencyInvalid'))
+      return
+    }
+    setCustomError(null)
+    updateField('costCurrency', normalized)
+  }
   const typeOptions = [
     { value: 'Manufacture', label: t('parts.typeLabels.manufacture') },
     { value: 'Purchase', label: t('parts.typeLabels.purchase') },
@@ -144,10 +174,29 @@ export function PartManufacturingCard({
             value={isEditing ? edited.cost : displayed.cost}
             onChange={(v) => updateField('cost', v)}
             isEditing={isEditing}
-            currency={isEditing ? edited.costCurrency : displayed.costCurrency}
-            currencyOptions={CURRENCY_OPTIONS}
-            onCurrencyChange={(v) => updateField('costCurrency', v)}
+            currency={currencySelectValue === CUSTOM_CURRENCY_VALUE ? (currentCurrency ?? 'USD') : currencySelectValue}
+            currencyOptions={currencyOptions}
+            onCurrencyChange={handleCurrencySelect}
           />
+          {isEditing && currencySelectValue === CUSTOM_CURRENCY_VALUE && (
+            <div className="-mt-4">
+              <Input
+                value={customCode}
+                onChange={(e) => setCustomCode(e.target.value.toUpperCase())}
+                onBlur={applyCustomCode}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') applyCustomCode()
+                }}
+                placeholder={t('parts.detail.manufacturing.customCurrencyPlaceholder')}
+                aria-label={t('parts.detail.manufacturing.customCurrency')}
+                maxLength={3}
+                className="w-24 uppercase"
+              />
+              {customError && (
+                <p className="mt-1 text-xs text-red-600">{customError}</p>
+              )}
+            </div>
+          )}
           <ViewEditNumber
             label={t('parts.detail.manufacturing.leadTime')}
             value={isEditing ? edited.leadTimeDays : displayed.leadTimeDays}

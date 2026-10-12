@@ -42,6 +42,7 @@ import { useCADCompareState } from '@/components/parts/useCADCompareState'
 import { useCADSelectionState } from '@/components/parts/useCADSelectionState'
 import { DropOverlay } from '@/components/items/DropOverlay'
 import { useDropEnrichment } from '@/components/items/useDropEnrichment'
+import { readStoredCurrency } from '@/currency'
 import { PendingImageStrip } from '@/components/items/PendingImageStrip'
 import {
   describeEnrichment,
@@ -111,7 +112,7 @@ const createEmptyPart = (): Part => ({
   weight: undefined,
   weightUnit: 'kg',
   cost: undefined,
-  costCurrency: 'USD',
+  costCurrency: readStoredCurrency(),
   leadTimeDays: undefined,
   designId: '',
   createdAt: undefined,

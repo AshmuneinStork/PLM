@@ -12,7 +12,10 @@ import {
   RefreshCw,
   Rows3,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Report, ReportColumn } from '@cascadia/commons/reports/types'
+import { readStoredCurrency, usePreferredCurrency } from '@/currency'
+import { formatCurrencyLocale } from '@/i18n/types'
 import {
   Badge,
   Button,
@@ -36,6 +39,11 @@ export function ReportViewer({ report }: ReportViewerProps) {
   // The CSV download is the one thing here that is not a cached read, so its
   // failure is the one error this component still holds itself.
   const [exportError, setExportError] = useState<string | null>(null)
+  // Subscribes to language + display-currency changes so currency cells
+  // re-format on RU<->EN or currency switch.
+  const { i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'en'
+  const { currency: preferredCurrency } = usePreferredCurrency()
 
   const {
     data: result,
@@ -95,7 +103,11 @@ export function ReportViewer({ report }: ReportViewerProps) {
     }
   }
 
-  const formatValue = (value: unknown, column: ReportColumn): string => {
+  const formatValue = (
+    value: unknown,
+    column: ReportColumn,
+    row?: Record<string, unknown>,
+  ): string => {
     if (value === null || value === undefined) {
       return '-'
     }
@@ -117,10 +129,15 @@ export function ReportViewer({ report }: ReportViewerProps) {
 
       case 'currency':
         if (typeof value === 'number' || !isNaN(Number(value))) {
-          return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          }).format(Number(value))
+          // Prefer the row's own currency (e.g. costCurrency next to cost);
+          // fall back to the header display currency for bare amounts.
+          const rowCurrency =
+            row?.['costCurrency'] ?? row?.['currency'] ?? row?.['cost_currency']
+          const code =
+            typeof rowCurrency === 'string' && rowCurrency.trim() !== ''
+              ? rowCurrency
+              : preferredCurrency || readStoredCurrency()
+          return formatCurrencyLocale(Number(value), code, locale)
         }
         return String(value)
 
@@ -285,7 +302,7 @@ export function ReportViewer({ report }: ReportViewerProps) {
                         .filter((col) => col.isVisible !== false)
                         .map((column) => (
                           <TableCell key={column.fieldPath}>
-                            {formatValue(row[column.fieldPath], column)}
+                            {formatValue(row[column.fieldPath], column, row)}
                           </TableCell>
                         ))}
                     </TableRow>

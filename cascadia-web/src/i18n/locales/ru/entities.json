@@ -1129,6 +1129,9 @@
         "materialPlaceholder": "напр., Алюминий 6061",
         "weight": "Вес",
         "cost": "Стоимость",
+        "customCurrency": "Своя валюта",
+        "customCurrencyPlaceholder": "напр. KZT",
+        "customCurrencyInvalid": "Введите 3-буквенный код (A–Z, напр. KZT)",
         "leadTime": "Срок поставки",
         "leadTimeUnit": "дн."
       },

@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Cascadia PLM LLC
 
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Input } from './Input'
 import { Textarea } from './Textarea'
 import {
@@ -12,6 +13,7 @@ import {
   SelectValue,
 } from './Select'
 import { Badge } from './Badge'
+import { formatCurrencyLocale } from '@/i18n/types'
 import { cn } from '@/utils'
 
 interface BaseFieldProps {
@@ -340,9 +342,12 @@ export function ViewEditCurrency({
   className,
   required,
 }: ViewEditCurrencyProps) {
+  // Subscribes to language changes so the amount re-formats on RU<->EN switch.
+  const { i18n } = useTranslation()
+  const locale = i18n.resolvedLanguage || i18n.language || 'en'
   const displayValue =
     value !== null && value !== undefined && value !== ''
-      ? `${currency} ${parseFloat(String(value)).toFixed(2)}`
+      ? formatCurrencyLocale(value, currency, locale)
       : emptyText
 
   const id = React.useId()

@@ -12,6 +12,7 @@ import type { Design } from '@cascadia/commons/types/design'
 import { DesignSelector } from '@/components/versioning/DesignSelector'
 import { DesignPhaseIndicator } from '@/components/versioning/DesignPhaseIndicator'
 import { BranchSelector } from '@/components/versioning/BranchSelector'
+import { CURRENCY_OPTIONS, readStoredCurrency } from '@/currency'
 import { AttributesEditor } from '@/components/items/AttributesEditor'
 import { ItemNumberField } from '@/components/items/ItemNumberField'
 import { designStatusQuery } from '@/query'
@@ -58,7 +59,7 @@ export function PartForm({
     defaultValues: {
       itemType: 'Part' as const,
       weightUnit: 'kg',
-      costCurrency: 'USD',
+      costCurrency: part?.costCurrency ?? readStoredCurrency(),
       designId: part?.designId || defaultDesignId || '',
       itemNumber: '',
       name: '',
@@ -368,10 +369,11 @@ export function PartForm({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="USD">USD</SelectItem>
-                        <SelectItem value="EUR">EUR</SelectItem>
-                        <SelectItem value="GBP">GBP</SelectItem>
-                        <SelectItem value="JPY">JPY</SelectItem>
+                        {CURRENCY_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
