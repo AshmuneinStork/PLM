@@ -36,6 +36,7 @@
 - [ ] Доки.
 - [x] Docker smoke: build app + /health 200 + EN/RU на /login и /setup.
 - [x] Прод-фикс blank / и /login (a9f533b): top-level `useTranslation('setup')` в ProgramsStep/ToolsStep → внутрь компонентов; Edge headless ROOT_LEN 13510, NO ERRORS; eslint setup/ EXIT 0.
+- [x] Прод-сборка display-currency (97f0b9b, 12.10.2026): образ 2.28GB, healthy, health/root/login 200, миграции current.
 - [ ] PR feature/i18n-ru -> main.
 
 ## Известные проблемы

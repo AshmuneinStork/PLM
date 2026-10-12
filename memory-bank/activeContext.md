@@ -46,6 +46,14 @@
 - Фикс: хук перенесён внутрь `ProgramsStep()` и `ToolsStep()`; других top-level хуков в `cascadia-web/src` нет (grep по `useTranslation('setup')` — все 8 внутри компонентов).
 - Проверки: `docker compose build app` EXIT 0 (58.87s vite), `up -d` healthy, Edge headless `/login`+`/` ROOT_LEN 13510, NO ERRORS; eslint setup/ EXIT 0; setup/i18n vitest-файлов нет (известное ограничение TEST_DATABASE_URL).
 - Урок: top-level `useTranslation` роняет весь прод-бандл; хуки проверять grep'ом до сборки.
+
+## Прод-сборка display-currency (done 12.10.2026, коммит 97f0b9b)
+- Коммит 1 (до сборки): `feat(currency): display-currency switch with locale-aware formatting` — 15 файлов (CurrencySwitcher + currency.tsx новые): useSyncExternalStore + localStorage + cascadia:currency-change, без FX-конверсии; гейты: typecheck-all EXIT 0, eslint touched EXIT 0, license/eol EXIT 0.
+- Сборка: `docker compose build app` (BUILD_TAG=currency-97f0b9b), образ `000_plm-app:latest` 2.28GB; бандл проверен — `cascadia-currency` + 3×`customCurrency` в `index-*.js`.
+- Поднятие: `docker compose up -d app` in-place (volumes сохранены), `Up 24s (healthy)`; логи: `migrations applied successfully / database is current`.
+- Smoke: `/api/v1/health` → 200, `/` → 200, `/login` → 200.
+- Урок: PowerShell раскрывает `$id` в путях/командах — экранировать кавычками; редирект `> file 2>&1` даёт exit 1 через shell-интеграцию — проверять лог/факт отдельно; size в `docker images` читать после завершения сборки, не из промежуточного состояния.
+- Осталось пользователю: открыть http://localhost:3000/login, переключить RU/EN + валюту (KZT/custom), проверить ре-рендер PartTable/PartDetail/ReportViewer.
 2. B1c: PartDetail.tsx (1031 строка, разбить) + PartDetailSidebar.
 3. B2-B5: остальные сущности по пилоту.
 4. Волна 3: tour-steps.ts → getTourSteps(t), тосты/Zod по ключам, Intl.DateTimeFormat.
